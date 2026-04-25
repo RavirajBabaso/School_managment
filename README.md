@@ -60,3 +60,4 @@ npm start        # run compiled API
 - Frontend: `http://localhost:5173`
 - Backend: `http://localhost:5000`
 # School_managment
+# School_managment
