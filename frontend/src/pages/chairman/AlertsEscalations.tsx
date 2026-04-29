@@ -11,14 +11,16 @@ function isCritical(task: Task) {
 }
 
 function formatPath(task: Task) {
-  return `Sub-head -> School Manager -> Chairman${task.department?.name ? ` • ${task.department.name}` : ''}`;
+  return `Sub-head -> School Manager -> Chairman${task.department?.name ? ` | ${task.department.name}` : ''}`;
 }
 
 function AlertsEscalations() {
   const queryClient = useQueryClient();
   const alertsQuery = useQuery({
     queryKey: ['tasks', 'alerts-feed'],
-    queryFn: () => taskService.getAllTasks({ status: 'DELAYED,ESCALATED' })
+    queryFn: () => taskService.getAllTasks({ status: 'DELAYED,ESCALATED' }),
+    refetchInterval: 15000,
+    refetchOnWindowFocus: true
   });
 
   const resolveMutation = useMutation({
@@ -26,19 +28,19 @@ function AlertsEscalations() {
     onSuccess: async () => {
       toast.success('Alert resolved and task moved to in progress.');
       await queryClient.invalidateQueries({ queryKey: ['tasks'] });
+      await queryClient.invalidateQueries({ queryKey: ['chairman-dashboard'] });
     }
   });
 
-  const metrics = useMemo(() => {
-    const tasks = alertsQuery.data ?? [];
-    return {
-      critical: tasks.filter((task) => task.status === 'ESCALATED').length,
-      warnings: tasks.filter((task) => task.status === 'DELAYED').length,
-      escalatedToYou: tasks.filter((task) => task.status === 'ESCALATED').length
-    };
-  }, [alertsQuery.data]);
-
   const alerts = alertsQuery.data ?? [];
+  const metrics = useMemo(
+    () => ({
+      critical: alerts.filter((task) => task.status === 'ESCALATED').length,
+      warnings: alerts.filter((task) => task.status === 'DELAYED').length,
+      escalatedToYou: alerts.filter((task) => task.status === 'ESCALATED').length
+    }),
+    [alerts]
+  );
 
   return (
     <section className="space-y-5 p-5">
@@ -68,11 +70,21 @@ function AlertsEscalations() {
             </p>
             <h2 className="mt-2 text-2xl font-semibold text-[#1E293B]">Alert & escalation feed</h2>
           </div>
-          <Badge variant="gray">{alerts.length} live alerts</Badge>
+          <Badge variant={alertsQuery.isFetching ? 'blue' : 'gray'}>
+            {alertsQuery.isFetching ? 'Refreshing' : `${alerts.length} live alerts`}
+          </Badge>
         </div>
 
         <div className="mt-5 space-y-3">
-          {alerts.length > 0 ? (
+          {alertsQuery.isLoading ? (
+            <div className="rounded-[16px] border border-dashed border-[#D7E1EC] bg-[#FAFCFE] px-4 py-10 text-center text-sm text-[#8A99B0]">
+              Loading live alerts...
+            </div>
+          ) : alertsQuery.isError ? (
+            <div className="rounded-[16px] border border-[#F3C7C5] bg-[#FFF4F4] px-4 py-6 text-center text-sm text-[#C13F3A]">
+              Unable to load live alerts right now.
+            </div>
+          ) : alerts.length > 0 ? (
             alerts.map((task) => {
               const critical = isCritical(task);
 

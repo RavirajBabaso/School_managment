@@ -53,19 +53,36 @@ export const useSocket = () => {
 
     socket.on('notification:new', (notification: Notification) => {
       dispatch(addNotification(notification));
+      void queryClient.invalidateQueries({ queryKey: ['chairman-dashboard'] });
+      void queryClient.invalidateQueries({ queryKey: ['tasks'] });
       toast.success(notification.message);
     });
 
     socket.on('task:updated', (payload: SocketTaskPayload | Task) => {
       const task = resolveTaskPayload(payload);
       if (task) {
+        void queryClient.invalidateQueries({ queryKey: ['chairman-dashboard'] });
         void queryClient.invalidateQueries({ queryKey: ['tasks'] });
         void queryClient.invalidateQueries({ queryKey: ['task', task.id] });
+        void queryClient.invalidateQueries({ queryKey: ['staffPerformance'] });
+        void queryClient.invalidateQueries({ queryKey: ['monthlyComparison'] });
       }
+    });
+
+    socket.on('approval:new', () => {
+      void queryClient.invalidateQueries({ queryKey: ['approvals'] });
+      void queryClient.invalidateQueries({ queryKey: ['chairman-dashboard'] });
+    });
+
+    socket.on('approval:updated', () => {
+      void queryClient.invalidateQueries({ queryKey: ['approvals'] });
+      void queryClient.invalidateQueries({ queryKey: ['chairman-dashboard'] });
     });
 
     socket.on('announcement:new', (announcement: Announcement) => {
       dispatch(addNotification(normalizeAnnouncementNotification(announcement, user?.id)));
+      void queryClient.invalidateQueries({ queryKey: ['announcements'] });
+      void queryClient.invalidateQueries({ queryKey: ['chairman-dashboard'] });
     });
 
     return () => {

@@ -29,9 +29,17 @@ interface ApiResponse<T> {
   success: boolean;
 }
 
-export const getAllApprovals = async (status?: 'PENDING' | 'APPROVED' | 'REJECTED'): Promise<Approval[]> => {
+export const getAllApprovals = async (
+  status?: 'PENDING' | 'APPROVED' | 'REJECTED',
+  type?: Approval['type']
+): Promise<Approval[]> => {
+  const params: Record<string, string> = {};
+
+  if (status) params.status = status;
+  if (type) params.type = type;
+
   const response = await api.get<ApiResponse<Approval[]>>(API_ENDPOINTS.approvals.list, {
-    params: status ? { status } : undefined
+    params: Object.keys(params).length ? params : undefined
   });
   return response.data.data;
 };

@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { Approval } from '../models/Approval';
 import { User } from '../models/User';
 import { Notification } from '../models/Notification';
-import { emitToUser } from '../config/sockets';
+import { emitToUser } from '../config/socket';
 import { successResponse, errorResponse } from '../utils/responseHelper';
 
 export const createApproval = async (req: Request, res: Response) => {
@@ -64,11 +64,15 @@ export const createApproval = async (req: Request, res: Response) => {
 
 export const getAllApprovals = async (req: Request, res: Response) => {
   try {
-    const { status } = req.query;
+    const { status, type } = req.query;
 
     const where: any = {};
     if (status && ['PENDING', 'APPROVED', 'REJECTED'].includes(status as string)) {
       where.status = status;
+    }
+
+    if (type && ['BUDGET', 'PURCHASE', 'POLICY', 'EVENT'].includes(type as string)) {
+      where.type = type;
     }
 
     const approvals = await Approval.findAll({

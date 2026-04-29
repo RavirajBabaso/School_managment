@@ -39,11 +39,28 @@ const getAuthenticatedUser = async (req: Request) => {
 };
 
 export const getChairmanDashboard = async (_req: Request, res: Response) => {
-  const [tasks, pendingApprovals, recentTasks, activeAlerts, departments] = await Promise.all([
+  const [tasks, pendingApprovals, pendingApprovalRecords, recentTasks, activeAlerts, departments] = await Promise.all([
     Task.findAll({
-      include: [{ model: Department, as: 'department', attributes: ['id', 'name'] }]
+      include: [
+        { model: User, as: 'assignedTo', attributes: ['id', 'name', 'email', 'role', 'department_id'] },
+        { model: Department, as: 'department', attributes: ['id', 'name', 'description'] }
+      ],
+      order: [['due_date', 'ASC']]
     }),
     Approval.count({ where: { status: 'PENDING' } }),
+    Approval.findAll({
+      where: { status: 'PENDING' },
+      include: [
+        {
+          model: User,
+          as: 'requestedBy',
+          attributes: ['id', 'name'],
+          include: [{ model: Department, attributes: ['name'] }]
+        }
+      ],
+      order: [['created_at', 'DESC']],
+      limit: 5
+    }),
     Task.findAll({
       include: [
         { model: User, as: 'assignedTo', attributes: ['id', 'name'] },
@@ -71,7 +88,7 @@ export const getChairmanDashboard = async (_req: Request, res: Response) => {
   const totalTasks = tasks.length;
   const completedTasks = tasks.filter((task) => task.status === 'COMPLETED').length;
   const delayedTasks = tasks.filter((task) => task.status === 'DELAYED').length;
-  const completionRate = safePercentage(completedTasks, totalTasks);
+  const completionPercentage = safePercentage(completedTasks, totalTasks);
 
   const departmentHealth = departments.map((department) => {
     const departmentTasks = tasks.filter((task) => task.department_id === department.id);
@@ -91,17 +108,43 @@ export const getChairmanDashboard = async (_req: Request, res: Response) => {
     };
   });
 
+  const alerts = activeAlerts.map((task) => ({
+    id: task.id,
+    title: task.title,
+    subLabel: task.department ? `Dept: ${task.department.name}` : 'Unassigned department',
+    severity:
+      task.status === 'DELAYED'
+        ? 'Warning'
+        : task.status === 'ESCALATED' && task.priority === 'HIGH'
+        ? 'Critical'
+        : 'Escalated'
+  }));
+
+  const pendingApprovalsList = pendingApprovalRecords.map((approval) => ({
+    id: approval.id,
+    title: approval.title,
+    submitter: approval.requestedBy?.name ?? 'Unknown',
+    amount: approval.amount ? `$${approval.amount}` : 'N/A',
+    department: approval.requestedBy?.department?.name ?? 'Unknown'
+  }));
+
   return successResponse(
     res,
     {
       totalTasks,
       completedTasks,
-      completionRate,
+      completionPercentage,
       delayedTasks,
       pendingApprovals,
-      departmentHealth,
+      departments: departmentHealth,
+      taskLists: {
+        total: tasks,
+        completed: tasks.filter((task) => task.status === 'COMPLETED'),
+        delayed: tasks.filter((task) => task.status === 'DELAYED')
+      },
       recentTasks,
-      activeAlerts
+      alerts,
+      pendingApprovalsList
     },
     'Chairman dashboard fetched successfully'
   );

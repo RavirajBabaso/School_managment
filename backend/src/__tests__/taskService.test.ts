@@ -94,7 +94,8 @@ describe('Task Service', () => {
           message: 'New task assigned: Test Task',
           task_id: 1,
           is_read: false
-        })
+        }),
+        expect.objectContaining({ transaction: expect.any(Object) })
       );
 
       expect(result).toBeDefined();
@@ -132,7 +133,8 @@ describe('Task Service', () => {
           message: 'Task "Test Task" updated to COMPLETED',
           task_id: 1,
           is_read: false
-        })
+        }),
+        expect.objectContaining({ transaction: expect.any(Object) })
       );
 
       expect(result).toBeDefined();
@@ -205,7 +207,8 @@ describe('Task Service', () => {
           message: 'Task "Test Task" is delayed',
           task_id: 2,
           is_read: false
-        })
+        }),
+        expect.objectContaining({ transaction: expect.any(Object) })
       );
 
       expect(result).toBe(1);

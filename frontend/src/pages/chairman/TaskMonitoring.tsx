@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import Button from '../../components/common/Button';
@@ -28,7 +28,10 @@ function TaskMonitoring() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const tasks = useAppSelector((state) => state.tasks.tasks);
+
   const [activeFilter, setActiveFilter] = useState<TaskStatus | 'ALL'>('ALL');
+
+  const tableRef = useRef<HTMLDivElement | null>(null);
 
   const taskQuery = useQuery({
     queryKey: ['tasks', 'monitoring'],
@@ -41,6 +44,7 @@ function TaskMonitoring() {
     }
   }, [dispatch, taskQuery.data]);
 
+  // 🔢 Count calculation
   const counts = useMemo(
     () =>
       statCards.reduce<Record<TaskStatus, number>>(
@@ -59,74 +63,108 @@ function TaskMonitoring() {
     [tasks]
   );
 
+  // 🔍 Filtering
   const filteredTasks =
-    activeFilter === 'ALL' ? tasks : tasks.filter((task) => task.status === activeFilter);
+    activeFilter === 'ALL'
+      ? tasks
+      : tasks.filter((task) => task.status === activeFilter);
 
   const handleExportPdf = async () => {
     const blob = await reportService.exportDailyReportPdf();
     const url = window.URL.createObjectURL(blob);
     window.open(url, '_blank', 'noopener,noreferrer');
-    window.setTimeout(() => window.URL.revokeObjectURL(url), 60_000);
+    window.setTimeout(() => window.URL.revokeObjectURL(url), 60000);
   };
 
   return (
-    <section className="space-y-5 p-5">
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+    <section className="space-y-5 p-5 bg-[#F1F4F9] min-h-screen">
+
+      {/* ================= KPI CARDS ================= */}
+      <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
         {statCards.map((card) => (
-          <article className="rounded-[18px] border border-[#EFF2F6] bg-white p-5" key={card.key}>
+          <article
+            key={card.key}
+            onClick={() => {
+              setActiveFilter(card.key);
+              tableRef.current?.scrollIntoView({ behavior: 'smooth' });
+            }}
+            className={`cursor-pointer rounded-[14px] border p-4 transition
+              ${
+                activeFilter === card.key
+                  ? 'border-[#185FA5] bg-[#EFF6FF]'
+                  : 'border-[#EFF2F6] bg-white hover:bg-[#F8FAFC]'
+              }
+            `}
+          >
             <span
               className={[
-                'inline-flex rounded-full px-2.5 py-1 text-xs font-semibold',
+                'inline-flex rounded-full px-2 py-1 text-[11px] font-semibold',
                 card.color
               ].join(' ')}
             >
               {card.label}
             </span>
-            <p className="mt-4 text-3xl font-semibold text-[#1E293B]">{counts[card.key]}</p>
-            <p className="mt-2 text-sm text-[#8A99B0]">
-              Tasks currently marked {card.label.toLowerCase()}.
+
+            <p className="mt-3 text-2xl font-semibold text-[#1E293B]">
+              {counts[card.key]}
+            </p>
+
+            <p className="mt-1 text-xs text-[#8A99B0]">
+              Click to view {card.label.toLowerCase()} tasks
             </p>
           </article>
         ))}
       </div>
 
-      <div className="rounded-[20px] border border-[#EFF2F6] bg-white p-5">
+      {/* ================= HEADER ================= */}
+      <div className="rounded-[14px] border border-[#EFF2F6] bg-white p-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#185FA5]">
               Monitor Module
             </p>
-            <h2 className="mt-2 text-xl font-semibold text-[#1E293B]">Task monitoring view</h2>
+            <h2 className="mt-2 text-xl font-semibold text-[#1E293B]">
+              Task monitoring view
+            </h2>
           </div>
 
           <div className="flex items-center gap-2">
             <div className="flex flex-wrap gap-2">
               {filterTabs.map((tab) => (
                 <button
+                  key={tab.value}
+                  onClick={() => {
+                    setActiveFilter(tab.value);
+                    tableRef.current?.scrollIntoView({ behavior: 'smooth' });
+                  }}
                   className={[
                     'rounded-full px-3 py-1.5 text-xs font-semibold transition',
                     activeFilter === tab.value
                       ? 'bg-[#185FA5] text-white'
                       : 'bg-[#F3F6FA] text-[#5B6E8C] hover:bg-[#E7EDF4]'
                   ].join(' ')}
-                  key={tab.value}
-                  onClick={() => setActiveFilter(tab.value)}
-                  type="button"
                 >
                   {tab.label}
                 </button>
               ))}
             </div>
+
             <Button onClick={handleExportPdf}>Export PDF</Button>
           </div>
         </div>
       </div>
 
-      <TaskTable
-        emptyMessage="Once tasks are assigned, the monitoring grid will populate here."
-        onRowClick={(task) => navigate(`/task/${task.id}`)}
-        tasks={filteredTasks}
-      />
+      {/* ================= TASK TABLE ================= */}
+      <div
+        ref={tableRef}
+        className="rounded-[14px] border border-[#EFF2F6] bg-white p-5"
+      >
+        <TaskTable
+          emptyMessage="Once tasks are assigned, the monitoring grid will populate here."
+          onRowClick={(task) => navigate(`/task/${task.id}`)}
+          tasks={filteredTasks}
+        />
+      </div>
     </section>
   );
 }

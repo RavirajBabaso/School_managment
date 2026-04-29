@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import axios from 'axios';
 import UserTable from '../../components/tables/UserTable';
 import Button from '../../components/common/Button';
 import Modal from '../../components/common/Modal';
 import type { User } from '../../types/user.types';
 import { ROLES, ROLE_LABELS, DEPARTMENT_HEAD_ROLES } from '../../constants/roles';
+import api from '../../services/api';
 
 interface AddUserForm {
   name: string;
@@ -51,22 +51,22 @@ const UserManagement: React.FC = () => {
   const { data: users, isLoading } = useQuery({
     queryKey: ['users'],
     queryFn: async () => {
-      const response = await axios.get('/api/users');
-      return response.data as User[];
+      const response = await api.get('/users');
+      return response.data.data as User[];
     },
   });
 
   const { data: departments } = useQuery({
     queryKey: ['departments'],
     queryFn: async () => {
-      const response = await axios.get('/api/departments');
-      return response.data as Department[];
+      const response = await api.get('/departments');
+      return response.data.data as Department[];
     },
   });
 
   const addUserMutation = useMutation({
     mutationFn: async (userData: AddUserForm) => {
-      const response = await axios.post('/api/users', userData);
+      const response = await api.post('/users', userData);
       return response.data;
     },
     onSuccess: () => {
@@ -87,7 +87,7 @@ const UserManagement: React.FC = () => {
 
   const editUserMutation = useMutation({
     mutationFn: async ({ id, userData }: { id: number; userData: EditUserForm }) => {
-      const response = await axios.put(`/api/users/${id}`, userData);
+      const response = await api.put(`/users/${id}`, userData);
       return response.data;
     },
     onSuccess: () => {
@@ -108,7 +108,7 @@ const UserManagement: React.FC = () => {
 
   const deactivateUserMutation = useMutation({
     mutationFn: async (id: number) => {
-      await axios.delete(`/api/users/${id}`);
+      await api.delete(`/users/${id}`);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['users'] });

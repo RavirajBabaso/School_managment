@@ -41,7 +41,7 @@ export const API_ENDPOINTS = {
     create: '/approvals',
     approve: (id: number | string) => `/approvals/${id}/approve`,
     reject: (id: number | string) => `/approvals/${id}/reject`,
-    process: (id: number | string) => `/approvals/${id}/process`
+    process: (id: number | string) => `/approvals/${id}`
   },
   announcements: {
     list: '/announcements',

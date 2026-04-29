@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Button from '../../components/common/Button';
 import Input from '../../components/common/Input';
+import Modal from '../../components/common/Modal';
 import TaskTable from '../../components/tables/TaskTable';
 import { DEPARTMENT_HEAD_ROLES } from '../../constants/roles';
 import * as taskService from '../../services/taskService';
@@ -31,9 +33,12 @@ const initialForm: CreateTaskPayload = {
 function TaskAssignment() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const queryClient = useQueryClient();
   const tasks = useAppSelector((state) => state.tasks.tasks);
   const users = useAppSelector((state) => state.users.users);
   const [activeStatus, setActiveStatus] = useState<TaskStatus | 'ALL'>('ALL');
+  const [isCreateModalOpen, setCreateModalOpen] = useState(false);
+  const [isSubmitting, setSubmitting] = useState(false);
   const [file, setFile] = useState<File | undefined>();
   const [error, setError] = useState<string | null>(null);
   const [form, setForm] = useState<CreateTaskPayload>(initialForm);
@@ -60,7 +65,9 @@ function TaskAssignment() {
     }
   }, [dispatch, usersQuery.data]);
 
-  const departmentHeads = users.filter((user) => DEPARTMENT_HEAD_ROLES.includes(user.role));
+  const departmentHeads = users.filter(
+    (user) => DEPARTMENT_HEAD_ROLES.includes(user.role) && user.is_active
+  );
   const filteredTasks =
     activeStatus === 'ALL' ? tasks : tasks.filter((task) => task.status === activeStatus);
 
@@ -75,48 +82,125 @@ function TaskAssignment() {
     event.preventDefault();
     setError(null);
 
+    if (!form.assigned_to) {
+      setError('Please select a department head before creating the task.');
+      return;
+    }
+
+    if (!form.title.trim()) {
+      setError('Please enter a task title.');
+      return;
+    }
+
+    const startDate = form.start_date ? new Date(form.start_date) : new Date();
+    const dueDate = new Date(form.due_date);
+
+    if (dueDate <= startDate) {
+      setError('Due date must be after the start date.');
+      return;
+    }
+
+    setSubmitting(true);
+
     try {
       const createdTask = await taskService.createTask(form, file);
       dispatch(addTask(createdTask));
+      queryClient.invalidateQueries({ queryKey: ['chairman-dashboard'] });
+      queryClient.invalidateQueries({ queryKey: ['tasks', 'chairman-assignment'] });
       setForm(initialForm);
       setFile(undefined);
-    } catch {
-      setError('Unable to create task right now. Please verify the form and try again.');
+      setCreateModalOpen(false);
+    } catch (submitError) {
+      if (axios.isAxiosError(submitError)) {
+        const errors = submitError.response?.data?.errors;
+        const firstValidationMessage =
+          Array.isArray(errors) && errors.length > 0 && typeof errors[0]?.message === 'string'
+            ? errors[0].message
+            : undefined;
+
+        setError(
+          firstValidationMessage ??
+            submitError.response?.data?.message ??
+            'Unable to create task right now. Please verify the form and try again.'
+        );
+      } else {
+        setError('Unable to create task right now. Please verify the form and try again.');
+      }
+    } finally {
+      setSubmitting(false);
     }
   };
 
+  const handleCloseCreateModal = () => {
+    setCreateModalOpen(false);
+    setError(null);
+  };
+
   return (
-    <section className="grid gap-5 p-5 xl:grid-cols-[420px_minmax(0,1fr)]">
-      <div className="rounded-[20px] border border-[#EFF2F6] bg-white p-5">
-        <div>
+    <>
+      <section className="grid gap-5 p-5 xl:grid-cols-[320px_minmax(0,1fr)]">
+        <div className="rounded-[20px] border border-[#EFF2F6] bg-white p-5">
           <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#185FA5]">
             Tasks Module
           </p>
-          <h2 className="mt-2 text-xl font-semibold text-[#1E293B]">Create new task</h2>
+          <h2 className="mt-2 text-xl font-semibold text-[#1E293B]">Task assignment</h2>
           <p className="mt-2 text-sm leading-6 text-[#5B6E8C]">
-            Dispatch work to department heads with due dates, priority, and supporting files.
+            Create work items for department heads and track active assignments from the queue.
           </p>
+          <Button
+            className="mt-5 w-full justify-center"
+            loading={taskQuery.isFetching && tasks.length === 0}
+            onClick={() => setCreateModalOpen(true)}
+          >
+            Create new task
+          </Button>
         </div>
 
-        <form className="mt-5 space-y-4" onSubmit={handleSubmit}>
-          <Input
-            label="Task title"
-            onChange={(event) => handleChange('title', event.target.value)}
-            placeholder="Enter task title"
-            required
-            value={form.title}
+        <div className="space-y-4">
+          <div className="rounded-[20px] border border-[#EFF2F6] bg-white p-5">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#185FA5]">
+                  Assignment Queue
+                </p>
+                <h2 className="mt-2 text-xl font-semibold text-[#1E293B]">Active task queue</h2>
+              </div>
+
+              <div className="flex flex-wrap gap-2">
+                {statusTabs.map((tab) => (
+                  <button
+                    className={[
+                      'rounded-full px-3 py-1.5 text-xs font-semibold transition',
+                      activeStatus === tab.value
+                        ? 'bg-[#185FA5] text-white'
+                        : 'bg-[#F3F6FA] text-[#5B6E8C] hover:bg-[#E7EDF4]'
+                    ].join(' ')}
+                    key={tab.value}
+                    onClick={() => setActiveStatus(tab.value)}
+                    type="button"
+                  >
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <TaskTable
+            emptyMessage="Newly assigned tasks will appear here."
+            onRowClick={(task) => navigate(`/task/${task.id}`)}
+            tasks={filteredTasks.filter((task) => task.status !== 'COMPLETED')}
           />
+        </div>
+      </section>
 
-          <label className="flex flex-col gap-1.5">
-            <span className="text-[12px] font-medium text-[#36506C]">Description</span>
-            <textarea
-              className="min-h-[104px] rounded-[10px] border-[0.5px] border-[#DCE2EA] bg-[#F8F9FC] px-3 py-2.5 text-sm text-[#1E293B] outline-none transition placeholder:text-[#8A99B0] focus:border-[#185FA5] focus:ring-4 focus:ring-[#185FA5]/10"
-              onChange={(event) => handleChange('description', event.target.value)}
-              placeholder="Describe the task scope and expected outcome"
-              value={form.description ?? ''}
-            />
-          </label>
-
+      <Modal
+        bodyClassName="max-h-[75vh] overflow-y-auto"
+        isOpen={isCreateModalOpen}
+        onClose={handleCloseCreateModal}
+        title="Create new task"
+      >
+        <form className="space-y-4" onSubmit={handleSubmit}>
           <label className="flex flex-col gap-1.5">
             <span className="text-[12px] font-medium text-[#36506C]">Assign to</span>
             <select
@@ -138,6 +222,24 @@ function TaskAssignment() {
                 </option>
               ))}
             </select>
+          </label>
+
+          <Input
+            label="Task title"
+            onChange={(event) => handleChange('title', event.target.value)}
+            placeholder="Enter task title"
+            required
+            value={form.title}
+          />
+
+          <label className="flex flex-col gap-1.5">
+            <span className="text-[12px] font-medium text-[#36506C]">Description</span>
+            <textarea
+              className="min-h-[104px] rounded-[10px] border-[0.5px] border-[#DCE2EA] bg-[#F8F9FC] px-3 py-2.5 text-sm text-[#1E293B] outline-none transition placeholder:text-[#8A99B0] focus:border-[#185FA5] focus:ring-4 focus:ring-[#185FA5]/10"
+              onChange={(event) => handleChange('description', event.target.value)}
+              placeholder="Describe the task scope and expected outcome"
+              value={form.description ?? ''}
+            />
           </label>
 
           <div className="grid gap-4 sm:grid-cols-2">
@@ -187,51 +289,14 @@ function TaskAssignment() {
 
           <Button
             className="w-full justify-center"
-            loading={taskQuery.isFetching && tasks.length === 0}
+            loading={isSubmitting}
             type="submit"
           >
             Submit task
           </Button>
         </form>
-      </div>
-
-      <div className="space-y-4">
-        <div className="rounded-[20px] border border-[#EFF2F6] bg-white p-5">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div>
-              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#185FA5]">
-                Assignment Queue
-              </p>
-              <h2 className="mt-2 text-xl font-semibold text-[#1E293B]">Active task queue</h2>
-            </div>
-
-            <div className="flex flex-wrap gap-2">
-              {statusTabs.map((tab) => (
-                <button
-                  className={[
-                    'rounded-full px-3 py-1.5 text-xs font-semibold transition',
-                    activeStatus === tab.value
-                      ? 'bg-[#185FA5] text-white'
-                      : 'bg-[#F3F6FA] text-[#5B6E8C] hover:bg-[#E7EDF4]'
-                  ].join(' ')}
-                  key={tab.value}
-                  onClick={() => setActiveStatus(tab.value)}
-                  type="button"
-                >
-                  {tab.label}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        <TaskTable
-          emptyMessage="Newly assigned tasks will appear here."
-          onRowClick={(task) => navigate(`/task/${task.id}`)}
-          tasks={filteredTasks.filter((task) => task.status !== 'COMPLETED')}
-        />
-      </div>
-    </section>
+      </Modal>
+    </>
   );
 }
 

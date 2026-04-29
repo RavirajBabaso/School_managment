@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useSelector } from 'react-redux';
-import axios from 'axios';
 import TaskStatusPieChart from '../../components/charts/TaskStatusPieChart';
 import TaskTable from '../../components/tables/TaskTable';
 import Badge from '../../components/common/Badge';
@@ -9,6 +8,7 @@ import Button from '../../components/common/Button';
 import Modal from '../../components/common/Modal';
 import type { Task, TaskStatus } from '../../types/task.types';
 import type { RootState } from '../../store';
+import api from '../../services/api';
 
 interface DeptDashboardData {
   myTasks: {
@@ -96,8 +96,8 @@ const DeptOverview: React.FC = () => {
   const { data, isLoading } = useQuery({
     queryKey: ['dept-dashboard', user?.department_id],
     queryFn: async () => {
-      const response = await axios.get(`/api/dashboard/dept/${user?.department_id}`);
-      return response.data as DeptDashboardData;
+      const response = await api.get(`/dashboard/dept/${user?.department_id}`);
+      return response.data.data as DeptDashboardData;
     },
     enabled: !!user?.department_id,
   });

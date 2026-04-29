@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import announcementRoutes from './announcementRoutes';
+import approvalRoutes from './approvalRoutes';
 import authRoutes from './authRoutes';
 import dashboardRoutes from './dashboardRoutes';
 import healthRoutes from './health.routes';
@@ -11,6 +12,7 @@ import userRoutes from './userRoutes';
 const router = Router();
 
 router.use('/announcements', announcementRoutes);
+router.use('/approvals', approvalRoutes);
 router.use('/auth', authRoutes);
 router.use('/dashboard', dashboardRoutes);
 router.use('/health', healthRoutes);

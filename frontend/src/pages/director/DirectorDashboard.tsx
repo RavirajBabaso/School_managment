@@ -1,7 +1,6 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useSelector } from 'react-redux';
-import axios from 'axios';
 import TaskStatusPieChart from '../../components/charts/TaskStatusPieChart';
 import TaskTable from '../../components/tables/TaskTable';
 import Badge from '../../components/common/Badge';
@@ -9,6 +8,7 @@ import Navbar from '../../components/common/Navbar';
 import Sidebar from '../../components/common/Sidebar';
 import type { Task } from '../../types/task.types';
 import type { RootState } from '../../store';
+import api from '../../services/api';
 
 interface DeptDashboardData {
   myTasks: {
@@ -38,8 +38,8 @@ function DirectorDashboard() {
   const { data: deptData, isLoading: deptLoading } = useQuery({
     queryKey: ['dept-dashboard', user?.department_id],
     queryFn: async () => {
-      const response = await axios.get(`/api/dashboard/dept/${user?.department_id}`);
-      return response.data as DeptDashboardData;
+      const response = await api.get(`/dashboard/dept/${user?.department_id}`);
+      return response.data.data as DeptDashboardData;
     },
     enabled: !!user?.department_id,
   });
@@ -47,8 +47,8 @@ function DirectorDashboard() {
   const { data: chairmanData, isLoading: chairmanLoading } = useQuery({
     queryKey: ['chairman-dashboard-summary'],
     queryFn: async () => {
-      const response = await axios.get('/api/dashboard/chairman');
-      return response.data as ChairmanDashboardData;
+      const response = await api.get('/dashboard/chairman');
+      return response.data.data as ChairmanDashboardData;
     },
   });
 

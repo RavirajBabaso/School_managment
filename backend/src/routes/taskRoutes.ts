@@ -42,7 +42,14 @@ const departmentHeadRoles = [
 const queryValidators = [
   query('status')
     .optional()
-    .isIn([...TASK_STATUSES])
+    .custom((value) => {
+      const statuses = String(value)
+        .split(',')
+        .map((status) => status.trim())
+        .filter(Boolean);
+
+      return statuses.length > 0 && statuses.every((status) => TASK_STATUSES.includes(status as any));
+    })
     .withMessage('Status must be a valid task status'),
   query('priority')
     .optional()

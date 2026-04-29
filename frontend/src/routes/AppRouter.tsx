@@ -1,4 +1,4 @@
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import Navbar from '../components/common/Navbar';
 import Sidebar from '../components/common/Sidebar';
 import { DEPARTMENT_HEAD_ROLES, ROLES } from '../constants/roles';
@@ -26,9 +26,16 @@ function NotificationsLayout() {
   );
 }
 
+function ChairmanAliasRedirect() {
+  const location = useLocation();
+  const chairmanPath = location.pathname.replace(/^\/chairmen\b/, '/chairman');
+
+  return <Navigate to={`${chairmanPath}${location.search}${location.hash}`} replace />;
+}
+
 function AppRouter() {
   return (
-    <BrowserRouter>
+    <BrowserRouter future={{ v7_relativeSplatPath: true, v7_startTransition: true }}>
       <Routes>
         <Route path="/login" element={<Login />} />
 
@@ -41,6 +48,7 @@ function AppRouter() {
 
         <Route element={<ProtectedRoute allowedRoles={[ROLES.CHAIRMAN]} />}>
           <Route path="/chairman/*" element={<ChairmanDashboard />} />
+          <Route path="/chairmen/*" element={<ChairmanAliasRedirect />} />
         </Route>
 
         <Route element={<ProtectedRoute allowedRoles={DEPARTMENT_HEAD_ROLES} />}>

@@ -18,7 +18,7 @@ export interface TaskFilterOptions {
   assigned_to?: number;
   department_id?: number;
   from?: string | Date;
-  status?: TaskStatus;
+  status?: TaskStatus | string;
   to?: string | Date;
   priority?: TaskPriority;
 }
@@ -90,15 +90,19 @@ const createNotification = async (
   userId: number,
   type: 'TASK_ASSIGNED' | 'TASK_UPDATED' | 'TASK_DELAYED' | 'TASK_ESCALATED',
   message: string,
-  taskId: number
+  taskId: number,
+  transaction?: Transaction
 ) => {
-  const notification = await Notification.create({
-    user_id: userId,
-    type,
-    message,
-    task_id: taskId,
-    is_read: false
-  } as Notification);
+  const notification = await Notification.create(
+    {
+      user_id: userId,
+      type,
+      message,
+      task_id: taskId,
+      is_read: false
+    } as Notification,
+    { transaction }
+  );
 
   // Emit real-time notification
   emitToUser(userId, 'notification:new', {
@@ -116,7 +120,16 @@ const buildWhereClause = (filters: TaskFilterOptions) => {
   const where: WhereOptions<Task> = {};
 
   if (filters.status) {
-    where.status = filters.status;
+    const statuses = String(filters.status)
+      .split(',')
+      .map((status) => status.trim())
+      .filter(Boolean);
+
+    if (statuses.length > 1) {
+      (where as Record<string, unknown>).status = { [Op.in]: statuses as TaskStatus[] };
+    } else {
+      where.status = statuses[0] as TaskStatus;
+    }
   }
 
   if (filters.priority) {
@@ -182,7 +195,8 @@ export const createTask = async (data: CreateTaskPayload, createdBy: number) => 
       task.assigned_to,
       'TASK_ASSIGNED',
       `New task assigned: ${task.title}`,
-      task.id
+      task.id,
+      transaction
     );
 
     // Send email notification (outside transaction for reliability)
@@ -253,7 +267,8 @@ export const updateTaskStatus = async (
       task.assigned_to,
       notificationType,
       `Task "${task.title}" updated to ${newStatus}`,
-      task.id
+      task.id,
+      transaction
     );
 
     return getTaskById(task.id, transaction);
@@ -369,7 +384,8 @@ export const updateTask = async (taskId: number, updates: UpdateTaskPayload, upd
         task.assigned_to,
         notificationType,
         `Task "${task.title}" has been updated`,
-        task.id
+        task.id,
+        transaction
       );
     }
 
@@ -411,7 +427,8 @@ export const checkAndFlagDelayedTasks = async () => {
         task.assigned_to,
         'TASK_DELAYED',
         `Task "${task.title}" is delayed`,
-        task.id
+        task.id,
+        transaction
       );
     }
 
@@ -424,7 +441,14 @@ export const validateTaskFilters = (filters: TaskFilterOptions) => {
     throw new Error('Invalid task priority');
   }
 
-  if (filters.status && !isTaskStatus(filters.status)) {
+  if (
+    filters.status &&
+    !String(filters.status)
+      .split(',')
+      .map((status) => status.trim())
+      .filter(Boolean)
+      .every(isTaskStatus)
+  ) {
     throw new Error('Invalid task status');
   }
 };
