@@ -11,7 +11,7 @@ import {
   TaskStatus,
   User
 } from '../models';
-import { emitToUser } from '../config/socket';
+import { emitToAll, emitToUser } from '../config/socket';
 import { sendTaskAssignedEmail } from './emailService';
 
 export interface TaskFilterOptions {
@@ -162,8 +162,8 @@ const buildWhereClause = (filters: TaskFilterOptions) => {
 };
 
 export const createTask = async (data: CreateTaskPayload, createdBy: number) => {
-  return sequelize.transaction(async (transaction) => {
-    const task = await Task.create(
+  const task = await sequelize.transaction(async (transaction) => {
+    const createdTask = await Task.create(
       {
         title: data.title,
         description: data.description ?? null,
@@ -182,7 +182,7 @@ export const createTask = async (data: CreateTaskPayload, createdBy: number) => 
 
     await TaskHistory.create(
       {
-        task_id: task.id,
+        task_id: createdTask.id,
         updated_by: createdBy,
         old_status: null,
         new_status: 'PENDING',
@@ -192,23 +192,23 @@ export const createTask = async (data: CreateTaskPayload, createdBy: number) => 
     );
 
     await createNotification(
-      task.assigned_to,
+      createdTask.assigned_to,
       'TASK_ASSIGNED',
-      `New task assigned: ${task.title}`,
-      task.id,
+      `New task assigned: ${createdTask.title}`,
+      createdTask.id,
       transaction
     );
 
     // Send email notification (outside transaction for reliability)
     try {
-      const assignedUser = await User.findByPk(task.assigned_to);
+      const assignedUser = await User.findByPk(createdTask.assigned_to);
       const creatorUser = await User.findByPk(createdBy);
 
       if (assignedUser?.email && creatorUser) {
         await sendTaskAssignedEmail(
           assignedUser.email,
-          task.title,
-          task.due_date,
+          createdTask.title,
+          createdTask.due_date,
           creatorUser.name
         );
       }
@@ -217,8 +217,11 @@ export const createTask = async (data: CreateTaskPayload, createdBy: number) => 
       // Don't fail the task creation if email fails
     }
 
-    return getTaskById(task.id, transaction);
+    return getTaskById(createdTask.id, transaction);
   });
+
+  emitToAll('task:updated', task);
+  return task;
 };
 
 export const updateTaskStatus = async (
@@ -228,26 +231,26 @@ export const updateTaskStatus = async (
   comment?: string | null,
   attachmentPath?: string | null
 ) => {
-  return sequelize.transaction(async (transaction) => {
-    const task = await Task.findByPk(taskId, { transaction });
+  const task = await sequelize.transaction(async (transaction) => {
+    const existingTask = await Task.findByPk(taskId, { transaction });
 
-    if (!task) {
+    if (!existingTask) {
       return null;
     }
 
-    const oldStatus = task.status;
-    task.status = newStatus;
-    task.completed_at = newStatus === 'COMPLETED' ? new Date() : null;
+    const oldStatus = existingTask.status;
+    existingTask.status = newStatus;
+    existingTask.completed_at = newStatus === 'COMPLETED' ? new Date() : null;
 
     if (attachmentPath !== undefined) {
-      task.attachment_path = attachmentPath;
+      existingTask.attachment_path = attachmentPath;
     }
 
-    await task.save({ transaction });
+    await existingTask.save({ transaction });
 
     await TaskHistory.create(
       {
-        task_id: task.id,
+        task_id: existingTask.id,
         updated_by: updatedBy,
         old_status: oldStatus,
         new_status: newStatus,
@@ -264,15 +267,21 @@ export const updateTaskStatus = async (
           : 'TASK_UPDATED';
 
     await createNotification(
-      task.assigned_to,
+      existingTask.assigned_to,
       notificationType,
-      `Task "${task.title}" updated to ${newStatus}`,
-      task.id,
+      `Task "${existingTask.title}" updated to ${newStatus}`,
+      existingTask.id,
       transaction
     );
 
-    return getTaskById(task.id, transaction);
+    return getTaskById(existingTask.id, transaction);
   });
+
+  if (task) {
+    emitToAll('task:updated', task);
+  }
+
+  return task;
 };
 
 export const getTasksWithFilters = async (filters: TaskFilterOptions) => {
@@ -298,58 +307,58 @@ export const getTaskById = async (id: number, transaction?: Transaction) => {
 };
 
 export const updateTask = async (taskId: number, updates: UpdateTaskPayload, updatedBy: number) => {
-  return sequelize.transaction(async (transaction) => {
-    const task = await Task.findByPk(taskId, { transaction });
+  const task = await sequelize.transaction(async (transaction) => {
+    const existingTask = await Task.findByPk(taskId, { transaction });
 
-    if (!task) {
+    if (!existingTask) {
       return null;
     }
 
-    const previousStatus = task.status;
+    const previousStatus = existingTask.status;
 
     if (updates.title !== undefined) {
-      task.title = updates.title;
+      existingTask.title = updates.title;
     }
 
     if (updates.description !== undefined) {
-      task.description = updates.description ?? null;
+      existingTask.description = updates.description ?? null;
     }
 
     if (updates.assigned_to !== undefined) {
-      task.assigned_to = updates.assigned_to;
+      existingTask.assigned_to = updates.assigned_to;
     }
 
     if (updates.department_id !== undefined) {
-      task.department_id = updates.department_id ?? null;
+      existingTask.department_id = updates.department_id ?? null;
     }
 
     if (updates.priority !== undefined) {
-      task.priority = updates.priority;
+      existingTask.priority = updates.priority;
     }
 
     if (updates.start_date !== undefined) {
-      task.start_date = new Date(updates.start_date);
+      existingTask.start_date = new Date(updates.start_date);
     }
 
     if (updates.due_date !== undefined) {
-      task.due_date = new Date(updates.due_date);
+      existingTask.due_date = new Date(updates.due_date);
     }
 
     if (updates.attachment_path !== undefined) {
-      task.attachment_path = updates.attachment_path ?? null;
+      existingTask.attachment_path = updates.attachment_path ?? null;
     }
 
     if (updates.status !== undefined) {
-      task.status = updates.status;
-      task.completed_at =
+      existingTask.status = updates.status;
+      existingTask.completed_at =
         updates.status === 'COMPLETED'
           ? updates.completed_at ?? new Date()
           : updates.completed_at ?? null;
     }
 
-    await task.save({ transaction });
+    await existingTask.save({ transaction });
 
-    const statusChanged = updates.status !== undefined && previousStatus !== task.status;
+    const statusChanged = updates.status !== undefined && previousStatus !== existingTask.status;
     const comment = updates.comment ?? null;
     const attachmentChanged = updates.attachment_path !== undefined;
     const coreFieldChanged =
@@ -364,37 +373,43 @@ export const updateTask = async (taskId: number, updates: UpdateTaskPayload, upd
     if (statusChanged || comment || attachmentChanged || coreFieldChanged) {
       await TaskHistory.create(
         {
-          task_id: task.id,
+          task_id: existingTask.id,
           updated_by: updatedBy,
-          old_status: statusChanged ? previousStatus : task.status,
-          new_status: task.status,
+          old_status: statusChanged ? previousStatus : existingTask.status,
+          new_status: existingTask.status,
           comment
         } as TaskHistory,
         { transaction }
       );
 
       const notificationType =
-        task.status === 'DELAYED'
+        existingTask.status === 'DELAYED'
           ? 'TASK_DELAYED'
-          : task.status === 'ESCALATED'
+          : existingTask.status === 'ESCALATED'
             ? 'TASK_ESCALATED'
             : 'TASK_UPDATED';
 
       await createNotification(
-        task.assigned_to,
+        existingTask.assigned_to,
         notificationType,
-        `Task "${task.title}" has been updated`,
-        task.id,
+        `Task "${existingTask.title}" has been updated`,
+        existingTask.id,
         transaction
       );
     }
 
-    return getTaskById(task.id, transaction);
+    return getTaskById(existingTask.id, transaction);
   });
+
+  if (task) {
+    emitToAll('task:updated', task);
+  }
+
+  return task;
 };
 
 export const checkAndFlagDelayedTasks = async () => {
-  return sequelize.transaction(async (transaction) => {
+  const delayedTaskCount = await sequelize.transaction(async (transaction) => {
     const delayedTasks = await Task.findAll({
       where: {
         status: {
@@ -434,6 +449,21 @@ export const checkAndFlagDelayedTasks = async () => {
 
     return delayedTasks.length;
   });
+
+  if (delayedTaskCount > 0) {
+    const delayedTasks = await Task.findAll({
+      where: {
+        status: 'DELAYED',
+        due_date: {
+          [Op.lt]: new Date()
+        }
+      }
+    });
+
+    delayedTasks.forEach((task) => emitToAll('task:updated', task));
+  }
+
+  return delayedTaskCount;
 };
 
 export const validateTaskFilters = (filters: TaskFilterOptions) => {

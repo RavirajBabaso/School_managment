@@ -10,6 +10,7 @@ import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Navigate, NavLink, Route, Routes, useNavigate } from 'react-router-dom';
 import { useSocket } from '../../hooks/useSocket';
+import { useAuth } from '../../hooks/useAuth';
 import { getChairmanDashboard } from '../../services/dashboardService';
 import AlertsEscalations from './AlertsEscalations';
 import AnnouncementsPage from './AnnouncementsPage';
@@ -676,14 +677,8 @@ function ChairmanSidebar() {
    TOPBAR
 ═══════════════════════════════════════════════════════════════════════════ */
 function ChairmanTopbar({ title, subtitle }: { title: string; subtitle?: string }) {
+  const { logout } = useAuth();
   const today = new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
-  const { data: dashboard } = useQuery({
-    queryKey: ['chairman-dashboard'],
-    queryFn: getChairmanDashboard,
-    refetchInterval: 30000
-  });
-  const alertCount = dashboard?.alerts?.length ?? dashboard?.delayedTasks ?? 0;
-  const pendingApprovals = dashboard?.pendingApprovals ?? 0;
 
   return (
     <div style={{ padding: '11px 18px', borderBottom: `0.5px solid ${C.borderTertiary}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0, background: C.bgPrimary }}>
@@ -691,10 +686,24 @@ function ChairmanTopbar({ title, subtitle }: { title: string; subtitle?: string 
         <div style={{ fontSize: 14, fontWeight: 500, color: C.textPrimary }}>{title}</div>
         <div style={{ fontSize: 11, color: C.textSecondary, marginTop: 1 }}>{subtitle ?? `${today} · All departments`}</div>
       </div>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-        <Pill variant="red">{alertCount} alerts</Pill>
-        <Pill variant="amber">{pendingApprovals} pending approvals</Pill>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
         <Avatar initials="CH" bg="#E6F1FB" color={C.blueDark} size={28} />
+        <button
+          type="button"
+          onClick={logout}
+          style={{
+            fontSize: 11,
+            color: C.blueDark,
+            border: `1px solid ${C.borderSecondary}`,
+            borderRadius: 6,
+            background: 'white',
+            padding: '6px 12px',
+            cursor: 'pointer',
+            fontWeight: 500
+          }}
+        >
+          Logout
+        </button>
       </div>
     </div>
   );
