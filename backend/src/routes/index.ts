@@ -8,6 +8,10 @@ import notificationRoutes from './notificationRoutes';
 import reportRoutes from './reportRoutes';
 import taskRoutes from './taskRoutes';
 import userRoutes from './userRoutes';
+import meetings from './meetings';
+import notifications from './notifications';
+import approvals from './approvals';
+import communications from './communications';
 
 const router = Router();
 
@@ -20,5 +24,9 @@ router.use('/notifications', notificationRoutes);
 router.use('/reports', reportRoutes);
 router.use('/tasks', taskRoutes);
 router.use('/users', userRoutes);
+router.use('/meetings', meetings);
+router.use('/notifications', notifications);
+router.use('/approvals', approvals);
+router.use('/communications', communications);
 
 export default router;

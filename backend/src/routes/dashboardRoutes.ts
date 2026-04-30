@@ -21,7 +21,7 @@ const asyncHandler = (
   };
 };
 
-router.get('/chairman', authenticate, requireRole('CHAIRMAN'), asyncHandler(getChairmanDashboard));
+router.get('/chairman', authenticate, requireRole('CHAIRMAN', 'DIRECTOR'), asyncHandler(getChairmanDashboard));
 
 router.get(
   '/dept/:deptId',

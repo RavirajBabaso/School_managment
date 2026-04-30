@@ -31,7 +31,11 @@ const departmentItems: NavItem[] = [
 ];
 
 const directorItems: NavItem[] = [
-  { color: '#185FA5', group: 'Master', label: 'Dashboard', to: '/director' }
+  { color: '#185FA5', group: 'Master', label: 'Dashboard', to: '/director' },
+  { color: '#2C7BE5', group: 'Modules', label: 'Meetings', to: '/director/meetings' },
+  { color: '#10B981', group: 'Modules', label: 'Notifications', to: '/director/notifications' },
+  { color: '#D64545', group: 'Modules', label: 'Approvals', to: '/director/approvals' },
+  { color: '#0EA5A4', group: 'Admin', label: 'Communications', to: '/director/communications' }
 ];
 
 const groups: Array<NavItem['group']> = ['Master', 'Modules', 'Admin'];

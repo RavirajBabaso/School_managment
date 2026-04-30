@@ -10,6 +10,10 @@ import ChairmanDashboard from '../pages/chairman/ChairmanDashboard';
 import TaskDetail from '../pages/chairman/TaskDetail';
 import DeptDashboard from '../pages/departments/DeptDashboard';
 import DirectorDashboard from '../pages/director/DirectorDashboard';
+import MeetingsPage from '../pages/director/MeetingsPage';
+import DirectorNotificationsPage from '../pages/director/NotificationsPage';
+import ApprovalsPage from '../pages/director/ApprovalsPage';
+import CommunicationsPage from '../pages/director/CommunicationsPage';
 import ProtectedRoute from './ProtectedRoute';
 
 function NotificationsLayout() {
@@ -41,7 +45,11 @@ function AppRouter() {
 
         <Route element={<ProtectedRoute />}>
           <Route path="/change-password" element={<ChangePassword />} />
-          <Route path="/director/*" element={<DirectorDashboard />} />
+          <Route path="/director" element={<DirectorDashboard />} />
+          <Route path="/director/meetings" element={<MeetingsPage />} />
+          <Route path="/director/notifications" element={<DirectorNotificationsPage />} />
+          <Route path="/director/approvals" element={<ApprovalsPage />} />
+          <Route path="/director/communications" element={<CommunicationsPage />} />
           <Route path="/notifications" element={<NotificationsLayout />} />
           <Route path="/task/:id" element={<TaskDetail />} />
         </Route>

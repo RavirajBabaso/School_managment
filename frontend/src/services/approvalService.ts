@@ -1,64 +1,39 @@
-import { API_ENDPOINTS } from '../constants/apiEndpoints';
 import api from './api';
+import type { Approval, ApprovalType } from '../types/meeting.types';
 
-interface Approval {
-  id: number;
-  type: 'BUDGET' | 'PURCHASE' | 'POLICY' | 'EVENT';
-  title: string;
-  details?: string;
-  amount?: string;
-  status: 'PENDING' | 'APPROVED' | 'REJECTED';
-  requested_by: number;
-  approved_by?: number;
-  created_at: string;
-  requestedBy?: {
-    id: number;
-    name: string;
-    email: string;
-    role: string;
-  };
-  approvedBy?: {
-    id: number;
-    name: string;
-  };
-}
+export const getApprovals = async (): Promise<Approval[]> => {
+  const res = await api.get('/approvals');
+  return res.data.data;
+};
 
-interface ApiResponse<T> {
-  data: T;
-  message: string;
-  success: boolean;
-}
+export const createApproval = async (payload: {
+  type: ApprovalType; priority: string;
+  title: string; justification: string;
+  amount: string; requiredBy: string;
+}): Promise<Approval> => {
+  const res = await api.post('/approvals', payload);
+  return res.data.data;
+};
 
 export const getAllApprovals = async (
   status?: 'PENDING' | 'APPROVED' | 'REJECTED',
-  type?: Approval['type']
+  type?: ApprovalType
 ): Promise<Approval[]> => {
   const params: Record<string, string> = {};
 
   if (status) params.status = status;
   if (type) params.type = type;
 
-  const response = await api.get<ApiResponse<Approval[]>>(API_ENDPOINTS.approvals.list, {
-    params: Object.keys(params).length ? params : undefined
-  });
-  return response.data.data;
+  const res = await api.get('/approvals', { params });
+  return res.data.data;
 };
 
-export const approveApproval = async (id: number): Promise<Approval> => {
-  const response = await api.put<ApiResponse<Approval>>(API_ENDPOINTS.approvals.process(id), {
-    status: 'APPROVED'
-  });
-  return response.data.data;
+export const approveApproval = async (id: number | string): Promise<Approval> => {
+  const res = await api.put(`/approvals/${id}`, { status: 'APPROVED' });
+  return res.data.data;
 };
 
-export const rejectApproval = async (id: number): Promise<Approval> => {
-  const response = await api.put<ApiResponse<Approval>>(API_ENDPOINTS.approvals.process(id), {
-    status: 'REJECTED'
-  });
-  return response.data.data;
-};
-
-export const getApprovalById = async (id: number): Promise<Approval> => {
-  const response = await api.get<ApiResponse<Approval>>(API_ENDPOINTS.approvals.detail(id));
-  return response.data.data;
+export const rejectApproval = async (id: number | string): Promise<Approval> => {
+  const res = await api.put(`/approvals/${id}`, { status: 'REJECTED' });
+  return res.data.data;
 };

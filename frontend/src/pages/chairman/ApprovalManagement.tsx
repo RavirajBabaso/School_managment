@@ -3,24 +3,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import Button from '../../components/common/Button';
 import { approveApproval, getAllApprovals, rejectApproval } from '../../services/approvalService';
-
-interface Approval {
-  id: number;
-  type: 'BUDGET' | 'PURCHASE' | 'POLICY' | 'EVENT';
-  title: string;
-  details?: string;
-  amount?: string;
-  status: 'PENDING' | 'APPROVED' | 'REJECTED';
-  requested_by: number;
-  approved_by?: number;
-  created_at: string;
-  requestedBy?: {
-    id: number;
-    name: string;
-    email: string;
-    role: string;
-  };
-}
+import type { Approval } from '../../types/meeting.types';
 
 type ApprovalTab = 'ALL' | Approval['status'];
 
@@ -62,7 +45,7 @@ function ApprovalManagement() {
   });
 
   const approveMutation = useMutation({
-    mutationFn: (id: number) => approveApproval(id),
+    mutationFn: (id: string) => approveApproval(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['approvals'] });
       queryClient.invalidateQueries({ queryKey: ['chairman-dashboard'] });
@@ -74,7 +57,7 @@ function ApprovalManagement() {
   });
 
   const rejectMutation = useMutation({
-    mutationFn: (id: number) => rejectApproval(id),
+    mutationFn: (id: string) => rejectApproval(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['approvals'] });
       queryClient.invalidateQueries({ queryKey: ['chairman-dashboard'] });
@@ -202,7 +185,7 @@ function ApprovalManagement() {
                         {requesterName} | {formatAmount(approval.amount)} | {approval.type.toLowerCase()}
                       </div>
                       <div className="text-xs text-[#8A99B0]">
-                        Submitted: {formatDate(approval.created_at)}
+                        Submitted: {formatDate(approval.createdAt)}
                       </div>
                     </div>
                   </div>

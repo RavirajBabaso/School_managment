@@ -1,14 +1,19 @@
-import React from 'react';
-import { useQuery } from '@tanstack/react-query';
+import React, { useState } from 'react';
+import { useQuery, useMutation } from '@tanstack/react-query';
 import { useSelector } from 'react-redux';
 import TaskStatusPieChart from '../../components/charts/TaskStatusPieChart';
 import TaskTable from '../../components/tables/TaskTable';
 import Badge from '../../components/common/Badge';
 import Navbar from '../../components/common/Navbar';
 import Sidebar from '../../components/common/Sidebar';
+import StatGrid from '../../components/common/StatGrid';
+import MeetingCard from '../../components/meeting/MeetingCard';
 import type { Task } from '../../types/task.types';
 import type { RootState } from '../../store';
+import type { Meeting, MeetingResponse, MeetingResponseMap } from '../../types/meeting.types';
 import api from '../../services/api';
+import { getMeetings, respondToMeeting } from '../../services/meetingService';
+import { getNotifications } from '../../services/notificationService';
 
 interface DeptDashboardData {
   myTasks: {
@@ -34,6 +39,7 @@ interface ChairmanDashboardData {
 
 function DirectorDashboard() {
   const user = useSelector((state: RootState) => state.auth.user);
+  const [meetingResponses, setMeetingResponses] = useState<MeetingResponseMap>({});
 
   const { data: deptData, isLoading: deptLoading } = useQuery({
     queryKey: ['dept-dashboard', user?.department_id],
@@ -49,6 +55,24 @@ function DirectorDashboard() {
     queryFn: async () => {
       const response = await api.get('/dashboard/chairman');
       return response.data.data as ChairmanDashboardData;
+    },
+  });
+
+  const { data: meetings = [] } = useQuery({
+    queryKey: ['meetings'],
+    queryFn: getMeetings,
+  });
+
+  const { data: notifications = [] } = useQuery({
+    queryKey: ['notifications'],
+    queryFn: getNotifications,
+  });
+
+  const respondMutation = useMutation({
+    mutationFn: ({ id, response }: { id: number; response: MeetingResponse }) =>
+      respondToMeeting(id, response),
+    onSuccess: (_, { id, response }) => {
+      setMeetingResponses(prev => ({ ...prev, [id]: response }));
     },
   });
 
@@ -76,28 +100,13 @@ function DirectorDashboard() {
           </div>
 
           {/* KPI Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-            <div className="bg-gray-50 rounded-lg p-4">
-              <h3 className="text-sm font-medium text-gray-500">My Tasks</h3>
-              <p className="text-2xl font-bold text-gray-900">{deptData.myTasks.total}</p>
-            </div>
-            <div className="bg-gray-50 rounded-lg p-4">
-              <h3 className="text-sm font-medium text-gray-500">Pending</h3>
-              <p className="text-2xl font-bold text-blue-600">{deptData.myTasks.pending}</p>
-            </div>
-            <div className="bg-gray-50 rounded-lg p-4">
-              <h3 className="text-sm font-medium text-gray-500">In Progress</h3>
-              <p className="text-2xl font-bold text-amber-600">{deptData.myTasks.inProgress}</p>
-            </div>
-            <div className="bg-gray-50 rounded-lg p-4">
-              <h3 className="text-sm font-medium text-gray-500">Completed</h3>
-              <p className="text-2xl font-bold text-green-600">{deptData.myTasks.completed}</p>
-            </div>
-            <div className="bg-gray-50 rounded-lg p-4">
-              <h3 className="text-sm font-medium text-gray-500">Delayed</h3>
-              <p className="text-2xl font-bold text-red-600">{deptData.myTasks.delayed}</p>
-            </div>
-          </div>
+          <StatGrid items={[
+            { label: 'My Tasks', value: deptData.myTasks.total, color: '#185FA5' },
+            { label: 'Pending', value: deptData.myTasks.pending, color: '#BA7517' },
+            { label: 'In Progress', value: deptData.myTasks.inProgress, color: '#BA7517' },
+            { label: 'Completed', value: deptData.myTasks.completed, color: '#3B6D11' },
+            { label: 'Delayed', value: deptData.myTasks.delayed, color: '#A32D2D' }
+          ]} />
 
           {/* Middle row */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -107,15 +116,17 @@ function DirectorDashboard() {
               <TaskStatusPieChart data={deptData.taskStatusData} />
             </div>
 
-            {/* Recent Announcements */}
+            {/* Today's Meetings */}
             <div className="bg-white rounded-lg border border-gray-200 p-4">
-              <h3 className="text-lg font-semibold mb-4">Recent Announcements</h3>
-              <div className="space-y-3">
-                {deptData.recentAnnouncements.map((announcement) => (
-                  <div key={announcement.id} className={`border-l-4 pl-4 py-2 ${announcement.sentTo === 'ALL' ? 'border-blue-500' : 'border-amber-500'}`}>
-                    <p className="text-sm font-medium">{announcement.title}</p>
-                    <p className="text-xs text-gray-500">Sent to: {announcement.sentTo} • {announcement.date}</p>
-                  </div>
+              <h3 className="text-lg font-semibold mb-4">Today's Meetings</h3>
+              <div>
+                {meetings.slice(0, 3).map(meeting => (
+                  <MeetingCard
+                    key={meeting.id}
+                    meeting={meeting}
+                    responses={meetingResponses}
+                    onRespond={(id, response) => respondMutation.mutate({ id, response })}
+                  />
                 ))}
               </div>
             </div>
