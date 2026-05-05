@@ -4,7 +4,7 @@ import Badge from '../common/Badge';
 interface TaskTableProps {
   emptyMessage?: string;
   onRowClick?: (task: Task) => void;
-  tasks: Task[];
+  tasks?: Task[];
 }
 
 const priorityStripe: Record<TaskPriority, string> = {
@@ -21,8 +21,8 @@ const statusVariant: Record<TaskStatus, 'blue' | 'amber' | 'green' | 'red' | 'gr
   ESCALATED: 'gray'
 };
 
-const formatLabel = (value: string) =>
-  value
+const formatLabel = (value?: string) =>
+  (value ?? 'UNKNOWN')
     .toLowerCase()
     .split('_')
     .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
@@ -62,7 +62,9 @@ const getCadence = (task: Task): TaskCadence => {
 };
 
 function TaskTable({ emptyMessage = 'No tasks available right now.', onRowClick, tasks }: TaskTableProps) {
-  if (tasks.length === 0) {
+  const safeTasks = Array.isArray(tasks) ? tasks : [];
+
+  if (safeTasks.length === 0) {
     return (
       <div className="flex min-h-[240px] items-center justify-center rounded-[18px] border border-[#EFF2F6] bg-white p-8 text-center">
         <div>
@@ -92,7 +94,7 @@ function TaskTable({ emptyMessage = 'No tasks available right now.', onRowClick,
             </tr>
           </thead>
           <tbody>
-            {tasks.map((task) => (
+            {safeTasks.map((task) => (
               <tr
                 className={[
                   'border-t border-[#EFF2F6] transition hover:bg-[#FBFCFE]',
@@ -116,7 +118,7 @@ function TaskTable({ emptyMessage = 'No tasks available right now.', onRowClick,
                   <div
                     className={[
                       'relative inline-flex min-w-[92px] items-center rounded-[10px] bg-[#F8F9FC] px-3 py-2 pl-4 text-xs font-semibold text-[#36506C] before:absolute before:bottom-1.5 before:left-1.5 before:top-1.5 before:w-[3px] before:rounded-full',
-                      priorityStripe[task.priority]
+                      priorityStripe[task.priority] ?? 'before:bg-[#8A99B0]'
                     ].join(' ')}
                   >
                     {formatLabel(task.priority)}
@@ -126,7 +128,7 @@ function TaskTable({ emptyMessage = 'No tasks available right now.', onRowClick,
                 <td className="px-4 py-3.5 text-sm text-[#36506C]">{formatDate(task.start_date)}</td>
                 <td className="px-4 py-3.5 text-sm text-[#36506C]">{formatDate(task.due_date)}</td>
                 <td className="px-4 py-3.5">
-                  <Badge variant={statusVariant[task.status]}>{formatLabel(task.status)}</Badge>
+                  <Badge variant={statusVariant[task.status] ?? 'gray'}>{formatLabel(task.status)}</Badge>
                 </td>
               </tr>
             ))}

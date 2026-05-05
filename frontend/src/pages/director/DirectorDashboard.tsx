@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 import TaskStatusPieChart from '../../components/charts/TaskStatusPieChart';
 import TaskTable from '../../components/tables/TaskTable';
-import Badge from '../../components/common/Badge';
 import Navbar from '../../components/common/Navbar';
 import Sidebar from '../../components/common/Sidebar';
 import StatGrid from '../../components/common/StatGrid';
@@ -12,25 +12,22 @@ import type { Task } from '../../types/task.types';
 import type { RootState } from '../../store';
 import type { Meeting, MeetingResponse, MeetingResponseMap } from '../../types/meeting.types';
 import api from '../../services/api';
+import { getDirectorModules } from '../../services/directorModuleService';
 import { getMeetings, respondToMeeting } from '../../services/meetingService';
 import { getNotifications } from '../../services/notificationService';
 
 interface DeptDashboardData {
-  myTasks: {
-    total: number;
-    pending: number;
-    inProgress: number;
-    completed: number;
-    delayed: number;
-  };
-  taskStatusData: { name: string; value: number; color: string }[];
+  myTasks: Task[];
+  pendingCount: number;
+  inProgressCount: number;
+  completedCount: number;
+  delayedCount: number;
   recentAnnouncements: {
     id: number;
     title: string;
     sentTo: string;
     date: string;
   }[];
-  myTasksList: Task[];
 }
 
 interface ChairmanDashboardData {
@@ -68,6 +65,11 @@ function DirectorDashboard() {
     queryFn: getNotifications,
   });
 
+  const { data: directorModules } = useQuery({
+    queryKey: ['director-modules'],
+    queryFn: getDirectorModules,
+  });
+
   const respondMutation = useMutation({
     mutationFn: ({ id, response }: { id: number; response: MeetingResponse }) =>
       respondToMeeting(id, response),
@@ -75,6 +77,21 @@ function DirectorDashboard() {
       setMeetingResponses(prev => ({ ...prev, [id]: response }));
     },
   });
+
+  const taskStats = {
+    total: deptData?.myTasks?.length ?? 0,
+    pending: deptData?.pendingCount ?? 0,
+    inProgress: deptData?.inProgressCount ?? 0,
+    completed: deptData?.completedCount ?? 0,
+    delayed: deptData?.delayedCount ?? 0,
+  };
+
+  const taskStatusData = [
+    { name: 'Pending', value: taskStats.pending, color: '#BA7517' },
+    { name: 'In Progress', value: taskStats.inProgress, color: '#185FA5' },
+    { name: 'Completed', value: taskStats.completed, color: '#3B6D11' },
+    { name: 'Delayed', value: taskStats.delayed, color: '#A32D2D' },
+  ];
 
   if (deptLoading || chairmanLoading || !deptData || !chairmanData) {
     return (
@@ -101,19 +118,60 @@ function DirectorDashboard() {
 
           {/* KPI Cards */}
           <StatGrid items={[
-            { label: 'My Tasks', value: deptData.myTasks.total, color: '#185FA5' },
-            { label: 'Pending', value: deptData.myTasks.pending, color: '#BA7517' },
-            { label: 'In Progress', value: deptData.myTasks.inProgress, color: '#BA7517' },
-            { label: 'Completed', value: deptData.myTasks.completed, color: '#3B6D11' },
-            { label: 'Delayed', value: deptData.myTasks.delayed, color: '#A32D2D' }
+            { label: 'My Tasks', value: taskStats.total, color: '#185FA5' },
+            { label: 'Pending', value: taskStats.pending, color: '#BA7517' },
+            { label: 'In Progress', value: taskStats.inProgress, color: '#BA7517' },
+            { label: 'Completed', value: taskStats.completed, color: '#3B6D11' },
+            { label: 'Delayed', value: taskStats.delayed, color: '#A32D2D' }
           ]} />
+
+          {directorModules ? (
+            <div className="bg-white rounded-lg border border-gray-200 p-4">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <h3 className="text-lg font-semibold">Director Module Tasks</h3>
+                  <p className="text-sm text-gray-500">
+                    {directorModules.summary.total} Director submodules tracked for academic planning, reporting, workload, events, and admissions.
+                  </p>
+                </div>
+                <Link
+                  to="/director/modules"
+                  className="rounded-md bg-[#185FA5] px-4 py-2 text-sm font-medium text-white"
+                >
+                  Open Director Module
+                </Link>
+              </div>
+              <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-5">
+                <div className="rounded-md bg-gray-50 p-3">
+                  <p className="text-xs text-gray-500">Pending</p>
+                  <p className="text-xl font-semibold text-amber-700">{directorModules.summary.pending}</p>
+                </div>
+                <div className="rounded-md bg-gray-50 p-3">
+                  <p className="text-xs text-gray-500">In Progress</p>
+                  <p className="text-xl font-semibold text-blue-700">{directorModules.summary.inProgress}</p>
+                </div>
+                <div className="rounded-md bg-gray-50 p-3">
+                  <p className="text-xs text-gray-500">Completed</p>
+                  <p className="text-xl font-semibold text-green-700">{directorModules.summary.completed}</p>
+                </div>
+                <div className="rounded-md bg-gray-50 p-3">
+                  <p className="text-xs text-gray-500">Overdue</p>
+                  <p className="text-xl font-semibold text-red-700">{directorModules.summary.overdue}</p>
+                </div>
+                <div className="rounded-md bg-gray-50 p-3">
+                  <p className="text-xs text-gray-500">Average</p>
+                  <p className="text-xl font-semibold text-[#185FA5]">{directorModules.summary.averageCompletion}%</p>
+                </div>
+              </div>
+            </div>
+          ) : null}
 
           {/* Middle row */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Task Status Pie Chart */}
             <div className="bg-white rounded-lg border border-gray-200 p-4">
               <h3 className="text-lg font-semibold mb-4">Task Status Distribution</h3>
-              <TaskStatusPieChart data={deptData.taskStatusData} />
+              <TaskStatusPieChart data={taskStatusData} />
             </div>
 
             {/* Today's Meetings */}
@@ -168,7 +226,7 @@ function DirectorDashboard() {
           {/* Task List */}
           <div className="bg-white rounded-lg border border-gray-200 p-4">
             <h3 className="text-lg font-semibold mb-4">My Tasks</h3>
-            <TaskTable tasks={deptData.myTasksList} />
+            <TaskTable tasks={deptData.myTasks} />
           </div>
         </div>
       </main>

@@ -12,6 +12,7 @@ import meetings from './meetings';
 import notifications from './notifications';
 import approvals from './approvals';
 import communications from './communications';
+import directorModules from './directorModules';
 
 const router = Router();
 
@@ -28,5 +29,6 @@ router.use('/meetings', meetings);
 router.use('/notifications', notifications);
 router.use('/approvals', approvals);
 router.use('/communications', communications);
+router.use('/director-modules', directorModules);
 
 export default router;

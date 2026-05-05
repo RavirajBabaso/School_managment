@@ -8,17 +8,18 @@ interface TaskStatusData {
 }
 
 interface TaskStatusPieChartProps {
-  data: TaskStatusData[];
+  data?: TaskStatusData[];
 }
 
 const TaskStatusPieChart: React.FC<TaskStatusPieChartProps> = ({ data }) => {
-  const totalTasks = data.reduce((sum, item) => sum + item.value, 0);
+  const chartData = Array.isArray(data) ? data.filter((item) => item.value > 0) : [];
+  const totalTasks = chartData.reduce((sum, item) => sum + item.value, 0);
 
   const renderLegend = (props: any) => {
     const { payload } = props;
     return (
       <ul className="flex justify-center space-x-4 mt-4">
-        {payload.map((entry: any, index: number) => (
+        {(payload ?? []).map((entry: any, index: number) => (
           <li key={`item-${index}`} className="flex items-center space-x-2">
             <div
               className="w-2 h-2 rounded-full"
@@ -33,9 +34,14 @@ const TaskStatusPieChart: React.FC<TaskStatusPieChartProps> = ({ data }) => {
 
   return (
     <div className="flex flex-col items-center">
+      {chartData.length === 0 ? (
+        <div className="flex h-[300px] w-full items-center justify-center rounded-lg bg-gray-50 text-sm text-gray-500">
+          No task status data available.
+        </div>
+      ) : (
       <PieChart width={300} height={300}>
         <Pie
-          data={data}
+          data={chartData}
           cx="50%"
           cy="50%"
           innerRadius={60}
@@ -43,7 +49,7 @@ const TaskStatusPieChart: React.FC<TaskStatusPieChartProps> = ({ data }) => {
           paddingAngle={5}
           dataKey="value"
         >
-          {data.map((entry, index) => (
+          {chartData.map((entry, index) => (
             <Cell key={`cell-${index}`} fill={entry.color} />
           ))}
         </Pie>
@@ -66,6 +72,7 @@ const TaskStatusPieChart: React.FC<TaskStatusPieChartProps> = ({ data }) => {
           Total Tasks
         </text>
       </PieChart>
+      )}
       <Legend content={renderLegend} />
     </div>
   );

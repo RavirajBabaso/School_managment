@@ -14,6 +14,8 @@ import MeetingsPage from '../pages/director/MeetingsPage';
 import DirectorNotificationsPage from '../pages/director/NotificationsPage';
 import ApprovalsPage from '../pages/director/ApprovalsPage';
 import CommunicationsPage from '../pages/director/CommunicationsPage';
+import AcademicOperationsPage from '../pages/director/AcademicOperationsPage';
+import ReportsPage from '../pages/director/ReportsPage';
 import ProtectedRoute from './ProtectedRoute';
 
 function NotificationsLayout() {
@@ -50,6 +52,10 @@ function AppRouter() {
           <Route path="/director/notifications" element={<DirectorNotificationsPage />} />
           <Route path="/director/approvals" element={<ApprovalsPage />} />
           <Route path="/director/communications" element={<CommunicationsPage />} />
+          <Route path="/director/academic-operations" element={<AcademicOperationsPage />} />
+          <Route path="/director/modules" element={<AcademicOperationsPage />} />
+          <Route path="/director/academic-modules" element={<AcademicOperationsPage />} />
+          <Route path="/director/reports" element={<ReportsPage />} />
           <Route path="/notifications" element={<NotificationsLayout />} />
           <Route path="/task/:id" element={<TaskDetail />} />
         </Route>

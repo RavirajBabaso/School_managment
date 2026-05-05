@@ -5,6 +5,35 @@ export type NotifSub = 'new' | 'reminder' | 'reschedule' | 'cancel';
 export type ApprovalStatus = 'PENDING' | 'APPROVED' | 'REJECTED';
 export type ApprovalType = 'BUDGET' | 'PURCHASE' | 'POLICY' | 'EVENT';
 export type CommType = 'broadcast' | 'dept' | 'chairman';
+export type DirectorModuleStatus = 'PENDING' | 'IN_PROGRESS' | 'COMPLETED' | 'OVERDUE';
+export type DirectorModulePriority = 'High' | 'Medium' | 'Low';
+
+export interface DirectorModuleRecord {
+  id: number;
+  title: string;
+  owner: string;
+  dueDate: string;
+  status: DirectorModuleStatus;
+  priority: DirectorModulePriority;
+  completionPct: number;
+  remarks: string;
+  updatedAt: string;
+}
+
+export interface DirectorModule {
+  key: string;
+  code: string;
+  name: string;
+  category: string;
+  submodule: string;
+  cadence: string;
+  description: string;
+  ownerRole: string;
+  nextDueDate: string;
+  status: DirectorModuleStatus;
+  completionPct: number;
+  records: DirectorModuleRecord[];
+}
 
 export interface Meeting {
   id: number;
@@ -408,3 +437,127 @@ export const COMMUNICATIONS: Communication[] = [
     tagColor: '#D97706',
   },
 ];
+
+const moduleSeed: Array<Omit<DirectorModule, 'records'>> = [
+  {
+    key: 'academic-ppt-submission',
+    code: 'A',
+    name: 'Academic PPT Submission',
+    category: 'Academics',
+    submodule: 'PPT Submission',
+    cadence: 'Every month 1st Tuesday',
+    description: 'Collect, review, and track monthly academic PPT submissions.',
+    ownerRole: 'Academic Coordinator',
+    nextDueDate: '2026-05-05',
+    status: 'IN_PROGRESS',
+    completionPct: 72,
+  },
+  {
+    key: 'academic-registers',
+    code: 'B',
+    name: 'Checking all Academic Registers',
+    category: 'Academics',
+    submodule: 'Academic Registers',
+    cadence: 'Weekly',
+    description: 'Register audit tracker for classes, subjects, attendance, and lesson notes.',
+    ownerRole: 'Section Heads',
+    nextDueDate: '2026-05-08',
+    status: 'IN_PROGRESS',
+    completionPct: 64,
+  },
+  {
+    key: 'syllabus-status',
+    code: 'C',
+    name: 'Academic Syllabus Status Reporting',
+    category: 'Academics',
+    submodule: 'Syllabus Reporting',
+    cadence: 'Monthly',
+    description: 'Monthly syllabus completion and variance reporting.',
+    ownerRole: 'HOD Academics',
+    nextDueDate: '2026-05-31',
+    status: 'PENDING',
+    completionPct: 58,
+  },
+  {
+    key: 'yearly-academic-plan',
+    code: 'D',
+    name: 'Create Yearly Academic Plan',
+    category: 'Planning',
+    submodule: 'Yearly Academic Plan',
+    cadence: 'Yearly',
+    description: 'Annual academic calendar, milestones, reviews, and major deliverables.',
+    ownerRole: 'Director Office',
+    nextDueDate: '2026-06-15',
+    status: 'IN_PROGRESS',
+    completionPct: 46,
+  },
+  {
+    key: 'academic-time-table',
+    code: 'E',
+    name: 'Create Academic Time Table',
+    category: 'Planning',
+    submodule: 'Academic Time Table',
+    cadence: 'Term wise',
+    description: 'Class, teacher, room, and period timetable planning.',
+    ownerRole: 'Timetable Committee',
+    nextDueDate: '2026-06-01',
+    status: 'IN_PROGRESS',
+    completionPct: 54,
+  },
+  {
+    key: 'teacher-workload',
+    code: 'F',
+    name: 'Teachers Workload Status',
+    category: 'Staff',
+    submodule: 'Teacher Workload',
+    cadence: 'Monthly',
+    description: 'Teacher workload, substitutions, free periods, and balancing tracker.',
+    ownerRole: 'HR and Academics',
+    nextDueDate: '2026-05-20',
+    status: 'PENDING',
+    completionPct: 40,
+  },
+  {
+    key: 'event-calendar',
+    code: 'G',
+    name: 'Event Calendar',
+    category: 'Events',
+    submodule: 'Event Calendar',
+    cadence: 'Monthly',
+    description: 'Academic, cultural, sports, committee, and parent-facing event calendar.',
+    ownerRole: 'Event Committee',
+    nextDueDate: '2026-05-10',
+    status: 'IN_PROGRESS',
+    completionPct: 68,
+  },
+  {
+    key: 'admission-status',
+    code: 'H',
+    name: 'Admission Status',
+    category: 'Admissions',
+    submodule: 'Admission Status',
+    cadence: 'Weekly',
+    description: 'Admission inquiry, application, conversion, and seat availability tracker.',
+    ownerRole: 'Admission Office',
+    nextDueDate: '2026-05-07',
+    status: 'IN_PROGRESS',
+    completionPct: 76,
+  },
+];
+
+export const DIRECTOR_MODULES: DirectorModule[] = moduleSeed.map((module, index) => ({
+  ...module,
+  records: [
+    {
+      id: index * 10 + 1,
+      title: `${module.name} - current cycle`,
+      owner: module.ownerRole,
+      dueDate: module.nextDueDate,
+      status: module.status,
+      priority: module.status === 'OVERDUE' ? 'High' : 'Medium',
+      completionPct: module.completionPct,
+      remarks: module.description,
+      updatedAt: '2026-05-05T09:00:00.000Z',
+    },
+  ],
+}));
