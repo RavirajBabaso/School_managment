@@ -66,7 +66,7 @@ function TaskUpdates() {
   });
 
   return (
-    <div className="flex min-h-screen bg-[#F1F4F9] text-[#1E293B]">
+    <div className="flex min-h-screen bg-[var(--bg-secondary)] text-[var(--text-primary)]">
       <Sidebar />
       <main className="min-w-0 flex-1">
         <Navbar />
@@ -74,24 +74,24 @@ function TaskUpdates() {
           {/* Header */}
           <div>
             <h1 className="text-2xl font-semibold">Task Updates</h1>
-            <p className="text-gray-500 text-sm mt-1">
+            <p className="text-[var(--text-secondary)] text-sm mt-1">
               Update the status of your assigned tasks, add comments and attachments.
             </p>
           </div>
 
           {/* Filters */}
-          <div className="bg-white rounded-lg border border-gray-200 p-4 flex flex-wrap gap-4 items-center">
+          <div className="bg-[var(--card-bg)] rounded-lg border border-[var(--border-color)] p-4 flex flex-wrap gap-4 items-center">
             <input
               type="text"
               placeholder="Search tasks…"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="border border-gray-300 rounded-md px-3 py-2 text-sm w-60 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="border border-[var(--border-color)] rounded-md px-3 py-2 text-sm w-60 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             <select
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value as TaskStatus | 'ALL')}
-              className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="border border-[var(--border-color)] rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="ALL">All Statuses</option>
               {STATUS_OPTIONS.map((s) => (
@@ -100,16 +100,16 @@ function TaskUpdates() {
               <option value="DELAYED">Delayed</option>
               <option value="ESCALATED">Escalated</option>
             </select>
-            <span className="text-sm text-gray-500 ml-auto">
+            <span className="text-sm text-[var(--text-secondary)] ml-auto">
               {filtered.length} task{filtered.length !== 1 ? 's' : ''}
             </span>
           </div>
 
           {/* Task Cards */}
           {isLoading ? (
-            <div className="text-center py-12 text-gray-500">Loading tasks…</div>
+            <div className="text-center py-12 text-[var(--text-secondary)]">Loading tasks…</div>
           ) : filtered.length === 0 ? (
-            <div className="text-center py-12 text-gray-400">No tasks found.</div>
+            <div className="text-center py-12 text-[var(--text-secondary)]">No tasks found.</div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
               {filtered.map((task) => {
@@ -118,7 +118,7 @@ function TaskUpdates() {
                 return (
                   <div
                     key={task.id}
-                    className="bg-white rounded-lg border border-gray-200 p-5 flex flex-col gap-3 hover:shadow-md transition-shadow"
+                    className="bg-[var(--card-bg)] rounded-lg border border-[var(--border-color)] p-5 flex flex-col gap-3 hover:shadow-md transition-shadow"
                   >
                     {/* Title + priority */}
                     <div className="flex items-start justify-between gap-2">
@@ -130,7 +130,7 @@ function TaskUpdates() {
 
                     {/* Description */}
                     {task.description && (
-                      <p className="text-xs text-gray-500 line-clamp-2">{task.description}</p>
+                      <p className="text-xs text-[var(--text-secondary)] line-clamp-2">{task.description}</p>
                     )}
 
                     {/* Status */}
@@ -144,8 +144,8 @@ function TaskUpdates() {
                     </div>
 
                     {/* Dates */}
-                    <div className="text-xs text-gray-400 space-y-0.5">
-                      <div>Start: <span className="text-gray-600">{formatDate(task.start_date)}</span></div>
+                    <div className="text-xs text-[var(--text-secondary)] space-y-0.5">
+                      <div>Start: <span className="text-[var(--text-secondary)]">{formatDate(task.start_date)}</span></div>
                       <div className={overdue ? 'text-red-500 font-medium' : ''}>
                         Due: <span>{formatDate(task.due_date)}</span>
                         {days !== null && task.status !== 'COMPLETED' && (
@@ -187,7 +187,7 @@ function TaskUpdates() {
         >
           <div className="space-y-4">
             {/* Current status */}
-            <div className="text-sm text-gray-500">
+            <div className="text-sm text-[var(--text-secondary)]">
               Current status:{' '}
               <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${getStatusBadgeClass(selectedTask.status)}`}>
                 {formatStatus(selectedTask.status)}
@@ -196,11 +196,11 @@ function TaskUpdates() {
 
             {/* New status */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">New Status *</label>
+              <label className="block text-sm font-medium text-[var(--text-primary)] mb-1">New Status *</label>
               <select
                 value={newStatus}
                 onChange={(e) => setNewStatus(e.target.value as TaskStatus)}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-[var(--border-color)] rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="IN_PROGRESS">In Progress</option>
                 <option value="COMPLETED">Completed</option>
@@ -210,23 +210,23 @@ function TaskUpdates() {
 
             {/* Comment */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Comment</label>
+              <label className="block text-sm font-medium text-[var(--text-primary)] mb-1">Comment</label>
               <textarea
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
                 rows={3}
                 placeholder="Add a progress note or remark…"
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                className="w-full border border-[var(--border-color)] rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
               />
             </div>
 
             {/* Attachment */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Attachment (optional)</label>
+              <label className="block text-sm font-medium text-[var(--text-primary)] mb-1">Attachment (optional)</label>
               <input
                 type="file"
                 onChange={(e) => setAttachmentFile(e.target.files?.[0] ?? null)}
-                className="text-sm text-gray-500 file:mr-4 file:py-1.5 file:px-3 file:rounded file:border-0 file:text-sm file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                className="text-sm text-[var(--text-secondary)] file:mr-4 file:py-1.5 file:px-3 file:rounded file:border-0 file:text-sm file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
               />
             </div>
 
@@ -239,7 +239,7 @@ function TaskUpdates() {
             <div className="flex justify-end gap-3 pt-2">
               <button
                 onClick={() => setSelectedTask(null)}
-                className="px-4 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50"
+                className="px-4 py-2 text-sm border border-[var(--border-color)] rounded-md hover:bg-[var(--surface)]"
               >
                 Cancel
               </button>

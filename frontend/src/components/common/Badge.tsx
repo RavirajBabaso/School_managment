@@ -9,11 +9,11 @@ interface BadgeProps {
 }
 
 const badgeVariants: Record<BadgeVariant, string> = {
-  blue: 'border-[#D7E7F7] bg-[#EAF3FC] text-[#185FA5]',
-  red: 'border-[#F5D5D4] bg-[#FFF1F1] text-[#C13F3A]',
-  amber: 'border-[#F6E0AF] bg-[#FFF7E1] text-[#A86A00]',
-  green: 'border-[#CFE8D8] bg-[#EDF9F1] text-[#2E7D4F]',
-  gray: 'border-[#E2E8F0] bg-[#F8F9FC] text-[#5B6E8C]'
+  blue: 'border-blue-200/70 bg-blue-100 text-blue-700 dark:border-blue-300/30 dark:bg-blue-500/10 dark:text-blue-200',
+  red: 'border-red-200/70 bg-red-100 text-red-700 dark:border-red-300/30 dark:bg-red-500/10 dark:text-red-200',
+  amber: 'border-amber-200/70 bg-amber-100 text-amber-800 dark:border-amber-300/30 dark:bg-amber-500/10 dark:text-amber-200',
+  green: 'border-emerald-200/70 bg-emerald-100 text-emerald-700 dark:border-emerald-300/30 dark:bg-emerald-500/10 dark:text-emerald-200',
+  gray: 'border-slate-300/70 bg-slate-100 text-slate-700 dark:border-slate-500/30 dark:bg-slate-800/70 dark:text-slate-200'
 };
 
 function Badge({ children, className = '', variant = 'gray' }: BadgeProps) {

@@ -39,7 +39,7 @@ function DeptDashboard() {
   useSocket();
 
   return (
-    <div className="flex min-h-screen bg-[#F1F4F9] text-[#1E293B]">
+    <div className="flex min-h-screen bg-[var(--bg-secondary)] text-[var(--text-primary)]">
       <Sidebar />
       <main className="min-w-0 flex-1">
         <Navbar />

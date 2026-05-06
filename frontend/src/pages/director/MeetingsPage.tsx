@@ -84,7 +84,7 @@ const MeetingsPage: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen bg-[#F1F4F9] text-[#1E293B]">
+      <div className="flex min-h-screen bg-[var(--bg-secondary)] text-[var(--text-primary)]">
         <Sidebar />
         <main className="min-w-0 flex-1">
           <Navbar />
@@ -97,14 +97,14 @@ const MeetingsPage: React.FC = () => {
   }
 
   return (
-    <div className="flex min-h-screen bg-[#F1F4F9] text-[#1E293B]">
+    <div className="flex min-h-screen bg-[var(--bg-secondary)] text-[var(--text-primary)]">
       <Sidebar />
       <main className="min-w-0 flex-1">
         <Navbar />
         <div className="p-6 space-y-6">
           <StatGrid items={stats} />
 
-          <div className="flex border-b border-gray-200 mb-4">
+          <div className="flex border-b border-[var(--border-color)] mb-4">
             {(['ALL', 'PENDING', 'CONFIRMED', 'WEEK'] as TabType[]).map(tab => (
               <button
                 key={tab}
@@ -112,7 +112,7 @@ const MeetingsPage: React.FC = () => {
                 className={`px-4 py-2 text-sm font-medium ${
                   activeTab === tab
                     ? 'border-b-2 border-blue-600 text-blue-600'
-                    : 'text-gray-500 hover:text-gray-700'
+                    : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
                 }`}
               >
                 {tab === 'ALL' ? 'All Meetings' : tab === 'WEEK' ? 'This Week' : tab}
@@ -120,7 +120,7 @@ const MeetingsPage: React.FC = () => {
             ))}
           </div>
 
-          <div className="bg-white rounded-lg border border-gray-200 p-4">
+          <div className="bg-[var(--card-bg)] rounded-lg border border-[var(--border-color)] p-4">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-semibold">
                 {activeTab === 'ALL' ? 'All Meetings' : activeTab === 'WEEK' ? 'This Week' : activeTab}
@@ -156,49 +156,49 @@ const MeetingsPage: React.FC = () => {
       <Modal isOpen={showScheduleModal} onClose={() => setShowScheduleModal(false)} title="Schedule Meeting">
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
+            <label className="block text-sm font-medium text-[var(--text-primary)] mb-1">Title</label>
             <input
               type="text"
               value={scheduleForm.title}
               onChange={(e) => setScheduleForm(prev => ({ ...prev, title: e.target.value }))}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-[var(--border-color)] rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
             />
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
+              <label className="block text-sm font-medium text-[var(--text-primary)] mb-1">Date</label>
               <input
                 type="date"
                 value={scheduleForm.date}
                 onChange={(e) => setScheduleForm(prev => ({ ...prev, date: e.target.value }))}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-[var(--border-color)] rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Time</label>
+              <label className="block text-sm font-medium text-[var(--text-primary)] mb-1">Time</label>
               <input
                 type="time"
                 value={scheduleForm.time}
                 onChange={(e) => setScheduleForm(prev => ({ ...prev, time: e.target.value }))}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-[var(--border-color)] rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
               />
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Venue</label>
+            <label className="block text-sm font-medium text-[var(--text-primary)] mb-1">Venue</label>
             <input
               type="text"
               value={scheduleForm.venue}
               onChange={(e) => setScheduleForm(prev => ({ ...prev, venue: e.target.value }))}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-[var(--border-color)] rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Attendees</label>
+            <label className="block text-sm font-medium text-[var(--text-primary)] mb-1">Attendees</label>
             <select
               value={scheduleForm.attendees}
               onChange={(e) => setScheduleForm(prev => ({ ...prev, attendees: e.target.value }))}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-[var(--border-color)] rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
             >
               <option value="">Select attendees</option>
               <option value="All Staff">All Staff</option>
@@ -207,18 +207,18 @@ const MeetingsPage: React.FC = () => {
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Agenda</label>
+            <label className="block text-sm font-medium text-[var(--text-primary)] mb-1">Agenda</label>
             <textarea
               value={scheduleForm.agenda}
               onChange={(e) => setScheduleForm(prev => ({ ...prev, agenda: e.target.value }))}
               rows={3}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-[var(--border-color)] rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
             />
           </div>
           <div className="flex justify-end gap-2">
             <button
               onClick={() => setShowScheduleModal(false)}
-              className="border border-gray-300 text-gray-700 px-4 py-2 rounded-md text-sm hover:bg-gray-50"
+              className="border border-[var(--border-color)] text-[var(--text-secondary)] px-4 py-2 rounded-md text-sm hover:bg-[var(--surface)]"
             >
               Cancel
             </button>

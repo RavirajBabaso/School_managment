@@ -41,7 +41,7 @@ function ProtectedRoute({ allowedRoles }: ProtectedRouteProps) {
 
   if (isRestoring) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#F1F4F9] text-sm text-[#5B6E8C]">
+      <div className="flex min-h-screen items-center justify-center bg-[var(--bg-secondary)] text-sm text-[var(--text-secondary)]">
         Restoring session...
       </div>
     );

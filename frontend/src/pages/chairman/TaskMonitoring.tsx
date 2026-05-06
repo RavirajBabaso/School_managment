@@ -77,7 +77,7 @@ function TaskMonitoring() {
   };
 
   return (
-    <section className="space-y-5 p-5 bg-[#F1F4F9] min-h-screen">
+    <section className="space-y-5 p-5 bg-[var(--bg-secondary)] min-h-screen text-[var(--text-primary)]">
 
       {/* ================= KPI CARDS ================= */}
       <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">

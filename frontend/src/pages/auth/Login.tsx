@@ -34,14 +34,14 @@ function Login() {
   };
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-[#F1F4F9] px-4 py-10 text-[#1E293B]">
-      <section className="w-full max-w-[420px] rounded-lg border border-[#EFF2F6] bg-[#FFFFFF] px-8 py-9 shadow-sm">
+    <main className="flex min-h-screen items-center justify-center bg-[var(--bg-secondary)] px-4 py-10 text-[var(--text-primary)]">
+      <section className="w-full max-w-[420px] rounded-lg border border-[var(--border-color)] bg-[var(--card-bg)] px-8 py-9 shadow-sm">
         <div className="flex flex-col items-center text-center">
           <div className="flex h-[30px] w-[30px] items-center justify-center rounded-md bg-[#185FA5] text-[11px] font-bold text-white">
             EP
           </div>
-          <h1 className="mt-4 text-2xl font-bold leading-8 text-[#1E293B]">EduTask Pro</h1>
-          <p className="mt-1 text-sm font-medium text-[#5B6E8C]">School Staff Task Management</p>
+          <h1 className="mt-4 text-2xl font-bold leading-8 text-[var(--text-primary)]">EduTask Pro</h1>
+          <p className="mt-1 text-sm font-medium text-[var(--text-secondary)]">School Staff Task Management</p>
         </div>
 
         <form onSubmit={handleSubmit} className="mt-8">

@@ -85,7 +85,7 @@ const NotificationsPage: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen bg-[#F1F4F9] text-[#1E293B]">
+      <div className="flex min-h-screen bg-[var(--bg-secondary)] text-[var(--text-primary)]">
         <Sidebar />
         <main className="min-w-0 flex-1">
           <Navbar />
@@ -98,14 +98,14 @@ const NotificationsPage: React.FC = () => {
   }
 
   return (
-    <div className="flex min-h-screen bg-[#F1F4F9] text-[#1E293B]">
+    <div className="flex min-h-screen bg-[var(--bg-secondary)] text-[var(--text-primary)]">
       <Sidebar />
       <main className="min-w-0 flex-1">
         <Navbar />
         <div className="p-6 space-y-6">
           <StatGrid items={stats} />
 
-          <div className="flex border-b border-gray-200 mb-4">
+          <div className="flex border-b border-[var(--border-color)] mb-4">
             {(['all', 'meeting', 'task', 'delay', 'unread'] as TabType[]).map(tab => (
               <button
                 key={tab}
@@ -113,7 +113,7 @@ const NotificationsPage: React.FC = () => {
                 className={`px-4 py-2 text-sm font-medium ${
                   activeTab === tab
                     ? 'border-b-2 border-blue-600 text-blue-600'
-                    : 'text-gray-500 hover:text-gray-700'
+                    : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
                 }`}
               >
                 {tab === 'all' ? 'All' : tab.charAt(0).toUpperCase() + tab.slice(1)}
@@ -121,7 +121,7 @@ const NotificationsPage: React.FC = () => {
             ))}
             <button
               onClick={handleMarkAllRead}
-              className="px-4 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 ml-auto"
+              className="px-4 py-2 text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] ml-auto"
             >
               Mark All Read
             </button>
@@ -130,7 +130,7 @@ const NotificationsPage: React.FC = () => {
               className={`px-4 py-2 text-sm font-medium ${
                 activeTab === 'settings'
                   ? 'border-b-2 border-blue-600 text-blue-600'
-                  : 'text-gray-500 hover:text-gray-700'
+                  : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
               }`}
             >
               Settings
@@ -138,12 +138,12 @@ const NotificationsPage: React.FC = () => {
           </div>
 
           {activeTab === 'settings' ? (
-            <div className="bg-white rounded-lg border border-gray-200 p-4">
+            <div className="bg-[var(--card-bg)] rounded-lg border border-[var(--border-color)] p-4">
               <h3 className="text-lg font-semibold mb-4">Notification Preferences</h3>
 
               <div className="space-y-4">
                 <div>
-                  <h4 className="text-sm font-medium text-gray-700 mb-2">Meeting Notifications</h4>
+                  <h4 className="text-sm font-medium text-[var(--text-primary)] mb-2">Meeting Notifications</h4>
                   <div className="space-y-2">
                     {preferences.filter(p => p.key.startsWith('meeting_')).map(pref => (
                       <div key={pref.key} className="flex items-center justify-between">
@@ -158,7 +158,7 @@ const NotificationsPage: React.FC = () => {
                 </div>
 
                 <div>
-                  <h4 className="text-sm font-medium text-gray-700 mb-2">Task Notifications</h4>
+                  <h4 className="text-sm font-medium text-[var(--text-primary)] mb-2">Task Notifications</h4>
                   <div className="space-y-2">
                     {preferences.filter(p => p.key.startsWith('task_')).map(pref => (
                       <div key={pref.key} className="flex items-center justify-between">
@@ -173,7 +173,7 @@ const NotificationsPage: React.FC = () => {
                 </div>
 
                 <div>
-                  <h4 className="text-sm font-medium text-gray-700 mb-2">Delivery</h4>
+                  <h4 className="text-sm font-medium text-[var(--text-primary)] mb-2">Delivery</h4>
                   <div className="space-y-2">
                     {preferences.filter(p => !p.key.startsWith('meeting_') && !p.key.startsWith('task_')).map(pref => (
                       <div key={pref.key} className="flex items-center justify-between">
@@ -195,7 +195,7 @@ const NotificationsPage: React.FC = () => {
               </div>
             </div>
           ) : (
-            <div className="bg-white rounded-lg border border-gray-200 p-4">
+            <div className="bg-[var(--card-bg)] rounded-lg border border-[var(--border-color)] p-4">
               <h3 className="text-lg font-semibold mb-4">
                 {activeTab === 'all' ? 'All Notifications' : activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}
               </h3>

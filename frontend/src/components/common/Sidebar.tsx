@@ -6,47 +6,47 @@ import Badge from './Badge';
 interface NavItem {
   badge?: { tone: 'amber' | 'red'; value: number };
   color: string;
-  group: 'Admin' | 'Master' | 'Modules';
+  group: 'Overview' | 'Meetings' | 'Approvals' | 'Reports' | 'Inbox' | 'Actions';
   label: string;
   to: string;
 }
 
 const chairmanItems: NavItem[] = [
-  { color: '#185FA5', group: 'Master', label: 'Dashboard', to: '/chairman' },
-  { color: '#2C7BE5', group: 'Modules', label: 'Task Assignment', to: '/chairman/task-assignment' },
-  { color: '#10B981', group: 'Modules', label: 'Task Monitor', to: '/chairman/task-monitor' },
-  { color: '#D64545', group: 'Modules', label: 'Alerts', to: '/chairman/alerts' },
-  { color: '#D89B17', group: 'Modules', label: 'Approvals', to: '/chairman/approvals' },
-  { color: '#0EA5A4', group: 'Admin', label: 'Announcements', to: '/chairman/announcements' },
-  { color: '#F97316', group: 'Admin', label: 'User Management', to: '/chairman/users' },
-  { color: '#2563EB', group: 'Admin', label: 'Performance', to: '/chairman/performance' }
+  { color: '#185FA5', group: 'Overview', label: 'Dashboard', to: '/chairman' },
+  { color: '#2C7BE5', group: 'Actions', label: 'Task Assignment', to: '/chairman/task-assignment' },
+  { color: '#10B981', group: 'Actions', label: 'Task Monitor', to: '/chairman/task-monitor' },
+  { color: '#D64545', group: 'Approvals', label: 'Alerts', to: '/chairman/alerts' },
+  { color: '#D89B17', group: 'Approvals', label: 'Approvals', to: '/chairman/approvals' },
+  { color: '#0EA5A4', group: 'Inbox', label: 'Announcements', to: '/chairman/announcements' },
+  { color: '#F97316', group: 'Reports', label: 'User Management', to: '/chairman/users' },
+  { color: '#2563EB', group: 'Reports', label: 'Performance', to: '/chairman/performance' }
 ];
 
 const departmentItems: NavItem[] = [
-  { color: '#185FA5', group: 'Master', label: 'Dashboard', to: '/department' },
-  { color: '#2C7BE5', group: 'Modules', label: 'My Tasks', to: '/department/my-tasks' },
-  { color: '#D64545', group: 'Modules', label: 'Notifications', to: '/department/notifications' },
-  { color: '#0EA5A4', group: 'Admin', label: 'Announcements', to: '/department/announcements' }
+  { color: '#185FA5', group: 'Overview', label: 'Dashboard', to: '/department' },
+  { color: '#2C7BE5', group: 'Actions', label: 'My Tasks', to: '/department/my-tasks' },
+  { color: '#D64545', group: 'Inbox', label: 'Notifications', to: '/department/notifications' },
+  { color: '#0EA5A4', group: 'Inbox', label: 'Announcements', to: '/department/announcements' }
 ];
 
 const directorItems: NavItem[] = [
-  { color: '#185FA5', group: 'Master', label: 'Dashboard', to: '/director' },
-  { color: '#7C3AED', group: 'Modules', label: 'Academic PPT Submission', to: '/director/modules?module=academic-ppt-submission' },
-  { color: '#7C3AED', group: 'Modules', label: 'Checking all Academic Registers', to: '/director/modules?module=academic-registers' },
-  { color: '#7C3AED', group: 'Modules', label: 'Academic Syllabus Status Reporting', to: '/director/modules?module=syllabus-status' },
-  { color: '#7C3AED', group: 'Modules', label: 'Create Yearly Academic Plan', to: '/director/modules?module=yearly-academic-plan' },
-  { color: '#7C3AED', group: 'Modules', label: 'Create Academic Time Table', to: '/director/modules?module=academic-time-table' },
-  { color: '#7C3AED', group: 'Modules', label: 'Teachers Workload Status', to: '/director/modules?module=teacher-workload' },
-  { color: '#7C3AED', group: 'Modules', label: 'Event Calendar', to: '/director/modules?module=event-calendar' },
-  { color: '#7C3AED', group: 'Modules', label: 'Admission Status', to: '/director/modules?module=admission-status' },
-  { color: '#7C3AED', group: 'Modules', label: 'MIS Reports', to: '/director/reports' },
-  { color: '#2C7BE5', group: 'Modules', label: 'Meetings', to: '/director/meetings' },
-  { color: '#10B981', group: 'Modules', label: 'Notifications', to: '/director/notifications' },
-  { color: '#D64545', group: 'Modules', label: 'Approvals', to: '/director/approvals' },
-  { color: '#0EA5A4', group: 'Admin', label: 'Communications', to: '/director/communications' }
+  { color: '#185FA5', group: 'Overview', label: 'Dashboard', to: '/director' },
+  { color: '#2563EB', group: 'Reports', label: 'MIS Reports', to: '/director/reports' },
+  { color: '#2C7BE5', group: 'Meetings', label: 'Meetings', to: '/director/meetings' },
+  { color: '#D64545', group: 'Approvals', label: 'Approvals', to: '/director/approvals' },
+  { color: '#10B981', group: 'Inbox', label: 'Notifications', to: '/director/notifications' },
+  { color: '#0EA5A4', group: 'Inbox', label: 'Communications', to: '/director/communications' },
+  { color: '#7C3AED', group: 'Actions', label: 'Academic PPT Submission', to: '/director/modules?module=academic-ppt-submission' },
+  { color: '#7C3AED', group: 'Actions', label: 'Checking all Academic Registers', to: '/director/modules?module=academic-registers' },
+  { color: '#7C3AED', group: 'Actions', label: 'Academic Syllabus Status Reporting', to: '/director/modules?module=syllabus-status' },
+  { color: '#7C3AED', group: 'Actions', label: 'Create Yearly Academic Plan', to: '/director/modules?module=yearly-academic-plan' },
+  { color: '#7C3AED', group: 'Actions', label: 'Create Academic Time Table', to: '/director/modules?module=academic-time-table' },
+  { color: '#7C3AED', group: 'Actions', label: 'Teachers Workload Status', to: '/director/modules?module=teacher-workload' },
+  { color: '#7C3AED', group: 'Actions', label: 'Event Calendar', to: '/director/modules?module=event-calendar' },
+  { color: '#7C3AED', group: 'Actions', label: 'Admission Status', to: '/director/modules?module=admission-status' }
 ];
 
-const groups: Array<NavItem['group']> = ['Master', 'Modules', 'Admin'];
+const groups = ['Overview', 'Meetings', 'Approvals', 'Reports', 'Inbox', 'Actions'] as const;
 
 function getInitials(name?: string) {
   if (!name) {
@@ -102,22 +102,16 @@ function Sidebar() {
   };
 
   return (
-    <aside className="flex h-screen w-[196px] shrink-0 flex-col border-r-[0.5px] border-[#EFF2F6] bg-[#F8F9FC]">
-      <div className="border-b border-b-[0.5px] border-[#EFF2F6] px-4 py-4">
-        <div className="flex items-center gap-3">
-          <div className="flex h-[30px] w-[30px] items-center justify-center rounded-[10px] bg-[#185FA5] text-xs font-semibold text-white">
-            ET
-          </div>
-          <div className="min-w-0">
-            <p className="truncate text-[14px] font-semibold text-[#1E293B]">EduTask Pro</p>
-            <p className="truncate text-[11px] text-[#8A99B0]">
-              {user ? ROLE_LABELS[user.role] : 'Master access'}
-            </p>
-          </div>
+    <aside className="flex h-screen w-[240px] shrink-0 flex-col border-r border-[var(--border-color)] bg-[var(--panel-bg)] text-[var(--text-primary)]">
+      <div className="border-b border-[var(--border-color)] px-5 py-5">
+        <div className="flex flex-col gap-1">
+          <span className="text-[10px] uppercase tracking-[0.28em] text-[var(--text-secondary)]">School Director</span>
+          <h2 className="text-[15px] font-semibold text-[var(--text-primary)]">Executive Dashboard</h2>
+          <p className="text-[11px] text-[var(--text-secondary)]">Strong oversight for school operations and approvals.</p>
         </div>
       </div>
 
-      <nav className="flex-1 overflow-y-auto px-3 py-4">
+      <nav className="flex-1 overflow-y-auto px-5 py-5">
         {groups.map((group) => {
           const groupItems = decoratedItems.filter((item) => item.group === group);
 
@@ -126,26 +120,26 @@ function Sidebar() {
           }
 
           return (
-            <div className="mb-5 last:mb-0" key={group}>
-              <p className="px-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#A2AEC1]">
+            <div className="mb-6 last:mb-0" key={group}>
+              <p className="px-1 text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--text-secondary)]">
                 {group}
               </p>
-              <div className="mt-2 space-y-1">
+              <div className="mt-3 space-y-2">
                 {groupItems.map((item) => (
                   <NavLink
                     className={() =>
                       [
-                        'flex min-h-[34px] items-center justify-between rounded-[10px] border-[0.5px] border-transparent px-2.5 transition',
+                        'flex min-h-[38px] items-center justify-between rounded-[16px] border px-3 py-2 transition-all duration-150',
                         isActiveLink(item)
-                          ? 'border-[#E4EAF2] bg-white font-semibold text-[#1E293B]'
-                          : 'text-[#5B6E8C] hover:bg-white/80'
+                          ? 'border-[var(--border-color)] bg-[var(--card-bg)] shadow-sm font-semibold text-[var(--text-primary)]'
+                          : 'border-transparent text-[var(--text-secondary)] hover:border-[var(--border-color)] hover:bg-[var(--surface)] hover:text-[var(--text-primary)]'
                       ].join(' ')
                     }
                     end={item.to === '/chairman' || item.to === '/department' || item.to === '/director'}
                     key={item.to}
                     to={item.to}
                   >
-                    <span className="flex min-w-0 items-center gap-2.5">
+                    <span className="flex min-w-0 items-center gap-3">
                       <span
                         className="h-[7px] w-[7px] rounded-full"
                         style={{ backgroundColor: item.color }}
@@ -163,14 +157,14 @@ function Sidebar() {
         })}
       </nav>
 
-      <div className="border-t border-t-[0.5px] border-[#EFF2F6] px-4 py-3">
+      <div className="border-t border-[var(--border-color)] px-4 py-3">
         <div className="flex items-center gap-2.5">
-          <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#E6F1FB] text-[11px] font-semibold text-[#0C447C]">
+          <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[var(--surface)] text-[11px] font-semibold text-[var(--text-primary)]">
             {getInitials(user?.name)}
           </div>
           <div className="min-w-0">
-            <p className="truncate text-[12px] font-medium text-[#1E293B]">{user?.name ?? 'User'}</p>
-            <p className="truncate text-[11px] text-[#8A99B0]">Master access</p>
+            <p className="truncate text-[12px] font-medium text-[var(--text-primary)]">{user?.name ?? 'User'}</p>
+            <p className="truncate text-[11px] text-[var(--text-secondary)]">Master access</p>
           </div>
         </div>
       </div>

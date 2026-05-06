@@ -58,21 +58,21 @@ const ApprovalsPage: React.FC = () => {
 
   const getTypeBadge = (type: ApprovalType) => {
     const colors = {
-      BUDGET: 'bg-green-100 text-green-800',
-      PURCHASE: 'bg-blue-100 text-blue-800',
-      POLICY: 'bg-purple-100 text-purple-800',
-      EVENT: 'bg-pink-100 text-pink-800',
+      BUDGET: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100',
+      PURCHASE: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-100',
+      POLICY: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-100',
+      EVENT: 'bg-pink-100 text-pink-800 dark:bg-pink-900 dark:text-pink-100',
     };
-    return colors[type] || 'bg-gray-100 text-gray-800';
+    return colors[type] || 'bg-gray-100 text-gray-800 dark:bg-slate-800 dark:text-slate-100';
   };
 
   const getStatusBadge = (status: string) => {
     const colors = {
-      APPROVED: 'bg-green-100 text-green-800',
-      PENDING: 'bg-amber-100 text-amber-800',
-      REJECTED: 'bg-red-100 text-red-800',
+      APPROVED: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100',
+      PENDING: 'bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-100',
+      REJECTED: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-100',
     };
-    return colors[status as keyof typeof colors] || 'bg-gray-100 text-gray-800';
+    return colors[status as keyof typeof colors] || 'bg-gray-100 text-gray-800 dark:bg-slate-800 dark:text-slate-100';
   };
 
   const stats = [
@@ -84,7 +84,7 @@ const ApprovalsPage: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen bg-[#F1F4F9] text-[#1E293B]">
+      <div className="flex min-h-screen bg-[var(--bg-secondary)] text-[var(--text-primary)]">
         <Sidebar />
         <main className="min-w-0 flex-1">
           <Navbar />
@@ -97,14 +97,14 @@ const ApprovalsPage: React.FC = () => {
   }
 
   return (
-    <div className="flex min-h-screen bg-[#F1F4F9] text-[#1E293B]">
+    <div className="flex min-h-screen bg-[var(--bg-secondary)] text-[var(--text-primary)]">
       <Sidebar />
       <main className="min-w-0 flex-1">
         <Navbar />
         <div className="p-6 space-y-6">
           <StatGrid items={stats} />
 
-          <div className="flex border-b border-gray-200 mb-4">
+          <div className="flex border-b border-[var(--border-color)] mb-4">
             {(['ALL', 'PENDING', 'APPROVED'] as TabType[]).map(tab => (
               <button
                 key={tab}
@@ -112,7 +112,7 @@ const ApprovalsPage: React.FC = () => {
                 className={`px-4 py-2 text-sm font-medium ${
                   activeTab === tab
                     ? 'border-b-2 border-blue-600 text-blue-600'
-                    : 'text-gray-500 hover:text-gray-700'
+                    : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
                 }`}
               >
                 {tab}
@@ -123,7 +123,7 @@ const ApprovalsPage: React.FC = () => {
               className={`px-4 py-2 text-sm font-medium ml-auto ${
                 showNewForm
                   ? 'border-b-2 border-blue-600 text-blue-600'
-                  : 'text-gray-500 hover:text-gray-700'
+                  : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
               }`}
             >
               + New Request
@@ -131,7 +131,7 @@ const ApprovalsPage: React.FC = () => {
           </div>
 
           {showNewForm ? (
-            <div className="bg-white rounded-lg border border-gray-200 p-4">
+            <div className="bg-[var(--card-bg)] rounded-lg border border-[var(--border-color)] p-4">
               <div className="flex justify-between items-center mb-4">
                 <h3 className="text-lg font-semibold">New Approval Request</h3>
                 <span className="bg-purple-100 text-purple-800 text-xs px-2 py-0.5 rounded-full">
@@ -141,11 +141,11 @@ const ApprovalsPage: React.FC = () => {
 
               <div className="grid grid-cols-2 gap-4 mb-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Request Type</label>
+                  <label className="block text-sm font-medium text-[var(--text-primary)] mb-1">Request Type</label>
                   <select
                     value={newApproval.type}
                     onChange={(e) => setNewApproval(prev => ({ ...prev, type: e.target.value as ApprovalType }))}
-                    className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
+                    className="w-full border border-[var(--border-color)] rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
                   >
                     <option value="BUDGET">Budget</option>
                     <option value="PURCHASE">Purchase</option>
@@ -154,11 +154,11 @@ const ApprovalsPage: React.FC = () => {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Priority</label>
+                  <label className="block text-sm font-medium text-[var(--text-primary)] mb-1">Priority</label>
                   <select
                     value={newApproval.priority}
                     onChange={(e) => setNewApproval(prev => ({ ...prev, priority: e.target.value }))}
-                    className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
+                    className="w-full border border-[var(--border-color)] rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
                   >
                     <option value="High">High</option>
                     <option value="Medium">Medium</option>
@@ -168,42 +168,42 @@ const ApprovalsPage: React.FC = () => {
               </div>
 
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                <label className="block text-sm font-medium text-[var(--text-primary)] mb-1">Title</label>
                 <input
                   type="text"
                   value={newApproval.title}
                   onChange={(e) => setNewApproval(prev => ({ ...prev, title: e.target.value }))}
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
+                  className="w-full border border-[var(--border-color)] rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
                 />
               </div>
 
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Justification</label>
+                <label className="block text-sm font-medium text-[var(--text-primary)] mb-1">Justification</label>
                 <textarea
                   value={newApproval.justification}
                   onChange={(e) => setNewApproval(prev => ({ ...prev, justification: e.target.value }))}
                   rows={3}
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
+                  className="w-full border border-[var(--border-color)] rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4 mb-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Amount ₹</label>
+                  <label className="block text-sm font-medium text-[var(--text-primary)] mb-1">Amount ₹</label>
                   <input
                     type="text"
                     value={newApproval.amount}
                     onChange={(e) => setNewApproval(prev => ({ ...prev, amount: e.target.value }))}
-                    className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
+                    className="w-full border border-[var(--border-color)] rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Required By</label>
+                  <label className="block text-sm font-medium text-[var(--text-primary)] mb-1">Required By</label>
                   <input
                     type="date"
                     value={newApproval.requiredBy}
                     onChange={(e) => setNewApproval(prev => ({ ...prev, requiredBy: e.target.value }))}
-                    className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
+                    className="w-full border border-[var(--border-color)] rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
               </div>
@@ -211,7 +211,7 @@ const ApprovalsPage: React.FC = () => {
               <div className="flex justify-between items-center">
                 <button
                   onClick={() => setFormSuccess({ sent: false, draft: true })}
-                  className="border border-gray-300 text-gray-700 px-4 py-2 rounded-md text-sm hover:bg-gray-50"
+                  className="border border-[var(--border-color)] text-[var(--text-secondary)] px-4 py-2 rounded-md text-sm hover:bg-[var(--surface)]"
                 >
                   Save Draft
                 </button>
@@ -239,19 +239,19 @@ const ApprovalsPage: React.FC = () => {
               <div className="mt-4 text-right">
                 <button
                   onClick={() => setShowNewForm(false)}
-                  className="text-sm text-gray-500 underline"
+                  className="text-sm text-[var(--text-secondary)] underline"
                 >
                   ← Back to list
                 </button>
               </div>
             </div>
           ) : (
-            <div className="bg-white rounded-lg border border-gray-200 p-4">
+            <div className="bg-[var(--card-bg)] rounded-lg border border-[var(--border-color)] p-4">
               <div className="flex justify-between items-center mb-4">
                 <h3 className="text-lg font-semibold">Approvals</h3>
                 <button
                   onClick={() => setShowNewForm(true)}
-                  className="text-gray-600 hover:text-gray-800 text-sm underline"
+                  className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] text-sm underline"
                 >
                   New ↗
                 </button>
@@ -259,7 +259,7 @@ const ApprovalsPage: React.FC = () => {
 
               <div className="space-y-3">
                 {filteredApprovals.map(approval => (
-                  <div key={approval.id} className="border-b border-gray-100 py-3">
+                  <div key={approval.id} className="border-b border-[var(--border-color)] py-3">
                     <div className="flex items-center justify-between">
                       <h4 className="text-sm font-medium flex-1">{approval.title}</h4>
                       <span className={`text-xs px-2 py-0.5 rounded-full mr-2 ${getTypeBadge(approval.type)}`}>
@@ -269,7 +269,7 @@ const ApprovalsPage: React.FC = () => {
                         {approval.status}
                       </span>
                     </div>
-                    <div className="text-xs text-gray-400 mt-1">
+                    <div className="text-xs text-[var(--text-secondary)] mt-1">
                       {approval.id} · ₹{approval.amount} · {approval.date}
                     </div>
                   </div>

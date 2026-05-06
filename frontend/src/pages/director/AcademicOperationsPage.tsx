@@ -142,7 +142,7 @@ function AcademicOperationsPage() {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen bg-[#F1F4F9] text-[#1E293B]">
+      <div className="flex min-h-screen bg-[var(--bg-secondary)] text-[var(--text-primary)]">
         <Sidebar />
         <main className="min-w-0 flex-1">
           <Navbar title="Director Module" />
@@ -154,14 +154,14 @@ function AcademicOperationsPage() {
 
   if (isError || !data || !selectedModule) {
     return (
-      <div className="flex min-h-screen bg-[#F1F4F9] text-[#1E293B]">
+      <div className="flex min-h-screen bg-[var(--bg-secondary)] text-[var(--text-primary)]">
         <Sidebar />
         <main className="min-w-0 flex-1">
           <Navbar title="Director Module" />
           <div className="p-6">
-            <div className="rounded-lg border border-red-200 bg-white p-5">
+            <div className="rounded-lg border border-red-200 bg-[var(--card-bg)] p-5">
               <h1 className="text-lg font-semibold text-red-700">Director module could not be opened</h1>
-              <p className="mt-2 text-sm text-gray-600">
+              <p className="mt-2 text-sm text-[var(--text-secondary)]">
                 Please make sure the backend is running and your Director login session is active.
               </p>
               {error instanceof Error ? (
@@ -189,14 +189,14 @@ function AcademicOperationsPage() {
   ];
 
   return (
-    <div className="flex min-h-screen bg-[#F1F4F9] text-[#1E293B]">
+    <div className="flex min-h-screen bg-[var(--bg-secondary)] text-[var(--text-primary)]">
       <Sidebar />
       <main className="min-w-0 flex-1">
         <Navbar title="Director Module" />
         <div className="space-y-6 p-6">
           <div>
             <h1 className="text-2xl font-semibold">School Director Module</h1>
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-[var(--text-secondary)]">
               Track the eight Director submodules in one place and filter them as separate module items.
             </p>
           </div>
@@ -204,13 +204,13 @@ function AcademicOperationsPage() {
           <StatGrid items={stats} />
 
           <div className="grid grid-cols-1 gap-6 xl:grid-cols-[minmax(360px,440px)_1fr]">
-            <section className="rounded-lg border border-gray-200 bg-white">
-              <div className="border-b border-gray-100 p-4">
+            <section className="rounded-lg border border-[var(--border-color)] bg-[var(--card-bg)]">
+              <div className="border-b border-[var(--border-color)] p-4">
                 <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
                   <select
                     value={category}
                     onChange={(event) => setCategory(event.target.value)}
-                    className="rounded-md border border-gray-300 px-3 py-2 text-sm"
+                    className="rounded-md border border-[var(--border-color)] px-3 py-2 text-sm"
                   >
                     <option value="ALL">All Categories</option>
                     {data.categories.map((item) => (
@@ -222,7 +222,7 @@ function AcademicOperationsPage() {
                   <select
                     value={submodule}
                     onChange={(event) => setSubmodule(event.target.value)}
-                    className="rounded-md border border-gray-300 px-3 py-2 text-sm"
+                    className="rounded-md border border-[var(--border-color)] px-3 py-2 text-sm"
                   >
                     <option value="ALL">All Submodules</option>
                     {availableSubmodules.map((item) => (
@@ -234,7 +234,7 @@ function AcademicOperationsPage() {
                   <select
                     value={status}
                     onChange={(event) => setStatus(event.target.value as StatusFilter)}
-                    className="rounded-md border border-gray-300 px-3 py-2 text-sm"
+                    className="rounded-md border border-[var(--border-color)] px-3 py-2 text-sm"
                   >
                     <option value="ALL">All Status</option>
                     {Object.entries(statusLabels).map(([key, label]) => (
@@ -248,7 +248,7 @@ function AcademicOperationsPage() {
 
               <div className="max-h-[680px] overflow-y-auto p-3">
                 {modules.length === 0 ? (
-                  <div className="rounded-lg border border-dashed border-gray-300 bg-gray-50 p-6 text-center text-sm text-gray-500">
+                  <div className="rounded-lg border border-dashed border-[var(--border-color)] bg-[var(--surface)] p-6 text-center text-sm text-[var(--text-secondary)]">
                     No director submodules match the current filters.
                   </div>
                 ) : (
@@ -260,7 +260,7 @@ function AcademicOperationsPage() {
                       className={`mb-2 w-full rounded-lg border p-3 text-left transition ${
                         selectedModule?.key === module.key
                           ? 'border-blue-300 bg-blue-50'
-                          : 'border-gray-100 bg-white hover:border-gray-200 hover:bg-gray-50'
+                          : 'border-[var(--border-color)] bg-[var(--card-bg)] hover:border-[var(--border-color)] hover:bg-[var(--surface)]'
                       }`}
                     >
                       <div className="flex items-start justify-between gap-3">
@@ -271,14 +271,14 @@ function AcademicOperationsPage() {
                             </span>
                             <p className="truncate text-sm font-semibold">{module.name}</p>
                           </div>
-                          <p className="mt-1 text-xs text-gray-500">{module.submodule}</p>
-                          <p className="mt-1 text-xs text-gray-500">{module.cadence}</p>
+                          <p className="mt-1 text-xs text-[var(--text-secondary)]">{module.submodule}</p>
+                          <p className="mt-1 text-xs text-[var(--text-secondary)]">{module.cadence}</p>
                         </div>
                         <span className={`shrink-0 rounded-full px-2 py-0.5 text-[11px] ${statusClasses[module.status]}`}>
                           {statusLabels[module.status]}
                         </span>
                       </div>
-                      <div className="mt-3 h-2 rounded-full bg-gray-100">
+                      <div className="mt-3 h-2 rounded-full bg-[var(--surface)]">
                         <div
                           className="h-2 rounded-full bg-[#185FA5]"
                           style={{ width: `${module.completionPct}%` }}
@@ -292,14 +292,14 @@ function AcademicOperationsPage() {
 
             {selectedModule ? (
               <section className="space-y-6">
-                <div className="rounded-lg border border-gray-200 bg-white p-4">
+                <div className="rounded-lg border border-[var(--border-color)] bg-[var(--card-bg)] p-4">
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div>
                       <p className="text-xs font-semibold uppercase tracking-wide text-blue-700">
                         {selectedModule.category} - {selectedModule.submodule}
                       </p>
                       <h2 className="mt-1 text-xl font-semibold">{selectedModule.name}</h2>
-                      <p className="mt-2 max-w-3xl text-sm leading-6 text-gray-600">
+                      <p className="mt-2 max-w-3xl text-sm leading-6 text-[var(--text-secondary)]">
                         {selectedModule.description}
                       </p>
                     </div>
@@ -309,22 +309,22 @@ function AcademicOperationsPage() {
                 </div>
 
                 <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-3">
-                  <div className="rounded-md bg-gray-50 p-3">
-                    <p className="text-xs text-gray-500">Owner</p>
+                  <div className="rounded-md bg-[var(--surface)] p-3">
+                    <p className="text-xs text-[var(--text-secondary)]">Owner</p>
                     <p className="text-sm font-semibold">{selectedModule.ownerRole}</p>
                   </div>
-                  <div className="rounded-md bg-gray-50 p-3">
-                    <p className="text-xs text-gray-500">Next Due</p>
+                  <div className="rounded-md bg-[var(--surface)] p-3">
+                    <p className="text-xs text-[var(--text-secondary)]">Next Due</p>
                     <p className="text-sm font-semibold">{selectedModule.nextDueDate}</p>
                   </div>
-                  <div className="rounded-md bg-gray-50 p-3">
-                    <p className="text-xs text-gray-500">Completion</p>
+                  <div className="rounded-md bg-[var(--surface)] p-3">
+                    <p className="text-xs text-[var(--text-secondary)]">Completion</p>
                     <p className="text-sm font-semibold">{selectedModule.completionPct}%</p>
                   </div>
                 </div>
               </div>
 
-              <form onSubmit={handleCreate} className="rounded-lg border border-gray-200 bg-white p-4">
+              <form onSubmit={handleCreate} className="rounded-lg border border-[var(--border-color)] bg-[var(--card-bg)] p-4">
                 <h3 className="text-lg font-semibold">Add Update</h3>
                 <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
                   <input
@@ -332,21 +332,21 @@ function AcademicOperationsPage() {
                     onChange={(event) => setForm((prev) => ({ ...prev, title: event.target.value }))}
                     required
                     placeholder="Update title"
-                    className="rounded-md border border-gray-300 px-3 py-2 text-sm"
+                    className="rounded-md border border-[var(--border-color)] px-3 py-2 text-sm"
                   />
                   <input
                     value={form.owner}
                     onChange={(event) => setForm((prev) => ({ ...prev, owner: event.target.value }))}
                     required
                     placeholder="Owner"
-                    className="rounded-md border border-gray-300 px-3 py-2 text-sm"
+                    className="rounded-md border border-[var(--border-color)] px-3 py-2 text-sm"
                   />
                   <input
                     type="date"
                     value={form.dueDate}
                     onChange={(event) => setForm((prev) => ({ ...prev, dueDate: event.target.value }))}
                     required
-                    className="rounded-md border border-gray-300 px-3 py-2 text-sm"
+                    className="rounded-md border border-[var(--border-color)] px-3 py-2 text-sm"
                   />
                   <div className="grid grid-cols-3 gap-3">
                     <select
@@ -354,7 +354,7 @@ function AcademicOperationsPage() {
                       onChange={(event) =>
                         setForm((prev) => ({ ...prev, status: event.target.value as DirectorModuleStatus }))
                       }
-                      className="rounded-md border border-gray-300 px-3 py-2 text-sm"
+                      className="rounded-md border border-[var(--border-color)] px-3 py-2 text-sm"
                     >
                       {Object.entries(statusLabels).map(([key, label]) => (
                         <option key={key} value={key}>
@@ -367,7 +367,7 @@ function AcademicOperationsPage() {
                       onChange={(event) =>
                         setForm((prev) => ({ ...prev, priority: event.target.value as DirectorModulePriority }))
                       }
-                      className="rounded-md border border-gray-300 px-3 py-2 text-sm"
+                      className="rounded-md border border-[var(--border-color)] px-3 py-2 text-sm"
                     >
                       <option value="High">High</option>
                       <option value="Medium">Medium</option>
@@ -381,7 +381,7 @@ function AcademicOperationsPage() {
                       onChange={(event) =>
                         setForm((prev) => ({ ...prev, completionPct: Number(event.target.value) }))
                       }
-                      className="rounded-md border border-gray-300 px-3 py-2 text-sm"
+                      className="rounded-md border border-[var(--border-color)] px-3 py-2 text-sm"
                     />
                   </div>
                 </div>
@@ -390,7 +390,7 @@ function AcademicOperationsPage() {
                   onChange={(event) => setForm((prev) => ({ ...prev, remarks: event.target.value }))}
                   placeholder="Remarks, blockers, next action"
                   rows={3}
-                  className="mt-4 w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
+                  className="mt-4 w-full rounded-md border border-[var(--border-color)] px-3 py-2 text-sm"
                 />
                 <div className="mt-4 flex justify-end">
                   <button
@@ -403,11 +403,11 @@ function AcademicOperationsPage() {
                 </div>
               </form>
 
-              <div className="rounded-lg border border-gray-200 bg-white p-4">
+              <div className="rounded-lg border border-[var(--border-color)] bg-[var(--card-bg)] p-4">
                 <h3 className="text-lg font-semibold">Tracking Records</h3>
                 <div className="mt-4 overflow-x-auto">
-                  <table className="min-w-full divide-y divide-gray-200 text-sm">
-                    <thead className="bg-gray-50 text-left text-xs uppercase tracking-wide text-gray-500">
+                  <table className="min-w-full divide-y divide-[var(--border-color)] text-sm">
+                    <thead className="bg-[var(--surface)] text-left text-xs uppercase tracking-wide text-[var(--text-secondary)]">
                       <tr>
                         <th className="px-4 py-3">Title</th>
                         <th className="px-4 py-3">Owner</th>
@@ -416,15 +416,15 @@ function AcademicOperationsPage() {
                         <th className="px-4 py-3">Complete</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-100">
+                    <tbody className="divide-y divide-[var(--border-color)]">
                       {selectedModule.records.map((record) => (
                         <tr key={record.id}>
                           <td className="px-4 py-3">
                             <p className="font-medium">{record.title}</p>
-                            <p className="mt-1 max-w-md text-xs text-gray-500">{record.remarks}</p>
+                            <p className="mt-1 max-w-md text-xs text-[var(--text-secondary)]">{record.remarks}</p>
                           </td>
-                          <td className="px-4 py-3 text-gray-600">{record.owner}</td>
-                          <td className="px-4 py-3 text-gray-600">{record.dueDate}</td>
+                          <td className="px-4 py-3 text-[var(--text-secondary)]">{record.owner}</td>
+                          <td className="px-4 py-3 text-[var(--text-secondary)]">{record.dueDate}</td>
                           <td className="px-4 py-3">
                             <select
                               value={record.status}
@@ -457,7 +457,7 @@ function AcademicOperationsPage() {
                                   payload: { completionPct: Number(event.target.value) },
                                 })
                               }
-                              className="w-20 rounded-md border border-gray-300 px-2 py-1 text-sm"
+                              className="w-20 rounded-md border border-[var(--border-color)] px-2 py-1 text-sm"
                             />
                           </td>
                         </tr>
@@ -469,7 +469,7 @@ function AcademicOperationsPage() {
             </section>
           ) : (
             <section className="space-y-6">
-              <div className="rounded-lg border border-gray-200 bg-white p-6 text-center text-sm text-gray-600">
+              <div className="rounded-lg border border-[var(--border-color)] bg-[var(--card-bg)] p-6 text-center text-sm text-[var(--text-secondary)]">
                 Select a director submodule from the list to view details and add updates.
               </div>
             </section>

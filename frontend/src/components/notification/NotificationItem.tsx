@@ -49,15 +49,15 @@ const NotificationItem: React.FC<NotificationItemProps> = ({ notification, respo
   const canRespond = notification.type === 'meeting' && (notification.sub === 'new' || notification.sub === 'reschedule') && !responses[notification.mId || 0];
 
   return (
-    <div className="flex items-start gap-3 py-3 border-b border-gray-100">
+    <div className="flex items-start gap-3 py-3 border-b border-[var(--border-color)]">
       {!notification.read && <div className="w-2 h-2 rounded-full bg-blue-500 mt-1.5 flex-shrink-0" />}
       {notification.read && <div className="w-2 h-2 flex-shrink-0" />}
       <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: notification.iconBg }}>
         {getIcon(notification.type, notification.sub)}
       </div>
       <div className="flex-1">
-        <div className="text-sm font-medium">{notification.title}</div>
-        <div className="text-xs text-gray-500 mt-0.5">{notification.detail}</div>
+        <div className="text-sm font-medium text-[var(--text-primary)]">{notification.title}</div>
+        <div className="text-xs text-[var(--text-secondary)] mt-0.5">{notification.detail}</div>
         {canRespond && (
           <div className="flex gap-2 mt-2">
             <button
@@ -91,7 +91,7 @@ const NotificationItem: React.FC<NotificationItemProps> = ({ notification, respo
         )}
       </div>
       <div className="text-right">
-        <div className="text-xs text-gray-400">{notification.time}</div>
+        <div className="text-xs text-[var(--text-secondary)]">{notification.time}</div>
         <span className="text-xs px-2 py-0.5 rounded-full" style={{ backgroundColor: notification.tagBg, color: notification.tagColor }}>
           {notification.tag}
         </span>

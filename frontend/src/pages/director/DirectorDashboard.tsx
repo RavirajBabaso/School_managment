@@ -8,9 +8,11 @@ import Navbar from '../../components/common/Navbar';
 import Sidebar from '../../components/common/Sidebar';
 import StatGrid from '../../components/common/StatGrid';
 import MeetingCard from '../../components/meeting/MeetingCard';
+import Badge from '../../components/common/Badge';
 import type { Task } from '../../types/task.types';
 import type { RootState } from '../../store';
 import type { Meeting, MeetingResponse, MeetingResponseMap } from '../../types/meeting.types';
+import type { Notification } from '../../types/notification.types';
 import api from '../../services/api';
 import { getDirectorModules } from '../../services/directorModuleService';
 import { getMeetings, respondToMeeting } from '../../services/meetingService';
@@ -86,6 +88,17 @@ function DirectorDashboard() {
     delayed: deptData?.delayedCount ?? 0,
   };
 
+  const unreadAlerts = notifications.filter((notification) => !notification.is_read).length;
+  const meetingCount = meetings.length;
+  const approvalSummary = directorModules?.summary;
+
+  const quickMetrics = [
+    { label: 'Assigned tasks', value: taskStats.total, tone: 'green' },
+    { label: 'Meetings today', value: meetingCount, tone: 'blue' },
+    { label: 'Pending approvals', value: approvalSummary?.pending ?? 0, tone: 'amber' },
+    { label: 'Unread alerts', value: unreadAlerts, tone: 'red' }
+  ];
+
   const taskStatusData = [
     { name: 'Pending', value: taskStats.pending, color: '#BA7517' },
     { name: 'In Progress', value: taskStats.inProgress, color: '#185FA5' },
@@ -95,7 +108,7 @@ function DirectorDashboard() {
 
   if (deptLoading || chairmanLoading || !deptData || !chairmanData) {
     return (
-      <div className="flex min-h-screen bg-[#F1F4F9] text-[#1E293B]">
+      <div className="flex min-h-screen bg-[var(--bg-secondary)] text-[var(--text-primary)]">
         <Sidebar />
         <main className="min-w-0 flex-1">
           <Navbar />
@@ -105,128 +118,225 @@ function DirectorDashboard() {
     );
   }
 
+  const notificationCategoryLabel: Record<Notification['type'], string> = {
+    TASK_ASSIGNED: 'Task assigned',
+    TASK_UPDATED: 'Update',
+    TASK_DELAYED: 'Delay alert',
+    TASK_ESCALATED: 'Escalation',
+    ANNOUNCEMENT: 'Announcement'
+  };
+
+  const notificationTone: Record<Notification['type'], 'blue' | 'green' | 'red' | 'amber' | 'gray'> = {
+    TASK_ASSIGNED: 'blue',
+    TASK_UPDATED: 'green',
+    TASK_DELAYED: 'amber',
+    TASK_ESCALATED: 'red',
+    ANNOUNCEMENT: 'gray'
+  };
+
   return (
-    <div className="flex min-h-screen bg-[#F1F4F9] text-[#1E293B]">
+    <div className="flex min-h-screen bg-[var(--bg-secondary)] text-[var(--text-primary)]">
       <Sidebar />
-      <main className="min-w-0 flex-1">
+      <main className="min-w-0 flex-1 overflow-hidden">
         <Navbar />
-        <div className="p-6 space-y-6">
-          <div className="mb-4">
-            <h1 className="text-2xl font-semibold">Director Dashboard</h1>
-            <p className="text-gray-600">Welcome, {user?.name} - Director</p>
-          </div>
-
-          {/* KPI Cards */}
-          <StatGrid items={[
-            { label: 'My Tasks', value: taskStats.total, color: '#185FA5' },
-            { label: 'Pending', value: taskStats.pending, color: '#BA7517' },
-            { label: 'In Progress', value: taskStats.inProgress, color: '#BA7517' },
-            { label: 'Completed', value: taskStats.completed, color: '#3B6D11' },
-            { label: 'Delayed', value: taskStats.delayed, color: '#A32D2D' }
-          ]} />
-
-          {directorModules ? (
-            <div className="bg-white rounded-lg border border-gray-200 p-4">
-              <div className="flex flex-wrap items-center justify-between gap-3">
-                <div>
-                  <h3 className="text-lg font-semibold">Director Module Tasks</h3>
-                  <p className="text-sm text-gray-500">
-                    {directorModules.summary.total} Director submodules tracked for academic planning, reporting, workload, events, and admissions.
+        <div className="h-full overflow-y-auto p-6">
+          <div className="space-y-6">
+            <section className="rounded-[26px] border border-[var(--border-color)] bg-[var(--card-bg)] p-6 shadow-sm">
+              <div className="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
+                <div className="min-w-0">
+                  <p className="text-[10px] uppercase tracking-[0.3em] text-[var(--text-secondary)]">
+                    Executive summary
+                  </p>
+                  <h1 className="mt-3 text-2xl font-semibold text-[var(--text-primary)]">
+                    Director dashboard
+                  </h1>
+                  <p className="mt-3 max-w-2xl text-sm leading-6 text-[var(--text-secondary)]">
+                    A calm, data-rich leadership workspace for approvals, meetings, notifications and school operations.
                   </p>
                 </div>
-                <Link
-                  to="/director/modules"
-                  className="rounded-md bg-[#185FA5] px-4 py-2 text-sm font-medium text-white"
-                >
-                  Open Director Module
-                </Link>
-              </div>
-              <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-5">
-                <div className="rounded-md bg-gray-50 p-3">
-                  <p className="text-xs text-gray-500">Pending</p>
-                  <p className="text-xl font-semibold text-amber-700">{directorModules.summary.pending}</p>
-                </div>
-                <div className="rounded-md bg-gray-50 p-3">
-                  <p className="text-xs text-gray-500">In Progress</p>
-                  <p className="text-xl font-semibold text-blue-700">{directorModules.summary.inProgress}</p>
-                </div>
-                <div className="rounded-md bg-gray-50 p-3">
-                  <p className="text-xs text-gray-500">Completed</p>
-                  <p className="text-xl font-semibold text-green-700">{directorModules.summary.completed}</p>
-                </div>
-                <div className="rounded-md bg-gray-50 p-3">
-                  <p className="text-xs text-gray-500">Overdue</p>
-                  <p className="text-xl font-semibold text-red-700">{directorModules.summary.overdue}</p>
-                </div>
-                <div className="rounded-md bg-gray-50 p-3">
-                  <p className="text-xs text-gray-500">Average</p>
-                  <p className="text-xl font-semibold text-[#185FA5]">{directorModules.summary.averageCompletion}%</p>
+
+                <div className="flex flex-wrap items-center gap-3">
+                  <Link
+                    to="/director/approvals"
+                    className="rounded-full bg-[#1D9E75] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#178b68]"
+                  >
+                    New approval
+                  </Link>
+                  <button
+                    type="button"
+                    className="rounded-full border border-[var(--border-color)] bg-[var(--surface)] px-4 py-2 text-sm font-medium text-[var(--text-primary)] transition hover:bg-[var(--bg-tertiary)]"
+                  >
+                    Export report
+                  </button>
                 </div>
               </div>
-            </div>
-          ) : null}
 
-          {/* Middle row */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Task Status Pie Chart */}
-            <div className="bg-white rounded-lg border border-gray-200 p-4">
-              <h3 className="text-lg font-semibold mb-4">Task Status Distribution</h3>
-              <TaskStatusPieChart data={taskStatusData} />
-            </div>
-
-            {/* Today's Meetings */}
-            <div className="bg-white rounded-lg border border-gray-200 p-4">
-              <h3 className="text-lg font-semibold mb-4">Today's Meetings</h3>
-              <div>
-                {meetings.slice(0, 3).map(meeting => (
-                  <MeetingCard
-                    key={meeting.id}
-                    meeting={meeting}
-                    responses={meetingResponses}
-                    onRespond={(id, response) => respondMutation.mutate({ id, response })}
-                  />
+              <div className="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+                {quickMetrics.map((metric) => (
+                  <div
+                    key={metric.label}
+                    className="rounded-[22px] border border-[var(--border-color)] bg-[var(--surface)] p-4"
+                  >
+                    <p className="text-[11px] uppercase tracking-[0.24em] text-[var(--text-secondary)]">
+                      {metric.label}
+                    </p>
+                    <p className="mt-3 text-2xl font-semibold text-[var(--text-primary)]">
+                      {metric.value}
+                    </p>
+                  </div>
                 ))}
               </div>
-            </div>
-          </div>
+            </section>
 
-          {/* School-wide Task Summary */}
-          <div className="bg-white rounded-lg border border-gray-200 p-4">
-            <h3 className="text-lg font-semibold mb-4">School-wide Task Summary</h3>
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Department</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Completion %</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Health</th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {chairmanData.departments.map((dept, index) => (
-                  <tr key={index}>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{dept.name}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{dept.completionPct}%</td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center">
-                        <div
-                          className="w-3 h-3 rounded-full mr-2"
-                          style={{ backgroundColor: dept.healthColor }}
-                        ></div>
-                        <span className="text-sm text-gray-500">
-                          {dept.completionPct >= 75 ? 'Good' : dept.completionPct >= 50 ? 'Fair' : 'Poor'}
-                        </span>
+            <div className="grid gap-6 xl:grid-cols-[420px_1fr]">
+              <div className="space-y-6">
+                <section className="rounded-[26px] border border-[var(--border-color)] bg-[var(--card-bg)] p-5 shadow-sm">
+                  <div className="flex items-center justify-between gap-3">
+                    <div>
+                      <p className="text-[10px] uppercase tracking-[0.24em] text-[var(--text-secondary)]">Upcoming meetings</p>
+                      <h2 className="mt-2 text-lg font-semibold text-[var(--text-primary)]">Today’s agenda</h2>
+                    </div>
+                    <Link
+                      to="/director/meetings"
+                      className="text-sm font-semibold text-[#378ADD] transition hover:text-[#1E4DB7]"
+                    >
+                      View all
+                    </Link>
+                  </div>
+                  <div className="mt-4 space-y-4">
+                    {meetings.slice(0, 3).map((meeting) => (
+                      <MeetingCard
+                        key={meeting.id}
+                        meeting={meeting}
+                        responses={meetingResponses}
+                        onRespond={(id, response) => respondMutation.mutate({ id, response })}
+                      />
+                    ))}
+                  </div>
+                </section>
+
+                <section className="rounded-[26px] border border-[var(--border-color)] bg-[var(--card-bg)] p-5 shadow-sm">
+                  <div className="flex items-center justify-between gap-3">
+                    <div>
+                      <p className="text-[10px] uppercase tracking-[0.24em] text-[var(--text-secondary)]">Notifications</p>
+                      <h2 className="mt-2 text-lg font-semibold text-[var(--text-primary)]">Recent alerts</h2>
+                    </div>
+                    <Badge variant="blue">{unreadAlerts} unread</Badge>
+                  </div>
+
+                  <div className="mt-5 space-y-4">
+                    {notifications.slice(0, 5).map((notification) => (
+                      <div
+                        key={notification.id}
+                        className="flex items-start gap-3 rounded-[18px] border border-[var(--border-color)] bg-[var(--surface)] p-4"
+                      >
+                        <span className="mt-1 h-2.5 w-2.5 rounded-full bg-[#1D9E75]" />
+                        <div className="min-w-0">
+                          <div className="flex flex-wrap items-center gap-2">
+                            <span className="truncate text-sm font-semibold text-[var(--text-primary)]">
+                              {notificationCategoryLabel[notification.type]}
+                            </span>
+                            <Badge variant={notificationTone[notification.type]}>
+                              {notification.type.replace('_', ' ').toLowerCase()}
+                            </Badge>
+                          </div>
+                          <p className="mt-1 text-sm text-[var(--text-secondary)] line-clamp-2">
+                            {notification.message}
+                          </p>
+                          <p className="mt-2 text-xs text-[var(--text-secondary)]">
+                            {new Date(notification.created_at).toLocaleString('en-IN', {
+                              month: 'short',
+                              day: 'numeric',
+                              hour: '2-digit',
+                              minute: '2-digit'
+                            })}
+                          </p>
+                        </div>
                       </div>
-                    </td>
-                    </tr>
-                  ))}
-              </tbody>
-            </table>
-          </div>
+                    ))}
+                  </div>
+                </section>
+              </div>
 
-          {/* Task List */}
-          <div className="bg-white rounded-lg border border-gray-200 p-4">
-            <h3 className="text-lg font-semibold mb-4">My Tasks</h3>
-            <TaskTable tasks={deptData.myTasks} />
+              <div className="space-y-6">
+                <section className="rounded-[26px] border border-[var(--border-color)] bg-[var(--card-bg)] p-6 shadow-sm">
+                  <div className="flex items-center justify-between gap-4">
+                    <div>
+                      <p className="text-[10px] uppercase tracking-[0.24em] text-[var(--text-secondary)]">Approval insights</p>
+                      <h2 className="mt-2 text-lg font-semibold text-[var(--text-primary)]">Review requests</h2>
+                    </div>
+                    <Link
+                      to="/director/approvals"
+                      className="rounded-full bg-[#1D9E75] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#178b68]"
+                    >
+                      Review all
+                    </Link>
+                  </div>
+
+                  <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                    <div className="rounded-[20px] bg-[var(--surface)] p-4">
+                      <p className="text-[11px] uppercase tracking-[0.24em] text-[var(--text-secondary)]">Pending</p>
+                      <p className="mt-3 text-2xl font-semibold text-[var(--text-primary)]">{approvalSummary?.pending ?? 0}</p>
+                    </div>
+                    <div className="rounded-[20px] bg-[var(--surface)] p-4">
+                      <p className="text-[11px] uppercase tracking-[0.24em] text-[var(--text-secondary)]">In progress</p>
+                      <p className="mt-3 text-2xl font-semibold text-[var(--text-primary)]">{approvalSummary?.inProgress ?? 0}</p>
+                    </div>
+                    <div className="rounded-[20px] bg-[var(--surface)] p-4">
+                      <p className="text-[11px] uppercase tracking-[0.24em] text-[var(--text-secondary)]">Completed</p>
+                      <p className="mt-3 text-2xl font-semibold text-[var(--text-primary)]">{approvalSummary?.completed ?? 0}</p>
+                    </div>
+                    <div className="rounded-[20px] bg-[var(--surface)] p-4">
+                      <p className="text-[11px] uppercase tracking-[0.24em] text-[var(--text-secondary)]">Overdue</p>
+                      <p className="mt-3 text-2xl font-semibold text-[var(--text-primary)]">{approvalSummary?.overdue ?? 0}</p>
+                    </div>
+                  </div>
+                </section>
+
+                <section className="rounded-[26px] border border-[var(--border-color)] bg-[var(--card-bg)] p-6 shadow-sm">
+                  <div className="flex items-center justify-between gap-4">
+                    <div>
+                      <p className="text-[10px] uppercase tracking-[0.24em] text-[var(--text-secondary)]">School health</p>
+                      <h2 className="mt-2 text-lg font-semibold text-[var(--text-primary)]">Operational summary</h2>
+                    </div>
+                    <span className="rounded-full bg-[#EDF9F1] px-3 py-1 text-xs font-semibold text-[#1D9E75]">
+                      {directorModules?.summary.total ?? 0} items
+                    </span>
+                  </div>
+
+                  <div className="mt-5 overflow-hidden rounded-[20px] border border-[var(--border-color)]">
+                    <table className="min-w-full divide-y divide-[var(--border-color)] text-left text-sm">
+                      <thead className="bg-[var(--surface)] text-[var(--text-secondary)]">
+                        <tr>
+                          <th className="px-4 py-3 uppercase tracking-[0.24em]">Department</th>
+                          <th className="px-4 py-3 uppercase tracking-[0.24em]">Completion</th>
+                          <th className="px-4 py-3 uppercase tracking-[0.24em]">Status</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-[var(--border-color)] bg-[var(--card-bg)]">
+                        {chairmanData.departments.map((dept, index) => (
+                          <tr key={index}>
+                            <td className="px-4 py-3 text-sm font-medium text-[var(--text-primary)]">{dept.name}</td>
+                            <td className="px-4 py-3 text-sm text-[var(--text-secondary)]">{dept.completionPct}%</td>
+                            <td className="px-4 py-3">
+                              <span
+                                className="inline-flex rounded-full px-2.5 py-1 text-[11px] font-semibold"
+                                style={{
+                                  backgroundColor: dept.healthColor + '22',
+                                  color: dept.healthColor
+                                }}
+                              >
+                                {dept.completionPct >= 75 ? 'Good' : dept.completionPct >= 50 ? 'Fair' : 'Poor'}
+                              </span>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </section>
+              </div>
+            </div>
           </div>
         </div>
       </main>
