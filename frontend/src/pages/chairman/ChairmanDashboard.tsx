@@ -1,9 +1,6 @@
 /**
  * ChairmanDashboard.tsx
- * Sidebar: Dashboard, Task Assignment, Task Monitor, Alerts, Approvals,
- * MIS Reports, Announcements, User Mgmt, Performance
- * KPI cards (Total Tasks, Completed, Delayed, Pending Approval) are clickable
- * and open an inline task drawer filtered by that status.
+ * Modern UI with CSS variables theme matching DirectorDashboard
  */
 
 import React, { useState } from 'react';
@@ -19,35 +16,11 @@ import ChairmanOverview from './ChairmanOverview';
 import MISReports from './MISReports';
 import TaskAssignment from './TaskAssignment';
 import TaskMonitoring from './TaskMonitoring';
+import UserManagement from './UserManagement';
+import PerformanceAnalytics from './PerformanceAnalytics';
+import Navbar from '../../components/common/Navbar';
+import Sidebar from '../../components/common/Sidebar';
 
-/* ═══════════════════════════════════════════════════════════════════════════
-   DESIGN TOKENS
-═══════════════════════════════════════════════════════════════════════════ */
-const C = {
-  bgPrimary:       '#FFFFFF',
-  bgSecondary:     '#F8F9FC',
-  bgInfo:          '#EFF6FF',
-  bgPage:          '#F1F4F9',
-  textPrimary:     '#1E293B',
-  textSecondary:   '#5B6E8C',
-  textTertiary:    '#8A99B0',
-  borderSecondary: '#DCE2EA',
-  borderTertiary:  '#EFF2F6',
-  blue:            '#185FA5',
-  blueDark:        '#0C447C',
-  green:           '#639922',
-  greenDeep:       '#27500A',
-  amber:           '#BA7517',
-  amberDark:       '#633806',
-  red:             '#E24B4A',
-  redDark:         '#791F1F',
-  radMd:           '8px',
-  radLg:           '14px',
-};
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   TASK DATA  (replace with real API data / useQuery in production)
-═══════════════════════════════════════════════════════════════════════════ */
 type TaskFilter = 'all' | 'completed' | 'delayed' | 'pending';
 
 interface Task {
@@ -75,34 +48,8 @@ const ALL_TASKS: Task[] = [
   { id: 12, title: 'IT server backup verification',   assignedTo: 'IT Head',         department: 'IT',        priority: 'High',   deadline: 'Apr 21', status: 'Completed'   },
 ];
 
-// Tasks that need chairman approval
-const PENDING_APPROVAL_IDS = new Set([3, 8, 11]);
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   HELPERS
-═══════════════════════════════════════════════════════════════════════════ */
-const statusStyle = (s: Task['status']) => {
-  if (s === 'Completed')   return { bg: '#EAF3DE', color: C.greenDeep };
-  if (s === 'Delayed')     return { bg: '#FCEBEB', color: C.redDark   };
-  if (s === 'In Progress') return { bg: '#E6F1FB', color: C.blueDark  };
-  return                          { bg: '#FAEEDA', color: C.amberDark };
-};
-
-const priorityDotColor = (p: Task['priority']) =>
-  p === 'High' ? C.red : p === 'Medium' ? C.amber : C.green;
-
-const priorityTagStyle = (p: Task['priority']) =>
-  p === 'High'   ? { bg: '#FCEBEB', color: C.redDark   } :
-  p === 'Medium' ? { bg: '#FAEEDA', color: C.amberDark } :
-                   { bg: '#EAF3DE', color: C.greenDeep };
-
-const getFilteredTasks = (filter: TaskFilter): Task[] => {
-  if (filter === 'all')       return ALL_TASKS;
-  if (filter === 'completed') return ALL_TASKS.filter(t => t.status === 'Completed');
-  if (filter === 'delayed')   return ALL_TASKS.filter(t => t.status === 'Delayed');
-  if (filter === 'pending')   return ALL_TASKS.filter(t => PENDING_APPROVAL_IDS.has(t.id));
-  return ALL_TASKS;
-};
+// Tasks that need chairman approval - removed as requested
+const PENDING_APPROVAL_IDS = new Set<number>([]);
 
 const FILTER_LABELS: Record<TaskFilter, string> = {
   all:       'All Tasks',
@@ -111,107 +58,75 @@ const FILTER_LABELS: Record<TaskFilter, string> = {
   pending:   'Pending Approval Tasks',
 };
 
-/* ═══════════════════════════════════════════════════════════════════════════
-   MICRO-COMPONENTS
-═══════════════════════════════════════════════════════════════════════════ */
-function Pill({ variant = 'blue', children, small }: {
-  variant?: 'red' | 'amber' | 'blue' | 'green';
-  children: React.ReactNode;
-  small?: boolean;
-}) {
-  const map = {
-    red:   { background: '#FCEBEB', color: C.redDark   },
-    amber: { background: '#FAEEDA', color: C.amberDark },
-    blue:  { background: '#E6F1FB', color: C.blueDark  },
-    green: { background: '#EAF3DE', color: C.greenDeep },
-  };
-  return (
-    <span style={{ ...map[variant], fontSize: small ? 10 : 11, padding: '3px 10px', borderRadius: 20, fontWeight: 500, whiteSpace: 'nowrap' as const, display: 'inline-block' }}>
-      {children}
-    </span>
-  );
-}
+const DEPT_HEALTH = [
+  { name: 'HR',        pct: 88, color: '#16A34A' },
+  { name: 'Admin',     pct: 82, color: '#16A34A' },
+  { name: 'Finance',   pct: 78, color: '#16A34A' },
+  { name: 'Admission', pct: 62, color: '#D97706' },
+  { name: 'IT',        pct: 57, color: '#D97706' },
+  { name: 'Purchase',  pct: 41, color: '#DC2626' },
+  { name: 'Property',  pct: 55, color: '#D97706' },
+];
 
-function Panel({ children, style }: { children: React.ReactNode; style?: React.CSSProperties }) {
-  return (
-    <div style={{ border: `0.5px solid ${C.borderTertiary}`, borderRadius: C.radLg, background: C.bgPrimary, overflow: 'hidden', ...style }}>
-      {children}
-    </div>
-  );
-}
+const DASH_ALERTS: Array<{
+  title: string;
+  sub: string;
+  variant: 'red' | 'amber';
+  pill: string;
+}> = [
+  // Removed alerts as requested
+];
 
-function PanelHeader({ title, right }: { title: string; right?: React.ReactNode }) {
-  return (
-    <div style={{ padding: '9px 13px', borderBottom: `0.5px solid ${C.borderTertiary}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-      <span style={{ fontSize: 12, fontWeight: 500, color: C.textPrimary }}>{title}</span>
-      {right}
-    </div>
-  );
-}
-
-function PanelBody({ children, style }: { children: React.ReactNode; style?: React.CSSProperties }) {
-  return <div style={{ padding: '10px 13px', ...style }}>{children}</div>;
-}
-
-function Avatar({ initials, bg, color, size = 24 }: { initials: string; bg: string; color: string; size?: number }) {
-  return (
-    <div style={{ width: size, height: size, borderRadius: '50%', background: bg, color, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: size < 28 ? 10 : 11, fontWeight: 500, flexShrink: 0 }}>
-      {initials}
-    </div>
-  );
-}
-
-function AlertIconCircle({ variant }: { variant: 'red' | 'amber' }) {
-  const stroke = variant === 'red' ? C.red : C.amber;
-  const bg     = variant === 'red' ? '#FCEBEB' : '#FAEEDA';
-  return (
-    <div style={{ width: 20, height: 20, borderRadius: '50%', background: bg, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 1 }}>
-      <svg width="10" height="10" viewBox="0 0 10 10">
-        <circle cx="5" cy="5" r="4" fill="none" stroke={stroke} strokeWidth="1.5" />
-        <line x1="5" y1="2.5" x2="5" y2="5.5" stroke={stroke} strokeWidth="1.5" />
-        <circle cx="5" cy="7" r=".8" fill={stroke} />
-      </svg>
-    </div>
-  );
-}
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   TASK TABLE
-═══════════════════════════════════════════════════════════════════════════ */
 function TaskTable({ tasks }: { tasks: Task[] }) {
   if (tasks.length === 0) {
-    return <div style={{ fontSize: 12, color: C.textTertiary, padding: '16px 0', textAlign: 'center' }}>No tasks found.</div>;
+    return <div className="py-8 text-center text-sm text-[var(--text-secondary)]">No tasks found.</div>;
   }
   return (
-    <div style={{ overflowX: 'auto' }}>
-      <table style={{ width: '100%', fontSize: 11, borderCollapse: 'collapse' }}>
-        <thead>
-          <tr style={{ borderBottom: `0.5px solid ${C.borderSecondary}` }}>
+    <div className="overflow-x-auto">
+      <table className="min-w-full divide-y divide-[var(--border-color)] text-left text-sm">
+        <thead className="bg-[var(--surface)] text-[var(--text-secondary)]">
+          <tr>
             {['Task', 'Assigned To', 'Dept', 'Priority', 'Deadline', 'Status'].map(h => (
-              <th key={h} style={{ textAlign: 'left', padding: '4px 8px', color: C.textSecondary, fontWeight: 500 }}>{h}</th>
+              <th key={h} className="px-4 py-3 text-[11px] font-medium uppercase tracking-[0.24em]">
+                {h}
+              </th>
             ))}
           </tr>
         </thead>
-        <tbody>
+        <tbody className="divide-y divide-[var(--border-color)] bg-[var(--card-bg)]">
           {tasks.map((t, i) => {
-            const st = statusStyle(t.status);
-            const pt = priorityTagStyle(t.priority);
+            const statusStyle = t.status === 'Completed' ? 'bg-[#F0FDF4] text-[#16A34A]' :
+                               t.status === 'Delayed' ? 'bg-[#FEF2F2] text-[#DC2626]' :
+                               t.status === 'In Progress' ? 'bg-[#EFF6FF] text-[#2563EB]' :
+                               'bg-[#FFFBEB] text-[#D97706]';
+            const priorityStyle = t.priority === 'High' ? 'bg-[#FEF2F2] text-[#DC2626]' :
+                                 t.priority === 'Medium' ? 'bg-[#FFFBEB] text-[#D97706]' :
+                                 'bg-[#F0FDF4] text-[#16A34A]';
+            const priorityDotColor = t.priority === 'High' ? '#DC2626' : t.priority === 'Medium' ? '#D97706' : '#16A34A';
+
             return (
-              <tr key={t.id} style={{ borderBottom: i < tasks.length - 1 ? `0.5px solid ${C.borderTertiary}` : undefined }}>
-                <td style={{ padding: '6px 8px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                    <div style={{ width: 3, height: 28, borderRadius: 2, background: priorityDotColor(t.priority), flexShrink: 0 }} />
-                    <span style={{ fontSize: 12 }}>{t.title}</span>
+              <tr key={t.id}>
+                <td className="px-4 py-3">
+                  <div className="flex items-center gap-3">
+                    <div
+                      className="h-3 w-3 rounded-full flex-shrink-0"
+                      style={{ backgroundColor: priorityDotColor }}
+                    />
+                    <span className="text-sm font-medium text-[var(--text-primary)]">{t.title}</span>
                   </div>
                 </td>
-                <td style={{ padding: '6px 8px', color: C.textSecondary, fontSize: 11 }}>{t.assignedTo}</td>
-                <td style={{ padding: '6px 8px', color: C.textSecondary, fontSize: 11 }}>{t.department}</td>
-                <td style={{ padding: '6px 8px' }}>
-                  <span style={{ fontSize: 10, padding: '2px 7px', borderRadius: 10, fontWeight: 500, background: pt.bg, color: pt.color }}>{t.priority}</span>
+                <td className="px-4 py-3 text-sm text-[var(--text-secondary)]">{t.assignedTo}</td>
+                <td className="px-4 py-3 text-sm text-[var(--text-secondary)]">{t.department}</td>
+                <td className="px-4 py-3">
+                  <span className={`rounded-full px-2.5 py-1 text-[11px] font-semibold ${priorityStyle}`}>
+                    {t.priority}
+                  </span>
                 </td>
-                <td style={{ padding: '6px 8px', color: C.textSecondary, fontSize: 11 }}>{t.deadline}</td>
-                <td style={{ padding: '6px 8px' }}>
-                  <span style={{ fontSize: 10, padding: '2px 7px', borderRadius: 10, fontWeight: 500, background: st.bg, color: st.color }}>{t.status}</span>
+                <td className="px-4 py-3 text-sm text-[var(--text-secondary)]">{t.deadline}</td>
+                <td className="px-4 py-3">
+                  <span className={`rounded-full px-2.5 py-1 text-[11px] font-semibold ${statusStyle}`}>
+                    {t.status}
+                  </span>
                 </td>
               </tr>
             );
@@ -222,93 +137,6 @@ function TaskTable({ tasks }: { tasks: Task[] }) {
   );
 }
 
-/* ═══════════════════════════════════════════════════════════════════════════
-   CLICKABLE KPI CARD
-═══════════════════════════════════════════════════════════════════════════ */
-function KpiCard({ label, value, sub, color, isActive, onClick }: {
-  label: string;
-  value: number;
-  sub: string;
-  color: string;
-  isActive: boolean;
-  onClick: () => void;
-}) {
-  return (
-    <div
-      onClick={onClick}
-      title={`Click to view ${label}`}
-      style={{
-        background:   isActive ? color + '12' : C.bgSecondary,
-        borderRadius: C.radMd,
-        padding:      '10px 12px',
-        cursor:       'pointer',
-        border:       isActive ? `1.5px solid ${color}55` : `0.5px solid transparent`,
-        transition:   'all .15s',
-        userSelect:   'none' as const,
-        boxShadow:    isActive ? `0 0 0 3px ${color}18` : 'none',
-      }}
-    >
-      <div style={{ fontSize: 11, color: C.textSecondary, marginBottom: 3 }}>{label}</div>
-      <div style={{ fontSize: 20, fontWeight: 500, color }}>{value}</div>
-      <div style={{ fontSize: 10, color: C.textTertiary, marginTop: 2 }}>
-        {isActive ? '▲ Click to close' : sub}
-      </div>
-    </div>
-  );
-}
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   TASK DRAWER  (inline panel that appears below KPI cards)
-═══════════════════════════════════════════════════════════════════════════ */
-function TaskDrawer({ filter, onClose }: { filter: TaskFilter; onClose: () => void }) {
-  const tasks = getFilteredTasks(filter);
-  const pillVariant: Record<TaskFilter, 'blue' | 'green' | 'red' | 'amber'> = {
-    all: 'blue', completed: 'green', delayed: 'red', pending: 'amber',
-  };
-  return (
-    <Panel style={{ marginBottom: 12, animation: 'kpiSlide .2s ease' }}>
-      <PanelHeader
-        title={FILTER_LABELS[filter]}
-        right={
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <Pill variant={pillVariant[filter]} small>{tasks.length} task{tasks.length !== 1 ? 's' : ''}</Pill>
-            <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', color: C.textTertiary, fontSize: 18, lineHeight: 1, padding: '0 2px' }} aria-label="Close">×</button>
-          </div>
-        }
-      />
-      <PanelBody>
-        <TaskTable tasks={tasks} />
-      </PanelBody>
-    </Panel>
-  );
-}
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   CHAIRMAN OVERVIEW  (dashboard home page)
-═══════════════════════════════════════════════════════════════════════════ */
-const DEPT_HEALTH = [
-  { name: 'HR',        pct: 88, color: C.green },
-  { name: 'Admin',     pct: 82, color: C.green },
-  { name: 'Finance',   pct: 78, color: C.green },
-  { name: 'Admission', pct: 62, color: C.amber },
-  { name: 'IT',        pct: 57, color: C.amber },
-  { name: 'Purchase',  pct: 41, color: C.red   },
-  { name: 'Property',  pct: 55, color: C.amber },
-];
-
-const DASH_ALERTS = [
-  { title: 'Purchase order — 4 days overdue',         sub: 'Purchase Officer · Escalated', variant: 'red'   as const, pill: 'Critical'  },
-  { title: 'IT infrastructure — no update 2 days',    sub: 'IT Head · Warning',            variant: 'amber' as const, pill: 'Warning'   },
-  { title: 'Admission report — delayed by 1 day',     sub: 'Admission Head · Delay',       variant: 'amber' as const, pill: 'Delay'     },
-  { title: 'Property maintenance — escalated to you', sub: 'School Manager → Chairman',    variant: 'red'   as const, pill: 'Escalated' },
-];
-
-const AVATAR_POOL = [
-  { bg: '#FAEEDA', color: C.amberDark },
-  { bg: '#EEEDFE', color: '#3C3489'   },
-  { bg: '#E1F5EE', color: '#085041'   },
-];
-
 function ChairmanOverviewPage() {
   const [activeFilter, setActiveFilter] = useState<TaskFilter | null>(null);
 
@@ -316,7 +144,7 @@ function ChairmanOverviewPage() {
   const delayedCount   = ALL_TASKS.filter(t => t.status === 'Delayed').length;
 
   const kpiCards = [
-    { key: 'all'       as TaskFilter, label: 'Total Tasks',     value: ALL_TASKS.length,     sub: 'This month',   color: C.blue    },
+    { key: 'all'       as TaskFilter, label: 'Total Tasks',     value: ALL_TASKS.length,     sub: 'This month',   color: '#185FA5' },
     { key: 'completed' as TaskFilter, label: 'Completed',       value: completedCount,        sub: `${Math.round(completedCount/ALL_TASKS.length*100)}% rate`, color: '#3B6D11' },
     { key: 'delayed'   as TaskFilter, label: 'Delayed',         value: delayedCount,          sub: 'Needs action', color: '#A32D2D' },
     { key: 'pending'   as TaskFilter, label: 'Pending Approval',value: PENDING_APPROVAL_IDS.size, sub: 'Awaiting you', color: '#854F0B' },
@@ -328,495 +156,288 @@ function ChairmanOverviewPage() {
   const pendingApprovalTasks = ALL_TASKS.filter(t => PENDING_APPROVAL_IDS.has(t.id));
 
   return (
-    <div>
-      {/* ── KPI Cards (clickable) ── */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 8, marginBottom: 12 }}>
-        {kpiCards.map(k => (
-          <KpiCard
-            key={k.key}
-            label={k.label}
-            value={k.value}
-            sub={k.sub}
-            color={k.color}
-            isActive={activeFilter === k.key}
-            onClick={() => toggleFilter(k.key)}
-          />
-        ))}
-      </div>
+    <div className="space-y-6">
+      {/* KPI Cards */}
+      <section className="rounded-[26px] border border-[var(--border-color)] bg-[var(--card-bg)] p-6 shadow-sm">
+        <div className="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
+          <div className="min-w-0">
+            <p className="text-[10px] uppercase tracking-[0.3em] text-[var(--text-secondary)]">
+              Chairman dashboard
+            </p>
+            <h1 className="mt-3 text-2xl font-semibold text-[var(--text-primary)]">
+              Executive oversight
+            </h1>
+            <p className="mt-3 max-w-2xl text-sm leading-6 text-[var(--text-secondary)]">
+              Comprehensive view of school operations, task management, and institutional performance.
+            </p>
+          </div>
+        </div>
 
-      {/* ── Task Drawer (opens on KPI click) ── */}
-      {activeFilter !== null && (
-        <TaskDrawer filter={activeFilter} onClose={() => setActiveFilter(null)} />
-      )}
-
-      {/* ── Row 2: Dept Health + Alerts ── */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 12 }}>
-        <Panel>
-          <PanelHeader title="Department health" right={
-            <button style={{ fontSize: 11, color: C.blue, background: 'none', border: 'none', cursor: 'pointer', fontWeight: 500, fontFamily: 'inherit' }}>Full report ↗</button>
-          } />
-          <PanelBody>
-            {DEPT_HEALTH.map((d, i) => (
-              <div key={d.name} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '5px 0', borderBottom: i < DEPT_HEALTH.length - 1 ? `0.5px solid ${C.borderTertiary}` : undefined }}>
-                <div style={{ width: 8, height: 8, borderRadius: '50%', flexShrink: 0, background: d.color }} />
-                <div style={{ fontSize: 12, color: C.textPrimary, width: 80, flexShrink: 0 }}>{d.name}</div>
-                <div style={{ flex: 1, height: 5, background: C.bgSecondary, borderRadius: 3, overflow: 'hidden' }}>
-                  <div style={{ width: `${d.pct}%`, height: '100%', borderRadius: 3, background: d.color }} />
-                </div>
-                <div style={{ fontSize: 11, color: C.textSecondary, minWidth: 28, textAlign: 'right' }}>{d.pct}%</div>
-              </div>
-            ))}
-          </PanelBody>
-        </Panel>
-
-        <Panel>
-          <PanelHeader title="Active alerts" right={<Pill variant="red" small>5 active</Pill>} />
-          <PanelBody>
-            {DASH_ALERTS.map((a, i) => (
-              <div key={a.title} style={{ display: 'flex', alignItems: 'flex-start', gap: 8, padding: '6px 0', borderBottom: i < DASH_ALERTS.length - 1 ? `0.5px solid ${C.borderTertiary}` : undefined }}>
-                <AlertIconCircle variant={a.variant} />
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 12, color: C.textPrimary }}>{a.title}</div>
-                  <div style={{ fontSize: 10, color: C.textTertiary, marginTop: 1 }}>{a.sub}</div>
-                </div>
-                <Pill variant={a.variant} small>{a.pill}</Pill>
-              </div>
-            ))}
-          </PanelBody>
-        </Panel>
-      </div>
-
-      {/* ── Row 3: Recent Tasks + Pending Approvals ── */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-        <Panel>
-          <PanelHeader title="Recent task assignments" right={
-            <button onClick={() => window.location.href = '/chairman/task-assignment'} style={{ fontSize: 11, color: C.blue, background: 'none', border: 'none', cursor: 'pointer', fontWeight: 500, fontFamily: 'inherit' }}>
-              View all ↗
-            </button>
-          } />
-          <PanelBody>
-            {ALL_TASKS.slice(0, 4).map((t, i) => {
-              const pt = priorityTagStyle(t.priority);
-              return (
-                <div key={t.id} style={{ display: 'flex', alignItems: 'flex-start', gap: 8, padding: '6px 0', borderBottom: i < 3 ? `0.5px solid ${C.borderTertiary}` : undefined }}>
-                  <div style={{ width: 3, height: 36, borderRadius: 2, background: priorityDotColor(t.priority), flexShrink: 0, alignSelf: 'center' }} />
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontSize: 12, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{t.title}</div>
-                    <div style={{ fontSize: 10, color: C.textSecondary, marginTop: 2 }}>{t.assignedTo} · Due: {t.deadline}</div>
-                  </div>
-                  <span style={{ fontSize: 10, padding: '2px 7px', borderRadius: 10, fontWeight: 500, background: pt.bg, color: pt.color, whiteSpace: 'nowrap' as const }}>{t.priority}</span>
-                </div>
-              );
-            })}
-          </PanelBody>
-        </Panel>
-
-        <Panel>
-          <PanelHeader title="Pending approvals" right={
-            <button onClick={() => toggleFilter('pending')} style={{ fontSize: 11, color: C.blue, background: 'none', border: 'none', cursor: 'pointer', fontWeight: 500, fontFamily: 'inherit' }}>
-              View all ↗
-            </button>
-          } />
-          <PanelBody>
-            {pendingApprovalTasks.map((t, i) => {
-              const ac = AVATAR_POOL[i % AVATAR_POOL.length];
-              const initials = t.assignedTo.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
-              return (
-                <div key={t.id} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '6px 0', borderBottom: i < pendingApprovalTasks.length - 1 ? `0.5px solid ${C.borderTertiary}` : undefined }}>
-                  <Avatar initials={initials} bg={ac.bg} color={ac.color} />
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontSize: 12, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{t.title}</div>
-                    <div style={{ fontSize: 10, color: C.textSecondary, marginTop: 1 }}>{t.assignedTo} · Pending approval</div>
-                  </div>
-                  <div style={{ display: 'flex', gap: 4, flexShrink: 0 }}>
-                    <button style={{ fontSize: 10, padding: '3px 8px', borderRadius: 5, cursor: 'pointer', border: '0.5px solid #97C459', fontWeight: 500, background: '#EAF3DE', color: C.greenDeep, fontFamily: 'inherit' }}>Approve</button>
-                    <button style={{ fontSize: 10, padding: '3px 8px', borderRadius: 5, cursor: 'pointer', border: '0.5px solid #F09595', fontWeight: 500, background: '#FCEBEB', color: C.redDark, fontFamily: 'inherit' }}>Reject</button>
-                  </div>
-                </div>
-              );
-            })}
-          </PanelBody>
-        </Panel>
-      </div>
-
-      <style>{`@keyframes kpiSlide { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:translateY(0); } }`}</style>
-    </div>
-  );
-}
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   PERFORMANCE PAGE
-═══════════════════════════════════════════════════════════════════════════ */
-const PERF_DATA = [
-  { name: 'School Manager', pct: 76 },
-  { name: 'Principal',      pct: 84 },
-  { name: 'Finance Head',   pct: 78 },
-  { name: 'HR Head',        pct: 88 },
-  { name: 'Admission Head', pct: 62 },
-  { name: 'Admin Head',     pct: 80 },
-  { name: 'IT Head',        pct: 57 },
-  { name: 'Purchase Head',  pct: 41 },
-];
-
-const barColor = (p: number) => p >= 80 ? C.green : p >= 60 ? C.amber : C.red;
-
-function PerformancePage() {
-  const top = [...PERF_DATA].sort((a, b) => b.pct - a.pct)[0];
-  const avg = Math.round(PERF_DATA.reduce((s, d) => s + d.pct, 0) / PERF_DATA.length);
-  const delayRate = Math.round((PERF_DATA.filter(d => d.pct < 60).length / PERF_DATA.length) * 100);
-  return (
-    <>
-      <ChairmanTopbar title="Performance" subtitle="Analytics · Department completion health" />
-      <ContentArea>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 8, marginBottom: 12 }}>
-          {[
-            { label: 'Top performer',  value: top.name,        sub: `${top.pct}% score`,    color: C.green   },
-            { label: 'School average', value: `${avg}%`,        sub: 'All departments',      color: C.blue    },
-            { label: 'Delay rate',     value: `${delayRate}%`, sub: 'Depts below 60%',      color: C.red     },
-          ].map(s => (
-            <div key={s.label} style={{ background: C.bgSecondary, borderRadius: C.radMd, padding: '10px 12px' }}>
-              <div style={{ fontSize: 11, color: C.textSecondary, marginBottom: 3 }}>{s.label}</div>
-              <div style={{ fontSize: 20, fontWeight: 500, color: s.color }}>{s.value}</div>
-              <div style={{ fontSize: 10, color: C.textTertiary, marginTop: 2 }}>{s.sub}</div>
+        <div className="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          {kpiCards.map((metric) => (
+            <div
+              key={metric.label}
+              onClick={() => toggleFilter(metric.key)}
+              className={`cursor-pointer rounded-[22px] border p-4 transition-all hover:shadow-sm ${
+                activeFilter === metric.key
+                  ? 'border-[var(--border-color)] bg-[var(--card-bg)] shadow-sm'
+                  : 'border-[var(--border-color)] bg-[var(--surface)] hover:bg-[var(--bg-tertiary)]'
+              }`}
+            >
+              <p className="text-[11px] uppercase tracking-[0.24em] text-[var(--text-secondary)]">
+                {metric.label}
+              </p>
+              <p className="mt-3 text-2xl font-semibold text-[var(--text-primary)]">
+                {metric.value}
+              </p>
+              <p className="mt-1 text-xs text-[var(--text-secondary)]">
+                {activeFilter === metric.key ? '▲ Click to close' : metric.sub}
+              </p>
             </div>
           ))}
         </div>
-        <Panel>
-          <PanelHeader title="Staff performance scores" />
-          <PanelBody>
-            {PERF_DATA.map((d, i) => (
-              <div key={d.name} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '5px 0', borderBottom: i < PERF_DATA.length - 1 ? `0.5px solid ${C.borderTertiary}` : undefined }}>
-                <div style={{ width: 110, fontSize: 12, color: C.textPrimary, flexShrink: 0 }}>{d.name}</div>
-                <div style={{ flex: 1, height: 5, background: C.bgSecondary, borderRadius: 3, overflow: 'hidden' }}>
-                  <div style={{ width: `${d.pct}%`, height: '100%', borderRadius: 3, background: barColor(d.pct), transition: 'width .4s ease' }} />
+      </section>
+
+      {/* Task Drawer */}
+      {activeFilter !== null && (
+        <section className="rounded-[26px] border border-[var(--border-color)] bg-[var(--card-bg)] p-6 shadow-sm">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <p className="text-[10px] uppercase tracking-[0.24em] text-[var(--text-secondary)]">
+                Task details
+              </p>
+              <h2 className="mt-2 text-lg font-semibold text-[var(--text-primary)]">
+                {FILTER_LABELS[activeFilter]}
+              </h2>
+            </div>
+            <button
+              onClick={() => setActiveFilter(null)}
+              className="rounded-full border border-[var(--border-color)] bg-[var(--surface)] px-4 py-2 text-sm font-medium text-[var(--text-primary)] transition hover:bg-[var(--bg-tertiary)]"
+            >
+              Close
+            </button>
+          </div>
+          <div className="mt-5">
+            <TaskTable tasks={ALL_TASKS.filter(t =>
+              activeFilter === 'all' ? true :
+              activeFilter === 'completed' ? t.status === 'Completed' :
+              activeFilter === 'delayed' ? t.status === 'Delayed' :
+              PENDING_APPROVAL_IDS.has(t.id)
+            )} />
+          </div>
+        </section>
+      )}
+
+      {/* Department Health and Alerts */}
+      <div className="grid gap-6 xl:grid-cols-2">
+        <section className="rounded-[26px] border border-[var(--border-color)] bg-[var(--card-bg)] p-6 shadow-sm">
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <p className="text-[10px] uppercase tracking-[0.24em] text-[var(--text-secondary)]">
+                Department health
+              </p>
+              <h2 className="mt-2 text-lg font-semibold text-[var(--text-primary)]">
+                Operational summary
+              </h2>
+            </div>
+            <span className="rounded-full bg-[#EDF9F1] px-3 py-1 text-xs font-semibold text-[#1D9E75]">
+              {DEPT_HEALTH.length} departments
+            </span>
+          </div>
+
+          <div className="mt-5 space-y-4">
+            {DEPT_HEALTH.map((dept, index) => (
+              <div key={index} className="flex items-center gap-4">
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium text-[var(--text-primary)]">{dept.name}</span>
+                    <span className="text-sm text-[var(--text-secondary)]">{dept.pct}%</span>
+                  </div>
+                  <div className="mt-2 h-2 w-full rounded-full bg-[var(--surface)]">
+                    <div
+                      className="h-full rounded-full transition-all duration-500"
+                      style={{
+                        width: `${dept.pct}%`,
+                        backgroundColor: dept.color
+                      }}
+                    />
+                  </div>
                 </div>
-                <div style={{ fontSize: 11, color: C.textSecondary, minWidth: 32, textAlign: 'right' }}>{d.pct}%</div>
               </div>
             ))}
-          </PanelBody>
-        </Panel>
-      </ContentArea>
-    </>
-  );
-}
+          </div>
+        </section>
 
-/* ═══════════════════════════════════════════════════════════════════════════
-   USER MANAGEMENT PAGE
-═══════════════════════════════════════════════════════════════════════════ */
-const USERS = [
-  { role: 'School Manager',   name: 'Ramesh Kulkarni',   init: 'RK', status: 'Active',   bg: '#E6F1FB', color: C.blueDark       },
-  { role: 'Principal',        name: 'Dr. Sunita Sharma', init: 'SS', status: 'Active',   bg: '#EAF3DE', color: C.greenDeep      },
-  { role: 'Finance Head',     name: 'Priya Joshi',       init: 'PJ', status: 'Active',   bg: '#FAEEDA', color: C.amberDark      },
-  { role: 'HR Head',          name: 'Anita Verma',       init: 'AV', status: 'Active',   bg: '#E1F5EE', color: '#085041'        },
-  { role: 'Admission Head',   name: 'Suresh Patil',      init: 'SP', status: 'Active',   bg: '#EEEDFE', color: '#3C3489'        },
-  { role: 'Admin Head',       name: 'Meena Rawat',       init: 'MR', status: 'Active',   bg: '#F2F4F8', color: C.textSecondary  },
-  { role: 'Purchase Head',    name: 'Kiran Shah',        init: 'KS', status: 'Inactive', bg: '#FCEBEB', color: C.redDark        },
-  { role: 'IT Head',          name: 'Vivek Nair',        init: 'VN', status: 'Active',   bg: '#E6F1FB', color: C.blueDark       },
-  { role: 'Property Manager', name: 'Dilip Bhosale',     init: 'DB', status: 'Active',   bg: '#EAF3DE', color: C.greenDeep      },
-];
+        <section className="rounded-[26px] border border-[var(--border-color)] bg-[var(--card-bg)] p-6 shadow-sm">
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <p className="text-[10px] uppercase tracking-[0.24em] text-[var(--text-secondary)]">
+                Active alerts
+              </p>
+              <h2 className="mt-2 text-lg font-semibold text-[var(--text-primary)]">
+                Recent notifications
+              </h2>
+            </div>
+            <span className="rounded-full bg-[#FEF2F2] px-3 py-1 text-xs font-semibold text-[#DC2626]">
+              {DASH_ALERTS.length} active
+            </span>
+          </div>
 
-function UserManagementPage() {
-  const [search, setSearch] = useState('');
-  const filtered = USERS.filter(u =>
-    u.name.toLowerCase().includes(search.toLowerCase()) ||
-    u.role.toLowerCase().includes(search.toLowerCase()),
-  );
-  return (
-    <>
-      <ChairmanTopbar title="User Management" subtitle="Administration · Manage staff access and operational ownership" />
-      <ContentArea>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-          <input placeholder="Search by name or role…" value={search} onChange={e => setSearch(e.target.value)}
-            style={{ width: 220, fontSize: 12, padding: '6px 8px', borderRadius: 6, border: `0.5px solid ${C.borderSecondary}`, background: C.bgSecondary, fontFamily: 'inherit', color: C.textPrimary, outline: 'none' }} />
-          <button style={{ fontSize: 12, padding: '6px 14px', borderRadius: 6, border: `0.5px solid ${C.borderSecondary}`, cursor: 'pointer', background: C.bgInfo, color: C.blue, fontWeight: 500, fontFamily: 'inherit' }}>
-            + Add new user ↗
-          </button>
-        </div>
-        <Panel>
-          <PanelHeader title="Department heads" right={<Pill variant="blue" small>{USERS.length} total</Pill>} />
-          <PanelBody>
-            {filtered.map((u, i) => (
-              <div key={u.name} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '5px 0', borderBottom: i < filtered.length - 1 ? `0.5px solid ${C.borderTertiary}` : undefined }}>
-                <Avatar initials={u.init} bg={u.bg} color={u.color} />
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: 12, color: C.textPrimary }}>{u.name}</div>
-                  <div style={{ fontSize: 10, color: C.textSecondary }}>{u.role}</div>
+          <div className="mt-5 space-y-4">
+            {DASH_ALERTS.map((alert, index) => (
+              <div key={index} className="flex items-start gap-3 rounded-[18px] border border-[var(--border-color)] bg-[var(--surface)] p-4">
+                <span className="mt-1 h-2.5 w-2.5 rounded-full bg-[#DC2626]" />
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-2">
+                    <span className="truncate text-sm font-semibold text-[var(--text-primary)]">
+                      {alert.title}
+                    </span>
+                    <span className={`rounded-full px-2.5 py-1 text-[11px] font-semibold ${
+                      alert.variant === 'red' ? 'bg-[#FEF2F2] text-[#DC2626]' : 'bg-[#FFFBEB] text-[#D97706]'
+                    }`}>
+                      {alert.pill}
+                    </span>
+                  </div>
+                  <p className="mt-1 text-sm text-[var(--text-secondary)] line-clamp-2">
+                    {alert.sub}
+                  </p>
                 </div>
-                <span style={{ fontSize: 10, padding: '2px 8px', borderRadius: 10, fontWeight: 500, background: u.status === 'Active' ? '#EAF3DE' : '#FCEBEB', color: u.status === 'Active' ? C.greenDeep : C.redDark }}>
-                  {u.status}
-                </span>
               </div>
             ))}
-          </PanelBody>
-        </Panel>
-      </ContentArea>
-    </>
-  );
-}
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   SIDEBAR  (Task Assignment, Approvals, MIS Reports removed)
-═══════════════════════════════════════════════════════════════════════════ */
-const NAV_ITEMS = [
-  {
-    section: 'Master',
-    items: [
-      { label: 'Dashboard',       path: '',              dot: C.blue,    badge: null, bv: undefined as undefined | 'red' | 'amber' | 'blue' },
-    ],
-  },
-  {
-    section: 'Modules',
-    items: [
-      { label: 'Task assignment', path: 'task-assignment', dot: C.red,     badge: null, bv: undefined as undefined | 'red' | 'amber' | 'blue' },
-      { label: 'Task monitor',    path: 'task-monitor',  dot: C.green,   badge: null, bv: undefined as undefined | 'red' | 'amber' | 'blue' },
-      { label: 'Alerts',          path: 'alerts',        dot: C.red,     badge: '5',  bv: 'red'   as 'red' },
-      { label: 'Approvals',       path: 'approvals',     dot: C.amber,   badge: null, bv: undefined as undefined | 'red' | 'amber' | 'blue' },
-      { label: 'MIS report',      path: 'mis-reports',   dot: C.red,     badge: null, bv: undefined as undefined | 'red' | 'amber' | 'blue' },
-      { label: 'Announcements',   path: 'announcements', dot: '#D4537E', badge: null, bv: undefined as undefined | 'red' | 'amber' | 'blue' },
-    ],
-  },
-  {
-    section: 'Admin',
-    items: [
-      { label: 'User management', path: 'users',         dot: '#888780', badge: null, bv: undefined as undefined | 'red' | 'amber' | 'blue' },
-      { label: 'Performance',     path: 'performance',   dot: '#1D9E75', badge: null, bv: undefined as undefined | 'red' | 'amber' | 'blue' },
-    ],
-  },
-];
-
-function ChairmanSidebar() {
-  const { data: dashboard } = useQuery({
-    queryKey: ['chairman-dashboard'],
-    queryFn: getChairmanDashboard,
-    refetchInterval: 30000
-  });
-  const alertCount = dashboard?.alerts?.length ?? dashboard?.delayedTasks ?? 0;
-  const pendingApprovals = dashboard?.pendingApprovals ?? 0;
-
-  return (
-    <div style={{ width: 196, flexShrink: 0, borderRight: `0.5px solid ${C.borderTertiary}`, background: C.bgSecondary, display: 'flex', flexDirection: 'column', overflow: 'hidden', height: '100vh', position: 'sticky', top: 0 }}>
-      {/* Logo */}
-      <div style={{ padding: '14px 14px 12px', borderBottom: `0.5px solid ${C.borderTertiary}` }}>
-        <div style={{ width: 30, height: 30, borderRadius: 7, background: C.blue, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 8 }}>
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <path d="M8 1L10.5 6H15L11 9.5L12.5 14.5L8 11.5L3.5 14.5L5 9.5L1 6H5.5L8 1Z" fill="#fff" opacity=".9" />
-          </svg>
-        </div>
-        <div style={{ fontSize: 13, fontWeight: 500, color: C.textPrimary }}>EduTask Pro</div>
-        <div style={{ fontSize: 10, color: C.textTertiary, marginTop: 1 }}>Chairman Control</div>
+          </div>
+        </section>
       </div>
 
-      {/* Nav */}
-      <nav style={{ flex: 1, padding: '6px 0', overflowY: 'auto' }}>
-        {NAV_ITEMS.map(({ section, items }) => (
-          <React.Fragment key={section}>
-            <div style={{ padding: '8px 12px 3px', fontSize: 10, fontWeight: 500, color: C.textTertiary, letterSpacing: '0.06em', textTransform: 'uppercase' as const }}>
-              {section}
+      {/* Recent Tasks and Pending Approvals */}
+      <div className="grid gap-6 xl:grid-cols-2">
+        <section className="rounded-[26px] border border-[var(--border-color)] bg-[var(--card-bg)] p-6 shadow-sm">
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <p className="text-[10px] uppercase tracking-[0.24em] text-[var(--text-secondary)]">
+                Recent assignments
+              </p>
+              <h2 className="mt-2 text-lg font-semibold text-[var(--text-primary)]">
+                Task activity
+              </h2>
             </div>
-            {items.map(({ label, path, dot, badge, bv }) => {
-              const liveBadge =
-                label === 'Alerts'
-                  ? alertCount
-                  : label === 'Approvals'
-                    ? pendingApprovals
-                    : null;
-              const badgeValue = liveBadge ?? (badge ? Number(badge) : null);
-              const badgeVariant =
-                label === 'Approvals'
-                  ? 'amber'
-                  : bv;
+            <NavLink
+              to="/chairman/task-assignment"
+              className="text-sm font-semibold text-[#378ADD] transition hover:text-[#1E4DB7]"
+            >
+              View all
+            </NavLink>
+          </div>
 
+          <div className="mt-5 space-y-4">
+            {ALL_TASKS.slice(0, 4).map((task, index) => {
+              const priorityColor = task.priority === 'High' ? '#DC2626' : task.priority === 'Medium' ? '#D97706' : '#16A34A';
               return (
-              <NavLink
-                key={label}
-                to={path}
-                end={path === ''}
-                style={({ isActive }) => ({
-                  display: 'flex', alignItems: 'center', gap: 8, padding: '6px 10px',
-                  fontSize: 12, color: isActive ? C.textPrimary : C.textSecondary,
-                  cursor: 'pointer', borderRadius: 6, margin: '1px 6px',
-                  transition: 'background 0.15s', textDecoration: 'none',
-                  fontWeight: isActive ? 500 : 400,
-                  background: isActive ? C.bgPrimary : 'transparent',
-                  border: isActive ? `0.5px solid ${C.borderSecondary}` : '0.5px solid transparent',
-                })}
-                >
-                <div style={{ width: 7, height: 7, borderRadius: '50%', flexShrink: 0, background: dot }} />
-                {label}
-                {badgeValue !== null && badgeValue > 0 && badgeVariant && (
-                  <span style={{
-                    marginLeft: 'auto', fontSize: 10, padding: '1px 6px', borderRadius: 10, fontWeight: 500,
-                    background: badgeVariant === 'red' ? '#FCEBEB' : badgeVariant === 'amber' ? '#FAEEDA' : '#E6F1FB',
-                    color:      badgeVariant === 'red' ? C.redDark  : badgeVariant === 'amber' ? C.amberDark : C.blueDark,
-                  }}>
-                    {badgeValue}
+                <div key={task.id} className="flex items-start gap-3">
+                  <div
+                    className="mt-1 h-3 w-3 rounded-full flex-shrink-0"
+                    style={{ backgroundColor: priorityColor }}
+                  />
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-medium text-[var(--text-primary)] line-clamp-1">
+                      {task.title}
+                    </p>
+                    <p className="mt-1 text-sm text-[var(--text-secondary)]">
+                      {task.assignedTo} • Due: {task.deadline}
+                    </p>
+                  </div>
+                  <span className={`rounded-full px-2.5 py-1 text-[11px] font-semibold ${
+                    task.priority === 'High' ? 'bg-[#FEF2F2] text-[#DC2626]' :
+                    task.priority === 'Medium' ? 'bg-[#FFFBEB] text-[#D97706]' :
+                    'bg-[#F0FDF4] text-[#16A34A]'
+                  }`}>
+                    {task.priority}
                   </span>
-                )}
-              </NavLink>
+                </div>
               );
             })}
-          </React.Fragment>
-        ))}
-      </nav>
-
-      {/* User footer */}
-      <div style={{ padding: '10px 12px', borderTop: `0.5px solid ${C.borderTertiary}` }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <Avatar initials="CH" bg="#E6F1FB" color={C.blueDark} size={28} />
-          <div>
-            <div style={{ fontSize: 12, fontWeight: 500, color: C.textPrimary }}>Chairman</div>
-            <div style={{ fontSize: 10, color: C.textTertiary }}>Master access</div>
           </div>
-        </div>
+        </section>
+
+        <section className="rounded-[26px] border border-[var(--border-color)] bg-[var(--card-bg)] p-6 shadow-sm">
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <p className="text-[10px] uppercase tracking-[0.24em] text-[var(--text-secondary)]">
+                Pending approvals
+              </p>
+              <h2 className="mt-2 text-lg font-semibold text-[var(--text-primary)]">
+                Awaiting action
+              </h2>
+            </div>
+            <NavLink
+              to="/chairman/approvals"
+              className="text-sm font-semibold text-[#378ADD] transition hover:text-[#1E4DB7]"
+            >
+              Review all
+            </NavLink>
+          </div>
+
+          <div className="mt-5 space-y-4">
+            {pendingApprovalTasks.map((task, index) => (
+              <div key={task.id} className="flex items-center gap-3 rounded-[18px] border border-[var(--border-color)] bg-[var(--surface)] p-4">
+                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#E6F1FB] text-sm font-semibold text-[#0C447C]">
+                  {task.assignedTo.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase()}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-medium text-[var(--text-primary)] line-clamp-1">
+                    {task.title}
+                  </p>
+                  <p className="mt-1 text-sm text-[var(--text-secondary)]">
+                    {task.assignedTo} • Pending approval
+                  </p>
+                </div>
+                <div className="flex gap-2">
+                  <button className="rounded-full bg-[#16A34A] px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-[#15803D] focus:outline-none focus:ring-2 focus:ring-[#16A34A] focus:ring-offset-2">
+                    Approve
+                  </button>
+                  <button className="rounded-full border border-[var(--border-color)] bg-[var(--surface)] px-3 py-1.5 text-xs font-medium text-[var(--text-primary)] transition hover:bg-[var(--bg-tertiary)] focus:outline-none focus:ring-2 focus:ring-[var(--border-color)] focus:ring-offset-2">
+                    Reject
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
       </div>
     </div>
   );
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   TOPBAR
-═══════════════════════════════════════════════════════════════════════════ */
-function ChairmanTopbar({ title, subtitle }: { title: string; subtitle?: string }) {
-  const { logout } = useAuth();
-  const today = new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
-
-  return (
-    <div style={{ padding: '11px 18px', borderBottom: `0.5px solid ${C.borderTertiary}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0, background: C.bgPrimary }}>
-      <div>
-        <div style={{ fontSize: 14, fontWeight: 500, color: C.textPrimary }}>{title}</div>
-        <div style={{ fontSize: 11, color: C.textSecondary, marginTop: 1 }}>{subtitle ?? `${today} · All departments`}</div>
-      </div>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-        <Avatar initials="CH" bg="#E6F1FB" color={C.blueDark} size={28} />
-        <button
-          type="button"
-          onClick={logout}
-          style={{
-            fontSize: 11,
-            color: C.blueDark,
-            border: `1px solid ${C.borderSecondary}`,
-            borderRadius: 6,
-            background: 'white',
-            padding: '6px 12px',
-            cursor: 'pointer',
-            fontWeight: 500
-          }}
-        >
-          Logout
-        </button>
-      </div>
-    </div>
-  );
-}
-
-function ContentArea({ children }: { children: React.ReactNode }) {
-  return (
-    <div style={{ flex: 1, overflowY: 'auto', padding: '14px 18px', background: C.bgPrimary }}>
-      {children}
-    </div>
-  );
-}
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   MAIN SHELL
+   MAIN DASHBOARD COMPONENT
 ═══════════════════════════════════════════════════════════════════════════ */
 function ChairmanDashboard() {
   useSocket();
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', background: C.bgPage, color: C.textPrimary, fontFamily: "'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, sans-serif" }}>
-      <ChairmanSidebar />
-      <main style={{ minWidth: 0, flex: 1, display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden' }}>
-        <Routes>
-          <Route
-            index
-            element={
-              <>
-                <ChairmanTopbar title="Chairman master dashboard" />
-                <ContentArea><ChairmanOverview /></ContentArea>
-              </>
-            }
-          />
-          <Route path="overview" element={<Navigate to=".." replace />} />
-          <Route
-            path="task-assignment"
-            element={
-              <>
-                <ChairmanTopbar title="Task Assignment" subtitle="Modules - Assign and review department tasks" />
-                <ContentArea><TaskAssignment /></ContentArea>
-              </>
-            }
-          />
-          <Route
-            path="task-monitor"
-            element={
-              <>
-                <ChairmanTopbar title="Task Monitor" subtitle="Modules · Live task tracker — all departments" />
-                <ContentArea><TaskMonitoring /></ContentArea>
-              </>
-            }
-          />
-          <Route path="task-monitoring" element={<Navigate to="../task-monitor" replace />} />
-          <Route
-            path="alerts"
-            element={
-              <>
-                <ChairmanTopbar title="Alerts & Escalations" subtitle="Modules · Unresolved alerts requiring action" />
-                <ContentArea><AlertsEscalations /></ContentArea>
-              </>
-            }
-          />
-          <Route path="alerts-escalations" element={<Navigate to="../alerts" replace />} />
-          <Route
-            path="approvals"
-            element={
-              <>
-                <ChairmanTopbar title="Approvals" subtitle="Modules - Review requests awaiting chairman action" />
-                <ContentArea><ApprovalManagement /></ContentArea>
-              </>
-            }
-          />
-          <Route
-            path="mis-reports"
-            element={
-              <>
-                <ChairmanTopbar title="MIS Reports" subtitle="Reports - Generate and download institutional reports" />
-                <ContentArea><MISReports /></ContentArea>
-              </>
-            }
-          />
-          <Route path="reports" element={<Navigate to="../mis-reports" replace />} />
-          <Route
-            path="announcements"
-            element={
-              <>
-                <ChairmanTopbar title="Announcements" subtitle="Communications · Broadcast messages to staff" />
-                <ContentArea><AnnouncementsPage /></ContentArea>
-              </>
-            }
-          />
-          <Route
-            path="users"
-            element={
-              <>
-                <ChairmanTopbar title="User Management" subtitle="Administration · Manage staff access and operational ownership" />
-                <ContentArea><UserManagementPage /></ContentArea>
-              </>
-            }
-          />
-          <Route path="user-management" element={<Navigate to="../users" replace />} />
-          <Route
-            path="performance"
-            element={
-              <>
-                <ChairmanTopbar title="Performance" subtitle="Analytics · Department completion health" />
-                <ContentArea><PerformancePage /></ContentArea>
-              </>
-            }
-          />
-          <Route path="performance-analytics" element={<Navigate to="../performance" replace />} />
-          <Route path="*" element={<Navigate to="." replace />} />
-        </Routes>
+    <div className="flex min-h-screen bg-[var(--bg-secondary)] text-[var(--text-primary)]">
+      <Sidebar />
+      <main className="min-w-0 flex-1">
+        <Navbar />
+        <div className="h-full overflow-y-auto p-6">
+          <Routes>
+            <Route index element={<ChairmanOverviewPage />} />
+            <Route path="overview" element={<Navigate to=".." replace />} />
+            <Route path="task-assignment" element={<TaskAssignment />} />
+            <Route path="task-monitor" element={<TaskMonitoring />} />
+            <Route path="task-monitoring" element={<Navigate to="../task-monitor" replace />} />
+            <Route path="alerts" element={<AlertsEscalations />} />
+            <Route path="alerts-escalations" element={<Navigate to="../alerts" replace />} />
+            <Route path="approvals" element={<ApprovalManagement />} />
+            <Route path="mis-reports" element={<MISReports />} />
+            <Route path="reports" element={<Navigate to="../mis-reports" replace />} />
+            <Route path="announcements" element={<AnnouncementsPage />} />
+            <Route path="users" element={<UserManagement />} />
+            <Route path="user-management" element={<Navigate to="../users" replace />} />
+            <Route path="performance" element={<PerformanceAnalytics />} />
+            <Route path="performance-analytics" element={<Navigate to="../performance" replace />} />
+            <Route path="*" element={<Navigate to="." replace />} />
+          </Routes>
+        </div>
       </main>
     </div>
   );

@@ -65,6 +65,7 @@ function Navbar({ actions, rightActions, title }: NavbarProps) {
   const [darkMode, setDarkMode] = useState(false);
 
   const isDirectorRoute = location.pathname.startsWith('/director');
+  const isChairmanRoute = location.pathname.startsWith('/chairman');
 
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme');
@@ -73,13 +74,13 @@ function Navbar({ actions, rightActions, title }: NavbarProps) {
   }, []);
 
   useEffect(() => {
-    // Force dark mode for director routes, otherwise use user preference
-    const shouldBeDark = isDirectorRoute || darkMode;
+    // Force dark mode for director and chairman routes, otherwise use user preference
+    const shouldBeDark = isDirectorRoute || isChairmanRoute || darkMode;
     document.documentElement.classList.toggle('dark', shouldBeDark);
-    if (!isDirectorRoute) {
+    if (!isDirectorRoute && !isChairmanRoute) {
       localStorage.setItem('theme', darkMode ? 'dark' : 'light');
     }
-  }, [darkMode, isDirectorRoute]);
+  }, [darkMode, isDirectorRoute, isChairmanRoute]);
   const resolvedTitle =
     title ??
     pageTitles[location.pathname] ??
@@ -112,7 +113,7 @@ function Navbar({ actions, rightActions, title }: NavbarProps) {
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
-          {!isDirectorRoute && (
+          {!isDirectorRoute && !isChairmanRoute && (
             <button
               type="button"
               onClick={() => setDarkMode((prev) => !prev)}
@@ -121,10 +122,10 @@ function Navbar({ actions, rightActions, title }: NavbarProps) {
               {darkMode ? 'Light mode' : 'Dark mode'}
             </button>
           )}
-          {!isDirectorRoute && unreadCount > 0 && (
+          {!isDirectorRoute && !isChairmanRoute && unreadCount > 0 && (
             <Badge variant="red">{unreadCount} alerts</Badge>
           )}
-          {!isDirectorRoute && pendingApprovals > 0 && (
+          {!isDirectorRoute && !isChairmanRoute && pendingApprovals > 0 && (
             <Badge variant="amber">{pendingApprovals} pending approvals</Badge>
           )}
           {actions}
@@ -133,7 +134,7 @@ function Navbar({ actions, rightActions, title }: NavbarProps) {
             {getInitials(user?.name)}
           </div>
           {rightActions}
-          {user?.role === ROLES.DIRECTOR ? (
+          {user?.role === ROLES.DIRECTOR || user?.role === ROLES.CHAIRMAN ? (
             <button
               type="button"
               onClick={logout}
