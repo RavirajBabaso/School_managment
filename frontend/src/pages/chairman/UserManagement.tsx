@@ -157,176 +157,108 @@ const UserManagement: React.FC = () => {
   }
 
   return (
-    <div className="p-6 space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-semibold">User Management</h1>
-        <Button onClick={() => setIsAddModalOpen(true)}>Add new user</Button>
-      </div>
+    <div className="overflow-x-auto rounded-[22px] border border-slate-800 bg-[#111827]">
+  <table className="min-w-full divide-y divide-slate-800 text-left">
+    {/* Header */}
+    <thead className="bg-[#0F172A]">
+      <tr>
+        <th className="px-6 py-4 text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-400">
+          Name
+        </th>
 
-      <UserTable
-        users={users || []}
-        onEdit={openEditModal}
-        onDeactivate={openDeactivateModal}
-      />
+        <th className="px-6 py-4 text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-400">
+          Role
+        </th>
 
-      {/* Add User Modal */}
-      <Modal
-        isOpen={isAddModalOpen}
-        onClose={() => setIsAddModalOpen(false)}
-        title="Add New User"
-        footer={
-          <div className="flex justify-end space-x-2">
-            <Button variant="ghost" onClick={() => setIsAddModalOpen(false)}>Cancel</Button>
-            <Button onClick={handleAddUser} loading={addUserMutation.isPending}>Add User</Button>
-          </div>
-        }
-      >
-        <div className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Full Name</label>
-            <input
-              type="text"
-              value={addForm.name}
-              onChange={(e) => setAddForm({ ...addForm, name: e.target.value })}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            />
-            {addErrors.name && <p className="mt-1 text-sm text-red-600">{addErrors.name}</p>}
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Email</label>
-            <input
-              type="email"
-              value={addForm.email}
-              onChange={(e) => setAddForm({ ...addForm, email: e.target.value })}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            />
-            {addErrors.email && <p className="mt-1 text-sm text-red-600">{addErrors.email}</p>}
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Role</label>
-            <select
-              value={addForm.role}
-              onChange={(e) => setAddForm({ ...addForm, role: e.target.value })}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            >
-              <option value="">Select Role</option>
-              {DEPARTMENT_HEAD_ROLES.map((role) => (
-                <option key={role} value={role}>
-                  {ROLE_LABELS[role]}
-                </option>
-              ))}
-            </select>
-            {addErrors.role && <p className="mt-1 text-sm text-red-600">{addErrors.role}</p>}
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Department</label>
-            <select
-              value={addForm.department_id || ''}
-              onChange={(e) => setAddForm({ ...addForm, department_id: parseInt(e.target.value) || null })}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            >
-              <option value="">Select Department</option>
-              {departments?.map((dept) => (
-                <option key={dept.id} value={dept.id}>
-                  {dept.name}
-                </option>
-              ))}
-            </select>
-            {addErrors.department_id && <p className="mt-1 text-sm text-red-600">{addErrors.department_id}</p>}
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Temporary Password</label>
-            <input
-              type="password"
-              value={addForm.password}
-              onChange={(e) => setAddForm({ ...addForm, password: e.target.value })}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            />
-            {addErrors.password && <p className="mt-1 text-sm text-red-600">{addErrors.password}</p>}
-          </div>
-        </div>
-      </Modal>
+        <th className="px-6 py-4 text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-400">
+          Department
+        </th>
 
-      {/* Edit User Modal */}
-      <Modal
-        isOpen={isEditModalOpen}
-        onClose={() => setIsEditModalOpen(false)}
-        title="Edit User"
-        footer={
-          <div className="flex justify-end space-x-2">
-            <Button variant="ghost" onClick={() => setIsEditModalOpen(false)}>Cancel</Button>
-            <Button onClick={handleEditUser} loading={editUserMutation.isPending}>Update User</Button>
-          </div>
-        }
-      >
-        <div className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Full Name</label>
-            <input
-              type="text"
-              value={editForm.name}
-              onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            />
-            {editErrors.name && <p className="mt-1 text-sm text-red-600">{editErrors.name}</p>}
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Email</label>
-            <input
-              type="email"
-              value={editForm.email}
-              onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            />
-            {editErrors.email && <p className="mt-1 text-sm text-red-600">{editErrors.email}</p>}
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Department</label>
-            <select
-              value={editForm.department_id || ''}
-              onChange={(e) => setEditForm({ ...editForm, department_id: parseInt(e.target.value) || null })}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            >
-              <option value="">Select Department</option>
-              {departments?.map((dept) => (
-                <option key={dept.id} value={dept.id}>
-                  {dept.name}
-                </option>
-              ))}
-            </select>
-            {editErrors.department_id && <p className="mt-1 text-sm text-red-600">{editErrors.department_id}</p>}
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">New Password (optional)</label>
-            <input
-              type="password"
-              value={editForm.password || ''}
-              onChange={(e) => setEditForm({ ...editForm, password: e.target.value })}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            />
-          </div>
-        </div>
-      </Modal>
+        <th className="px-6 py-4 text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-400">
+          Email
+        </th>
 
-      {/* Deactivate Confirmation Modal */}
-      <Modal
-        isOpen={isDeactivateModalOpen}
-        onClose={() => setIsDeactivateModalOpen(false)}
-        title="Deactivate User"
-        footer={
-          <div className="flex justify-end space-x-2">
-            <Button variant="ghost" onClick={() => setIsDeactivateModalOpen(false)}>Cancel</Button>
-            <Button onClick={handleDeactivateUser} variant="danger" loading={deactivateUserMutation.isPending}>
-              Deactivate
-            </Button>
-          </div>
-        }
-      >
-        <p>
-          Are you sure you want to deactivate {selectedUser?.name}? They will lose access immediately.
-        </p>
-      </Modal>
-    </div>
+        <th className="px-6 py-4 text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-400">
+          Status
+        </th>
+
+        <th className="px-6 py-4 text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-400">
+          Actions
+        </th>
+      </tr>
+    </thead>
+
+    {/* Body */}
+    <tbody className="divide-y divide-slate-800 bg-[#111827]">
+      {users.map((user) => (
+        <tr
+          key={user.id}
+          className="transition hover:bg-[#172036]"
+        >
+          {/* Name */}
+          <td className="px-6 py-5">
+            <div className="flex items-center gap-4">
+              <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#1E293B] text-sm font-semibold text-white">
+                {user.name
+                  .split(' ')
+                  .map((word) => word[0])
+                  .join('')
+                  .slice(0, 2)}
+              </div>
+
+              <div>
+                <p className="font-medium text-white">
+                  {user.name}
+                </p>
+              </div>
+            </div>
+          </td>
+
+          {/* Role */}
+          <td className="px-6 py-5 text-sm font-medium text-slate-300">
+            {user.role}
+          </td>
+
+          {/* Department */}
+          <td className="px-6 py-5 text-sm text-slate-400">
+            {user.department?.name || '--'}
+          </td>
+
+          {/* Email */}
+          <td className="px-6 py-5 text-sm text-slate-300">
+            {user.email}
+          </td>
+
+          {/* Status */}
+          <td className="px-6 py-5">
+            <span className="rounded-full bg-green-500/10 px-3 py-1 text-xs font-semibold text-green-400">
+              Active
+            </span>
+          </td>
+
+          {/* Actions */}
+          <td className="px-6 py-5">
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => onEdit(user)}
+                className="rounded-xl bg-[#1E293B] px-4 py-2 text-sm font-medium text-white transition hover:bg-[#334155]"
+              >
+                Edit
+              </button>
+
+              <button
+                onClick={() => onDeactivate(user)}
+                className="rounded-xl bg-red-500/10 px-4 py-2 text-sm font-medium text-red-400 transition hover:bg-red-500/20"
+              >
+                Deactivate
+              </button>
+            </div>
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
   );
 };
 

@@ -110,42 +110,91 @@ function AnnouncementsPage() {
   };
 
   return (
-    <section className="grid gap-5 p-5 xl:grid-cols-[1.1fr,0.9fr]">
-      <article className="rounded-[22px] border border-[#EFF2F6] bg-white p-6">
-        <div className="flex items-center justify-between gap-3">
-          <div>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#185FA5]">
-              Comms Module
-            </p>
-            <h2 className="mt-2 text-2xl font-semibold text-[#1E293B]">Broadcast message</h2>
-          </div>
-          <Badge variant="blue">Chairman control</Badge>
+  <div className="space-y-6">
+    {/* Header */}
+    <section className="rounded-[26px] border border-[var(--border-color)] bg-[var(--card-bg)] p-6 shadow-sm">
+      <div className="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
+        <div>
+          <p className="text-[10px] uppercase tracking-[0.3em] text-[var(--text-secondary)]">
+            Communication center
+          </p>
+
+          <h1 className="mt-3 text-2xl font-semibold text-[var(--text-primary)]">
+            Announcements
+          </h1>
+
+          <p className="mt-3 max-w-2xl text-sm leading-6 text-[var(--text-secondary)]">
+            Broadcast important updates, instructions and notifications across departments.
+          </p>
         </div>
 
-        <form className="mt-6 space-y-5" onSubmit={(event) => void handleSubmit(event)}>
-          <label className="flex flex-col gap-1.5">
-            <span className="text-[12px] font-medium text-[#36506C]">Target</span>
+        <Badge variant="blue">
+          Chairman Control
+        </Badge>
+      </div>
+    </section>
+
+    {/* Main Grid */}
+    <div className="grid gap-6 xl:grid-cols-[1.1fr,0.9fr]">
+      {/* Broadcast Panel */}
+      <section className="rounded-[26px] border border-[var(--border-color)] bg-[var(--card-bg)] p-6 shadow-sm">
+        <div>
+          <p className="text-[10px] uppercase tracking-[0.24em] text-[var(--text-secondary)]">
+            Broadcast panel
+          </p>
+
+          <h2 className="mt-2 text-lg font-semibold text-[var(--text-primary)]">
+            Create Announcement
+          </h2>
+        </div>
+
+        <form
+          className="mt-6 space-y-5"
+          onSubmit={(event) => void handleSubmit(event)}
+        >
+          {/* Target */}
+          <label className="flex flex-col gap-2">
+            <span className="text-sm font-medium text-[var(--text-primary)]">
+              Target Audience
+            </span>
+
             <select
-              className="min-h-[40px] rounded-[10px] border-[0.5px] border-[#DCE2EA] bg-[#F8F9FC] px-3 text-sm text-[#1E293B] outline-none focus:border-[#185FA5] focus:ring-4 focus:ring-[#185FA5]/10"
-              onChange={(event) => setTarget(event.target.value as AnnouncementTarget)}
+              className="min-h-[46px] rounded-[14px] border border-[var(--border-color)] bg-[var(--surface)] px-4 text-sm text-[var(--text-primary)] outline-none transition focus:border-[#185FA5]"
+              onChange={(event) =>
+                setTarget(event.target.value as AnnouncementTarget)
+              }
               value={target}
             >
-              <option value="ALL">All staff</option>
-              <option value="DEPARTMENT">Specific department</option>
+              <option value="ALL">All Staff</option>
+              <option value="DEPARTMENT">
+                Specific Department
+              </option>
             </select>
           </label>
 
+          {/* Department */}
           {target === 'DEPARTMENT' ? (
-            <label className="flex flex-col gap-1.5">
-              <span className="text-[12px] font-medium text-[#36506C]">Department</span>
+            <label className="flex flex-col gap-2">
+              <span className="text-sm font-medium text-[var(--text-primary)]">
+                Department
+              </span>
+
               <select
-                className="min-h-[40px] rounded-[10px] border-[0.5px] border-[#DCE2EA] bg-[#F8F9FC] px-3 text-sm text-[#1E293B] outline-none focus:border-[#185FA5] focus:ring-4 focus:ring-[#185FA5]/10"
-                onChange={(event) => setDepartmentId(event.target.value)}
+                className="min-h-[46px] rounded-[14px] border border-[var(--border-color)] bg-[var(--surface)] px-4 text-sm text-[var(--text-primary)] outline-none transition focus:border-[#185FA5]"
+                onChange={(event) =>
+                  setDepartmentId(event.target.value)
+                }
                 value={departmentId}
               >
-                <option value="">Select department</option>
+                <option value="">
+                  Select department
+                </option>
+
                 {departmentOptions.map((department) => (
-                  <option key={department.id} value={department.id}>
+                  <option
+                    key={department.id}
+                    value={department.id}
+                  >
                     {department.name}
                   </option>
                 ))}
@@ -153,67 +202,107 @@ function AnnouncementsPage() {
             </label>
           ) : null}
 
-          <label className="flex flex-col gap-1.5">
-            <span className="text-[12px] font-medium text-[#36506C]">Message</span>
+          {/* Message */}
+          <label className="flex flex-col gap-2">
+            <span className="text-sm font-medium text-[var(--text-primary)]">
+              Message
+            </span>
+
             <textarea
-              className="min-h-[220px] rounded-[16px] border-[0.5px] border-[#DCE2EA] bg-[#F8F9FC] px-4 py-3 text-sm leading-6 text-[#1E293B] outline-none transition placeholder:text-[#8A99B0] focus:border-[#185FA5] focus:ring-4 focus:ring-[#185FA5]/10"
-              onChange={(event) => setMessage(event.target.value)}
-              placeholder="Share an update, direction, or escalation note for your teams."
+              className="min-h-[240px] rounded-[18px] border border-[var(--border-color)] bg-[var(--surface)] px-4 py-4 text-sm leading-6 text-[var(--text-primary)] outline-none transition placeholder:text-[var(--text-secondary)] focus:border-[#185FA5]"
+              onChange={(event) =>
+                setMessage(event.target.value)
+              }
+              placeholder="Share updates, instructions or important institutional announcements..."
               value={message}
             />
           </label>
 
           <div className="flex justify-end">
-            <Button loading={createAnnouncementMutation.isPending} type="submit">
-              Broadcast now
+            <Button
+              loading={createAnnouncementMutation.isPending}
+              type="submit"
+            >
+              Broadcast Now
             </Button>
           </div>
         </form>
-      </article>
+      </section>
 
-      <article className="rounded-[22px] border border-[#EFF2F6] bg-white p-6">
+      {/* Recent Announcements */}
+      <section className="rounded-[26px] border border-[var(--border-color)] bg-[var(--card-bg)] p-6 shadow-sm">
         <div className="flex items-center justify-between gap-3">
           <div>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#185FA5]">
-              Comms Log
+            <p className="text-[10px] uppercase tracking-[0.24em] text-[var(--text-secondary)]">
+              Communication log
             </p>
-            <h2 className="mt-2 text-2xl font-semibold text-[#1E293B]">Recent announcements</h2>
+
+            <h2 className="mt-2 text-lg font-semibold text-[var(--text-primary)]">
+              Recent Announcements
+            </h2>
           </div>
-          <Badge variant="gray">{announcementsQuery.data?.length ?? 0} items</Badge>
+
+          <span className="rounded-full bg-[#EDF9F1] px-3 py-1 text-xs font-semibold text-[#1D9E75]">
+            {announcementsQuery.data?.length ?? 0} items
+          </span>
         </div>
 
-        <div className="mt-6 space-y-3">
-          {announcementsQuery.data && announcementsQuery.data.length > 0 ? (
-            announcementsQuery.data.map((announcement) => (
-              <div
-                className="rounded-[18px] border border-[#EFF2F6] bg-[#FAFCFE] px-4 py-4"
-                key={announcement.id}
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <p className="text-sm font-semibold text-[#1E293B]">
-                      {getAnnouncementTitle(announcement.message)}
-                    </p>
-                    <p className="mt-2 text-sm leading-6 text-[#5B6E8C]">{announcement.message}</p>
+        <div className="mt-6 space-y-4">
+          {announcementsQuery.data &&
+          announcementsQuery.data.length > 0 ? (
+            announcementsQuery.data.map(
+              (announcement) => (
+                <div
+                  key={announcement.id}
+                  className="rounded-[20px] border border-[var(--border-color)] bg-[var(--surface)] p-5 transition hover:bg-[var(--bg-tertiary)]"
+                >
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="min-w-0">
+                      <h3 className="truncate text-base font-semibold text-[var(--text-primary)]">
+                        {getAnnouncementTitle(
+                          announcement.message
+                        )}
+                      </h3>
+
+                      <p className="mt-3 text-sm leading-6 text-[var(--text-secondary)]">
+                        {announcement.message}
+                      </p>
+                    </div>
+
+                    <Badge
+                      variant={
+                        announcement.target === 'ALL'
+                          ? 'blue'
+                          : 'amber'
+                      }
+                    >
+                      {announcement.target === 'ALL'
+                        ? 'All Staff'
+                        : announcement.department?.name ??
+                          'Department'}
+                    </Badge>
                   </div>
-                  <Badge variant={announcement.target === 'ALL' ? 'blue' : 'amber'}>
-                    {announcement.target === 'ALL'
-                      ? 'All staff'
-                      : announcement.department?.name ?? 'Department'}
-                  </Badge>
+
+                  <div className="mt-4 flex items-center justify-between">
+                    <p className="text-xs text-[var(--text-secondary)]">
+                      {formatDate(
+                        announcement.created_at
+                      )}
+                    </p>
+                  </div>
                 </div>
-                <p className="mt-3 text-xs text-[#8A99B0]">{formatDate(announcement.created_at)}</p>
-              </div>
-            ))
+              )
+            )
           ) : (
-            <div className="rounded-[16px] border border-dashed border-[#D7E1EC] bg-[#FAFCFE] px-4 py-10 text-center text-sm text-[#8A99B0]">
-              No announcements have been broadcast yet.
+            <div className="rounded-[20px] border border-dashed border-[var(--border-color)] bg-[var(--surface)] px-4 py-12 text-center text-sm text-[var(--text-secondary)]">
+              No announcements broadcast yet.
             </div>
           )}
         </div>
-      </article>
-    </section>
-  );
+      </section>
+    </div>
+  </div>
+);
 }
 
 export default AnnouncementsPage;

@@ -77,96 +77,113 @@ function TaskMonitoring() {
   };
 
   return (
-    <section className="space-y-5 p-5 bg-[var(--bg-secondary)] min-h-screen text-[var(--text-primary)]">
-
-      {/* ================= KPI CARDS ================= */}
-      <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
-        {statCards.map((card) => (
-          <article
-            key={card.key}
-            onClick={() => {
-              setActiveFilter(card.key);
-              tableRef.current?.scrollIntoView({ behavior: 'smooth' });
-            }}
-            className={`cursor-pointer rounded-[14px] border p-4 transition
-              ${
-                activeFilter === card.key
-                  ? 'border-[#185FA5] bg-[#EFF6FF]'
-                  : 'border-[#EFF2F6] bg-white hover:bg-[#F8FAFC]'
-              }
-            `}
+  <section className="min-h-screen space-y-6 bg-[#020817] p-6 text-white">
+    
+    {/* ================= KPI CARDS ================= */}
+    <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      {statCards.map((card) => (
+        <article
+          key={card.key}
+          onClick={() => {
+            setActiveFilter(card.key);
+            tableRef.current?.scrollIntoView({
+              behavior: 'smooth'
+            });
+          }}
+          className={`cursor-pointer rounded-[24px] border p-5 transition-all duration-200 ${
+            activeFilter === card.key
+              ? 'border-[#185FA5] bg-[#172554]'
+              : 'border-slate-800 bg-[#111827] hover:bg-[#172036]'
+          }`}
+        >
+          {/* Badge */}
+          <span
+            className={[
+              'inline-flex rounded-full px-3 py-1 text-xs font-semibold',
+              card.color
+            ].join(' ')}
           >
-            <span
-              className={[
-                'inline-flex rounded-full px-2 py-1 text-[11px] font-semibold',
-                card.color
-              ].join(' ')}
-            >
-              {card.label}
-            </span>
+            {card.label}
+          </span>
 
-            <p className="mt-3 text-2xl font-semibold text-[#1E293B]">
-              {counts[card.key]}
-            </p>
+          {/* Count */}
+          <p className="mt-4 text-3xl font-semibold text-white">
+            {counts[card.key]}
+          </p>
 
-            <p className="mt-1 text-xs text-[#8A99B0]">
-              Click to view {card.label.toLowerCase()} tasks
-            </p>
-          </article>
-        ))}
-      </div>
+          {/* Text */}
+          <p className="mt-2 text-sm text-slate-400">
+            Click to view {card.label.toLowerCase()} tasks
+          </p>
+        </article>
+      ))}
+    </div>
 
-      {/* ================= HEADER ================= */}
-      <div className="rounded-[14px] border border-[#EFF2F6] bg-white p-5">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#185FA5]">
-              Monitor Module
-            </p>
-            <h2 className="mt-2 text-xl font-semibold text-[#1E293B]">
-              Task monitoring view
-            </h2>
+    {/* ================= HEADER ================= */}
+    <div className="rounded-[28px] border border-slate-800 bg-[#111827] p-6 shadow-sm">
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        
+        {/* Left */}
+        <div>
+          <p className="text-[10px] uppercase tracking-[0.28em] text-slate-500">
+            Monitor Module
+          </p>
+
+          <h2 className="mt-3 text-2xl font-semibold text-white">
+            Task Monitoring View
+          </h2>
+        </div>
+
+        {/* Right */}
+        <div className="flex flex-wrap items-center gap-3">
+          
+          {/* Tabs */}
+          <div className="flex flex-wrap gap-2">
+            {filterTabs.map((tab) => (
+              <button
+                key={tab.value}
+                onClick={() => {
+                  setActiveFilter(tab.value);
+
+                  tableRef.current?.scrollIntoView({
+                    behavior: 'smooth'
+                  });
+                }}
+                className={[
+                  'rounded-full px-4 py-2 text-sm font-medium transition-all',
+                  activeFilter === tab.value
+                    ? 'bg-[#185FA5] text-white shadow-sm'
+                    : 'border border-slate-700 bg-[#0F172A] text-slate-400 hover:bg-[#172036]'
+                ].join(' ')}
+              >
+                {tab.label}
+              </button>
+            ))}
           </div>
 
-          <div className="flex items-center gap-2">
-            <div className="flex flex-wrap gap-2">
-              {filterTabs.map((tab) => (
-                <button
-                  key={tab.value}
-                  onClick={() => {
-                    setActiveFilter(tab.value);
-                    tableRef.current?.scrollIntoView({ behavior: 'smooth' });
-                  }}
-                  className={[
-                    'rounded-full px-3 py-1.5 text-xs font-semibold transition',
-                    activeFilter === tab.value
-                      ? 'bg-[#185FA5] text-white'
-                      : 'bg-[#F3F6FA] text-[#5B6E8C] hover:bg-[#E7EDF4]'
-                  ].join(' ')}
-                >
-                  {tab.label}
-                </button>
-              ))}
-            </div>
-
-            <Button onClick={handleExportPdf}>Export PDF</Button>
-          </div>
+          {/* Export */}
+          <Button onClick={handleExportPdf}>
+            Export PDF
+          </Button>
         </div>
       </div>
+    </div>
 
-      {/* ================= TASK TABLE ================= */}
-      <div
-        ref={tableRef}
-        className="rounded-[14px] border border-[#EFF2F6] bg-white p-5"
-      >
-        <TaskTable
-          emptyMessage="Once tasks are assigned, the monitoring grid will populate here."
-          onRowClick={(task) => navigate(`/task/${task.id}`)}
-          tasks={filteredTasks}
-        />
-      </div>
-    </section>
-  );
+    {/* ================= TABLE ================= */}
+    <div
+      ref={tableRef}
+      className="rounded-[28px] border border-slate-800 bg-[#111827] p-6 shadow-sm"
+    >
+      <TaskTable
+        emptyMessage="Once tasks are assigned, the monitoring grid will populate here."
+        onRowClick={(task) =>
+          navigate(`/task/${task.id}`)
+        }
+        tasks={filteredTasks}
+      />
+    </div>
+  </section>
+);
 }
 
 export default TaskMonitoring;

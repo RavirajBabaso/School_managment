@@ -1,11 +1,14 @@
 import { Route, Routes } from 'react-router-dom';
+
 import { useSocket } from '../../hooks/useSocket';
+
 import Announcements from './Announcements';
+import AssignedTasks from './AssignedTasks';
+import DeptOverview from './DeptOverview';
+
 import Navbar from '../../components/common/Navbar';
 import Sidebar from '../../components/common/Sidebar';
 import Badge from '../../components/common/Badge';
-import AssignedTasks from './AssignedTasks';
-import DeptOverview from './DeptOverview';
 
 function DepartmentPage({
   text,
@@ -15,17 +18,39 @@ function DepartmentPage({
   title: string;
 }) {
   return (
-    <section className="space-y-5 p-5">
-      <div className="rounded-[20px] border border-[#EFF2F6] bg-white p-6">
-        <Badge variant="blue">Department Workspace</Badge>
-        <h2 className="mt-3 text-2xl font-semibold text-[#1E293B]">{title}</h2>
-        <p className="mt-3 max-w-2xl text-sm leading-6 text-[#5B6E8C]">{text}</p>
+    <section className="min-h-screen space-y-6 bg-[#020817] p-6">
+      
+      {/* Header */}
+      <div className="rounded-[28px] border border-slate-800 bg-[#111827] p-6 shadow-sm">
+        
+        <Badge variant="blue">
+          Department Workspace
+        </Badge>
+
+        <h2 className="mt-4 text-2xl font-semibold text-white">
+          {title}
+        </h2>
+
+        <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-400">
+          {text}
+        </p>
       </div>
+
+      {/* Cards */}
       <div className="grid gap-5 md:grid-cols-2">
-        {['Daily focus', 'Latest updates'].map((item) => (
-          <article className="rounded-[18px] border border-[#EFF2F6] bg-white p-5" key={item}>
-            <p className="text-sm font-semibold text-[#1E293B]">{item}</p>
-            <p className="mt-2 text-sm leading-6 text-[#5B6E8C]">
+        {[
+          'Daily Focus',
+          'Latest Updates'
+        ].map((item) => (
+          <article
+            className="rounded-[24px] border border-slate-800 bg-[#111827] p-5 shadow-sm transition-all duration-200 hover:bg-[#172036]"
+            key={item}
+          >
+            <p className="text-base font-semibold text-white">
+              {item}
+            </p>
+
+            <p className="mt-3 text-sm leading-6 text-slate-400">
               Department-head routes are now wrapped in the shared shell and ready for data wiring.
             </p>
           </article>
@@ -39,19 +64,29 @@ function DeptDashboard() {
   useSocket();
 
   return (
-    <div className="flex min-h-screen bg-[var(--bg-secondary)] text-[var(--text-primary)]">
+    <div className="flex min-h-screen bg-[#020817] text-white">
+      
+      {/* Sidebar */}
       <Sidebar />
-      <main className="min-w-0 flex-1">
+
+      {/* Main */}
+      <main className="min-w-0 flex-1 bg-[#020817]">
+        
+        {/* Navbar */}
         <Navbar />
+
+        {/* Routes */}
         <Routes>
           <Route
             index
             element={<DeptOverview />}
           />
+
           <Route
             element={<AssignedTasks />}
             path="my-tasks"
           />
+
           <Route
             element={
               <DepartmentPage
@@ -61,6 +96,7 @@ function DeptDashboard() {
             }
             path="notifications"
           />
+
           <Route
             element={<Announcements />}
             path="announcements"

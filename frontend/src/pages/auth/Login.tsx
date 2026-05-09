@@ -1,112 +1,255 @@
-import { FormEvent, useState } from 'react';
+import {
+  FormEvent,
+  useState
+} from 'react';
+
 import axios from 'axios';
-import { useAuth } from '../../hooks/useAuth';
+
+import {
+  useNavigate
+} from 'react-router-dom';
+
+import {
+  setCredentials
+} from '../../store/authSlice';
+
+import {
+  useAppDispatch
+} from '../../store/hooks';
+
+import {
+  useAuth
+} from '../../hooks/useAuth';
 
 function Login() {
-  const { login } = useAuth();
-  const [email, setEmail] = useState('chairman@adhira.edu');
-  const [password, setPassword] = useState('Admin@123');
-  const [rememberMe, setRememberMe] = useState(true);
-  const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+  const dispatch =
+    useAppDispatch();
+
+  const { login } =
+    useAuth();
+
+  const navigate =
+    useNavigate();
+
+  const [email, setEmail] =
+    useState(
+      'chairman@adhira.edu'
+    );
+
+  const [password, setPassword] =
+    useState(
+      'Admin@123'
+    );
+
+  const [rememberMe, setRememberMe] =
+    useState(true);
+
+  const [showPassword, setShowPassword] =
+    useState(false);
+
+  const [isLoading, setIsLoading] =
+    useState(false);
+
+  const [error, setError] =
+    useState('');
+
+  const handleSubmit = async (
+    event: FormEvent<HTMLFormElement>
+  ) => {
+
     event.preventDefault();
+
     setError('');
+
     setIsLoading(true);
 
     try {
-      await login({ email, password });
+
+      /* Use API login for all users (Chairman, Director, Property, Finance, etc.) */
+      await login({
+        email,
+        password
+      });
 
       if (!rememberMe) {
-        localStorage.removeItem('refreshToken');
+
+        localStorage.removeItem(
+          'refreshToken'
+        );
       }
+
     } catch (loginError) {
-      if (axios.isAxiosError(loginError) && loginError.response?.status === 401) {
-        setError('Invalid email or password.');
+
+      if (
+        axios.isAxiosError(
+          loginError
+        ) &&
+        loginError.response
+          ?.status === 401
+      ) {
+
+        setError(
+          'Invalid email or password.'
+        );
+
       } else {
-        setError('Unable to sign in. Please try again.');
+
+        setError(
+          'Unable to sign in. Please try again.'
+        );
       }
+
     } finally {
+
       setIsLoading(false);
     }
   };
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-[var(--bg-secondary)] px-4 py-10 text-[var(--text-primary)]">
-      <section className="w-full max-w-[420px] rounded-lg border border-[var(--border-color)] bg-[var(--card-bg)] px-8 py-9 shadow-sm">
+    <main className="flex min-h-screen items-center justify-center bg-[#020817] px-4 py-10 text-white">
+
+      {/* Background Glow */}
+      <div className="absolute inset-0 overflow-hidden">
+
+        <div className="absolute left-[-120px] top-[-120px] h-[300px] w-[300px] rounded-full bg-blue-600/20 blur-3xl" />
+
+        <div className="absolute bottom-[-120px] right-[-120px] h-[300px] w-[300px] rounded-full bg-cyan-500/10 blur-3xl" />
+      </div>
+
+      {/* Login Card */}
+      <section className="relative z-10 w-full max-w-[430px] rounded-[32px] border border-slate-800 bg-[#111827]/95 p-8 shadow-[0_20px_80px_rgba(0,0,0,0.45)] backdrop-blur-xl">
+
+        {/* Logo */}
         <div className="flex flex-col items-center text-center">
-          <div className="flex h-[30px] w-[30px] items-center justify-center rounded-md bg-[#185FA5] text-[11px] font-bold text-white">
+
+          <div className="flex h-[68px] w-[68px] items-center justify-center rounded-[22px] bg-gradient-to-br from-[#185FA5] to-[#3B82F6] text-xl font-bold text-white shadow-lg">
             EP
           </div>
-          <h1 className="mt-4 text-2xl font-bold leading-8 text-[var(--text-primary)]">EduTask Pro</h1>
-          <p className="mt-1 text-sm font-medium text-[var(--text-secondary)]">School Staff Task Management</p>
+
+          <h1 className="mt-6 text-3xl font-bold tracking-tight text-white">
+            EduTask Pro
+          </h1>
+
+          <p className="mt-2 text-sm text-slate-400">
+            School Staff Task Management
+          </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="mt-8">
-          <label className="block text-sm font-semibold text-[#1E293B]" htmlFor="email">
-            Email
+        {/* Form */}
+        <form
+          onSubmit={handleSubmit}
+          className="mt-8"
+        >
+
+          {/* Email */}
+          <label
+            className="block text-sm font-medium text-slate-300"
+            htmlFor="email"
+          >
+            Email Address
           </label>
+
           <input
             id="email"
             type="email"
             value={email}
-            onChange={(event) => setEmail(event.target.value)}
+            onChange={(event) =>
+              setEmail(
+                event.target.value
+              )
+            }
             autoComplete="email"
-            className="mt-2 h-11 w-full rounded-md border border-[#EFF2F6] bg-[#F8F9FC] px-3 text-sm text-[#1E293B] outline-none transition focus:border-[#185FA5] focus:bg-white"
             placeholder="chairman@adhira.edu"
             required
+            className="mt-2 h-12 w-full rounded-[16px] border border-slate-700 bg-[#0F172A] px-4 text-sm text-white outline-none transition-all duration-200 placeholder:text-slate-500 focus:border-[#185FA5] focus:bg-[#111827]"
           />
 
-          <label className="mt-5 block text-sm font-semibold text-[#1E293B]" htmlFor="password">
+          {/* Password */}
+          <label
+            className="mt-6 block text-sm font-medium text-slate-300"
+            htmlFor="password"
+          >
             Password
           </label>
+
           <div className="relative mt-2">
+
             <input
               id="password"
-              type={showPassword ? 'text' : 'password'}
+              type={
+                showPassword
+                  ? 'text'
+                  : 'password'
+              }
               value={password}
-              onChange={(event) => setPassword(event.target.value)}
+              onChange={(event) =>
+                setPassword(
+                  event.target.value
+                )
+              }
               autoComplete="current-password"
-              className="h-11 w-full rounded-md border border-[#EFF2F6] bg-[#F8F9FC] px-3 pr-16 text-sm text-[#1E293B] outline-none transition focus:border-[#185FA5] focus:bg-white"
               placeholder="Enter password"
               required
+              className="h-12 w-full rounded-[16px] border border-slate-700 bg-[#0F172A] px-4 pr-20 text-sm text-white outline-none transition-all duration-200 placeholder:text-slate-500 focus:border-[#185FA5] focus:bg-[#111827]"
             />
+
             <button
               type="button"
-              onClick={() => setShowPassword((current) => !current)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-semibold text-[#185FA5]"
+              onClick={() =>
+                setShowPassword(
+                  (
+                    current
+                  ) => !current
+                )
+              }
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-semibold text-[#60A5FA] transition hover:text-white focus:outline-none active:outline-none"
             >
-              {showPassword ? 'Hide' : 'Show'}
+              {showPassword
+                ? 'Hide'
+                : 'Show'}
             </button>
           </div>
 
-          <label className="mt-5 flex items-center gap-2 text-sm font-medium text-[#5B6E8C]">
+          {/* Remember */}
+          <label className="mt-5 flex items-center gap-3 text-sm text-slate-400">
+
             <input
               type="checkbox"
-              checked={rememberMe}
-              onChange={(event) => setRememberMe(event.target.checked)}
-              className="h-4 w-4 rounded border-[#EFF2F6] accent-[#185FA5]"
+              checked={
+                rememberMe
+              }
+              onChange={(event) =>
+                setRememberMe(
+                  event.target.checked
+                )
+              }
+              className="h-4 w-4 rounded border-slate-600 bg-[#0F172A] accent-[#185FA5]"
             />
+
             Remember me
           </label>
 
+          {/* Error */}
           {error ? (
-            <div className="mt-5 rounded-md border border-red-100 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+            <div className="mt-5 rounded-[16px] border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm font-medium text-red-300">
               {error}
             </div>
           ) : null}
 
+          {/* Submit */}
           <button
             type="submit"
-            disabled={isLoading}
-            className="mt-6 flex h-11 w-full items-center justify-center rounded-md bg-[#185FA5] px-4 text-sm font-semibold text-white transition hover:bg-[#144f89] disabled:cursor-not-allowed disabled:opacity-80"
+            disabled={
+              isLoading
+            }
+            className="mt-7 flex h-12 w-full items-center justify-center rounded-[16px] bg-[#185FA5] px-4 text-sm font-semibold text-white transition-all duration-200 hover:bg-[#226fc0] focus:outline-none active:outline-none disabled:cursor-not-allowed disabled:opacity-70"
           >
+
             {isLoading ? (
-              <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />
+              <span className="h-5 w-5 animate-spin rounded-full border-2 border-white/30 border-t-white" />
             ) : (
-              'Sign in'
+              'Sign In'
             )}
           </button>
         </form>

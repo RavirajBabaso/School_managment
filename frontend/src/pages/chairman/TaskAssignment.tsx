@@ -137,167 +137,246 @@ function TaskAssignment() {
   };
 
   return (
-    <>
-      <section className="grid gap-5 p-5 xl:grid-cols-[320px_minmax(0,1fr)]">
-        <div className="rounded-[20px] border border-[#EFF2F6] bg-white p-5">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#185FA5]">
-            Tasks Module
-          </p>
-          <h2 className="mt-2 text-xl font-semibold text-[#1E293B]">Task assignment</h2>
-          <p className="mt-2 text-sm leading-6 text-[#5B6E8C]">
-            Create work items for department heads and track active assignments from the queue.
-          </p>
+  <>
+    <section className="space-y-6">
+      {/* Header */}
+      <div className="rounded-[30px] border border-slate-800 bg-[#111827] p-6 shadow-sm">
+        <div className="flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
+          <div>
+            <p className="text-[10px] uppercase tracking-[0.28em] text-slate-500">
+              Dashboard Module
+            </p>
+
+            <h1 className="mt-3 text-3xl font-semibold text-white">
+              Task Assignment
+            </h1>
+
+            <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-400">
+              Create work items for department heads and track active assignments from the workflow queue.
+            </p>
+          </div>
+
           <Button
-            className="mt-5 w-full justify-center"
+            className="h-fit"
             loading={taskQuery.isFetching && tasks.length === 0}
             onClick={() => setCreateModalOpen(true)}
           >
-            Create new task
+            Create New Task
           </Button>
         </div>
+      </div>
 
-        <div className="space-y-4">
-          <div className="rounded-[20px] border border-[#EFF2F6] bg-white p-5">
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <div>
-                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#185FA5]">
-                  Assignment Queue
-                </p>
-                <h2 className="mt-2 text-xl font-semibold text-[#1E293B]">Active task queue</h2>
-              </div>
+      {/* Queue */}
+      <div className="rounded-[30px] border border-slate-800 bg-[#111827] p-6 shadow-sm">
+        {/* Top */}
+        <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+          <div>
+            <p className="text-[10px] uppercase tracking-[0.28em] text-slate-500">
+              Assignment Queue
+            </p>
 
-              <div className="flex flex-wrap gap-2">
-                {statusTabs.map((tab) => (
-                  <button
-                    className={[
-                      'rounded-full px-3 py-1.5 text-xs font-semibold transition',
-                      activeStatus === tab.value
-                        ? 'bg-[#185FA5] text-white'
-                        : 'bg-[#F3F6FA] text-[#5B6E8C] hover:bg-[#E7EDF4]'
-                    ].join(' ')}
-                    key={tab.value}
-                    onClick={() => setActiveStatus(tab.value)}
-                    type="button"
-                  >
-                    {tab.label}
-                  </button>
-                ))}
-              </div>
-            </div>
+            <h2 className="mt-3 text-2xl font-semibold text-white">
+              Active Task Queue
+            </h2>
           </div>
 
+          {/* Tabs */}
+          <div className="flex flex-wrap gap-3">
+            {statusTabs.map((tab) => (
+              <button
+                className={[
+                  'rounded-full px-4 py-2 text-sm font-medium transition-all',
+                  activeStatus === tab.value
+                    ? 'bg-[#185FA5] text-white shadow-sm'
+                    : 'border border-slate-700 bg-[#0F172A] text-slate-400 hover:bg-[#172036]'
+                ].join(' ')}
+                key={tab.value}
+                onClick={() => setActiveStatus(tab.value)}
+                type="button"
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Table */}
+        <div className="mt-6 overflow-hidden rounded-[24px] border border-slate-800 bg-[#111827]">
           <TaskTable
             emptyMessage="Newly assigned tasks will appear here."
             onRowClick={(task) => navigate(`/task/${task.id}`)}
-            tasks={filteredTasks.filter((task) => task.status !== 'COMPLETED')}
+            tasks={filteredTasks.filter(
+              (task) => task.status !== 'COMPLETED'
+            )}
           />
         </div>
-      </section>
+      </div>
+    </section>
 
-      <Modal
-        bodyClassName="max-h-[75vh] overflow-y-auto"
-        isOpen={isCreateModalOpen}
-        onClose={handleCloseCreateModal}
-        title="Create new task"
-      >
-        <form className="space-y-4" onSubmit={handleSubmit}>
-          <label className="flex flex-col gap-1.5">
-            <span className="text-[12px] font-medium text-[#36506C]">Assign to</span>
+    {/* Create Modal */}
+    <Modal
+      bodyClassName="max-h-[75vh] overflow-y-auto"
+      isOpen={isCreateModalOpen}
+      onClose={handleCloseCreateModal}
+      title="Create New Task"
+    >
+      <form className="space-y-5" onSubmit={handleSubmit}>
+        {/* Assign To */}
+        <label className="flex flex-col gap-2">
+          <span className="text-sm font-medium text-slate-300">
+            Assign To
+          </span>
+
+          <select
+            className="min-h-[46px] rounded-[14px] border border-slate-700 bg-[#0F172A] px-4 text-sm text-white outline-none transition focus:border-[#185FA5]"
+            onChange={(event) => {
+              const selectedUser = departmentHeads.find(
+                (user) =>
+                  user.id === Number(event.target.value)
+              );
+
+              handleChange(
+                'assigned_to',
+                Number(event.target.value)
+              );
+
+              handleChange(
+                'department_id',
+                selectedUser?.department_id ?? null
+              );
+            }}
+            required
+            value={form.assigned_to || ''}
+          >
+            <option value="">
+              Select department head
+            </option>
+
+            {departmentHeads.map((user) => (
+              <option key={user.id} value={user.id}>
+                {user.name} ({user.role})
+              </option>
+            ))}
+          </select>
+        </label>
+
+        {/* Title */}
+        <Input
+          label="Task Title"
+          onChange={(event) =>
+            handleChange('title', event.target.value)
+          }
+          placeholder="Enter task title"
+          required
+          value={form.title}
+        />
+
+        {/* Description */}
+        <label className="flex flex-col gap-2">
+          <span className="text-sm font-medium text-slate-300">
+            Description
+          </span>
+
+          <textarea
+            className="min-h-[140px] rounded-[16px] border border-slate-700 bg-[#0F172A] px-4 py-3 text-sm leading-6 text-white outline-none transition placeholder:text-slate-500 focus:border-[#185FA5]"
+            onChange={(event) =>
+              handleChange(
+                'description',
+                event.target.value
+              )
+            }
+            placeholder="Describe the task scope and expected outcome"
+            value={form.description ?? ''}
+          />
+        </label>
+
+        {/* Grid */}
+        <div className="grid gap-4 sm:grid-cols-2">
+          {/* Priority */}
+          <label className="flex flex-col gap-2">
+            <span className="text-sm font-medium text-slate-300">
+              Priority
+            </span>
+
             <select
-              className="min-h-[38px] rounded-[10px] border-[0.5px] border-[#DCE2EA] bg-[#F8F9FC] px-3 text-sm text-[#1E293B] outline-none focus:border-[#185FA5] focus:ring-4 focus:ring-[#185FA5]/10"
-              onChange={(event) => {
-                const selectedUser = departmentHeads.find(
-                  (user) => user.id === Number(event.target.value)
-                );
-                handleChange('assigned_to', Number(event.target.value));
-                handleChange('department_id', selectedUser?.department_id ?? null);
-              }}
-              required
-              value={form.assigned_to || ''}
+              className="min-h-[46px] rounded-[14px] border border-slate-700 bg-[#0F172A] px-4 text-sm text-white outline-none transition focus:border-[#185FA5]"
+              onChange={(event) =>
+                handleChange(
+                  'priority',
+                  event.target
+                    .value as CreateTaskPayload['priority']
+                )
+              }
+              value={form.priority}
             >
-              <option value="">Select department head</option>
-              {departmentHeads.map((user) => (
-                <option key={user.id} value={user.id}>
-                  {user.name} ({user.role})
-                </option>
-              ))}
+              <option value="HIGH">High</option>
+              <option value="MEDIUM">Medium</option>
+              <option value="LOW">Low</option>
             </select>
           </label>
 
+          {/* Start Date */}
           <Input
-            label="Task title"
-            onChange={(event) => handleChange('title', event.target.value)}
-            placeholder="Enter task title"
-            required
-            value={form.title}
-          />
-
-          <label className="flex flex-col gap-1.5">
-            <span className="text-[12px] font-medium text-[#36506C]">Description</span>
-            <textarea
-              className="min-h-[104px] rounded-[10px] border-[0.5px] border-[#DCE2EA] bg-[#F8F9FC] px-3 py-2.5 text-sm text-[#1E293B] outline-none transition placeholder:text-[#8A99B0] focus:border-[#185FA5] focus:ring-4 focus:ring-[#185FA5]/10"
-              onChange={(event) => handleChange('description', event.target.value)}
-              placeholder="Describe the task scope and expected outcome"
-              value={form.description ?? ''}
-            />
-          </label>
-
-          <div className="grid gap-4 sm:grid-cols-2">
-            <label className="flex flex-col gap-1.5">
-              <span className="text-[12px] font-medium text-[#36506C]">Priority</span>
-              <select
-                className="min-h-[38px] rounded-[10px] border-[0.5px] border-[#DCE2EA] bg-[#F8F9FC] px-3 text-sm text-[#1E293B] outline-none focus:border-[#185FA5] focus:ring-4 focus:ring-[#185FA5]/10"
-                onChange={(event) =>
-                  handleChange('priority', event.target.value as CreateTaskPayload['priority'])
-                }
-                value={form.priority}
-              >
-                <option value="HIGH">High</option>
-                <option value="MEDIUM">Medium</option>
-                <option value="LOW">Low</option>
-              </select>
-            </label>
-
-            <Input
-              label="Start date"
-              onChange={(event) => handleChange('start_date', event.target.value)}
-              required
-              type="date"
-              value={form.start_date}
-            />
-          </div>
-
-          <Input
-            label="Due date"
-            onChange={(event) => handleChange('due_date', event.target.value)}
+            label="Start Date"
+            onChange={(event) =>
+              handleChange(
+                'start_date',
+                event.target.value
+              )
+            }
             required
             type="date"
-            value={form.due_date}
+            value={form.start_date}
           />
+        </div>
 
-          <label className="flex flex-col gap-1.5">
-            <span className="text-[12px] font-medium text-[#36506C]">Attachment</span>
-            <input
-              accept=".pdf,.docx,.jpg,.jpeg,.png"
-              className="min-h-[38px] rounded-[10px] border-[0.5px] border-dashed border-[#C9D6E5] bg-[#F8F9FC] px-3 py-2 text-sm text-[#36506C] file:mr-3 file:rounded-full file:border-0 file:bg-white file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-[#185FA5]"
-              onChange={(event) => setFile(event.target.files?.[0])}
-              type="file"
-            />
-          </label>
+        {/* Due Date */}
+        <Input
+          label="Due Date"
+          onChange={(event) =>
+            handleChange(
+              'due_date',
+              event.target.value
+            )
+          }
+          required
+          type="date"
+          value={form.due_date}
+        />
 
-          {error ? <p className="text-sm text-[#C13F3A]">{error}</p> : null}
+        {/* Attachment */}
+        <label className="flex flex-col gap-2">
+          <span className="text-sm font-medium text-slate-300">
+            Attachment
+          </span>
 
-          <Button
-            className="w-full justify-center"
-            loading={isSubmitting}
-            type="submit"
-          >
-            Submit task
-          </Button>
-        </form>
-      </Modal>
-    </>
-  );
+          <input
+            accept=".pdf,.docx,.jpg,.jpeg,.png"
+            className="rounded-[14px] border border-dashed border-slate-700 bg-[#0F172A] px-4 py-3 text-sm text-slate-400 file:mr-4 file:rounded-full file:border-0 file:bg-[#185FA5] file:px-4 file:py-2 file:text-xs file:font-semibold file:text-white"
+            onChange={(event) =>
+              setFile(event.target.files?.[0])
+            }
+            type="file"
+          />
+        </label>
+
+        {error ? (
+          <p className="text-sm text-red-400">
+            {error}
+          </p>
+        ) : null}
+
+        <Button
+          className="w-full justify-center"
+          loading={isSubmitting}
+          type="submit"
+        >
+          Submit Task
+        </Button>
+      </form>
+    </Modal>
+  </>
+);
 }
 
 export default TaskAssignment;

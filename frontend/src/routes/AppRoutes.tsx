@@ -1,29 +1,78 @@
-import { Route, Routes } from 'react-router-dom';
+import {
+  BrowserRouter,
+  Navigate,
+  Route,
+  Routes
+} from 'react-router-dom';
 
-function DashboardPlaceholder() {
-  return (
-    <main className="min-h-screen bg-slate-50 px-6 py-10">
-      <section className="mx-auto max-w-5xl">
-        <p className="text-sm font-semibold uppercase tracking-wide text-blue-700">
-          School Staff Task Management
-        </p>
-        <h1 className="mt-3 text-3xl font-bold text-slate-950">
-          Staff task workflows start here.
-        </h1>
-        <p className="mt-4 max-w-2xl text-base leading-7 text-slate-600">
-          This frontend scaffold is ready for role-based dashboards, task assignment,
-          notifications, reporting, and real-time updates.
-        </p>
-      </section>
-    </main>
-  );
-}
+import Login from '../pages/auth/Login';
+
+import PropertyDashboard from '../pages/propertyMaintenance/PropertyDashboard';
+import PropertyTasks from '../pages/propertyMaintenance/PropertyTasks';
+import PropertyNotifications from '../pages/propertyMaintenance/PropertyNotifications';
+import PropertyAnnouncements from '../pages/propertyMaintenance/PropertyAnnouncements';
+
+import ProtectedRoute from './ProtectedRoute';
+
+import { ROLES } from '../constants/roles';
 
 function AppRoutes() {
+
   return (
-    <Routes>
-      <Route path="*" element={<DashboardPlaceholder />} />
-    </Routes>
+    <BrowserRouter>
+
+      <Routes>
+
+        {/* Login */}
+        <Route
+          path="/login"
+          element={<Login />}
+        />
+
+        {/* Property Module */}
+        <Route
+          element={
+            <ProtectedRoute
+              allowedRoles={[
+                ROLES.PROPERTY
+              ]}
+            />
+          }
+        >
+
+          <Route
+            path="/property-maintenance"
+            element={<PropertyDashboard />}
+          />
+
+          <Route
+            path="/property-maintenance/tasks"
+            element={<PropertyTasks />}
+          />
+
+          <Route
+            path="/property-maintenance/notifications"
+            element={<PropertyNotifications />}
+          />
+
+          <Route
+            path="/property-maintenance/announcements"
+            element={<PropertyAnnouncements />}
+          />
+        </Route>
+
+        {/* Default */}
+        <Route
+          path="*"
+          element={
+            <Navigate
+              to="/login"
+              replace
+            />
+          }
+        />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

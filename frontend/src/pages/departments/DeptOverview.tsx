@@ -1,193 +1,110 @@
-import React, { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { useSelector } from 'react-redux';
-import TaskStatusPieChart from '../../components/charts/TaskStatusPieChart';
-import TaskTable from '../../components/tables/TaskTable';
+import { Route, Routes } from 'react-router-dom';
+
+import { useSocket } from '../../hooks/useSocket';
+
+import Announcements from './Announcements';
+import AssignedTasks from './AssignedTasks';
+import DeptOverview from './DeptOverview';
+
+import Navbar from '../../components/common/Navbar';
+import Sidebar from '../../components/common/Sidebar';
 import Badge from '../../components/common/Badge';
-import Button from '../../components/common/Button';
-import Modal from '../../components/common/Modal';
-import type { Task, TaskStatus } from '../../types/task.types';
-import type { RootState } from '../../store';
-import api from '../../services/api';
 
-interface DeptDashboardData {
-  myTasks: {
-    total: number;
-    pending: number;
-    inProgress: number;
-    completed: number;
-    delayed: number;
-  };
-  taskStatusData: { name: string; value: number; color: string }[];
-  recentAnnouncements: {
-    id: number;
-    title: string;
-    sentTo: string; // 'ALL' or department name
-    date: string;
-  }[];
-  myTasksList: Task[];
-}
-
-interface UpdateStatusModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  task: Task | null;
-  onUpdate: (taskId: number, status: TaskStatus, comment: string) => void;
-}
-
-const UpdateStatusModal: React.FC<UpdateStatusModalProps> = ({ isOpen, onClose, task, onUpdate }) => {
-  const [status, setStatus] = useState<TaskStatus>('PENDING');
-  const [comment, setComment] = useState('');
-
-  const handleSubmit = () => {
-    if (task) {
-      onUpdate(task.id, status, comment);
-      onClose();
-    }
-  };
-
+function DepartmentPage({
+  text,
+  title
+}: {
+  text: string;
+  title: string;
+}) {
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      title="Update Task Status"
-      footer={
-        <div className="flex justify-end space-x-2">
-          <Button variant="ghost" onClick={onClose}>Cancel</Button>
-          <Button onClick={handleSubmit}>Update</Button>
-        </div>
-      }
-    >
-      <div className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Status</label>
-          <select
-            value={status}
-            onChange={(e) => setStatus(e.target.value as TaskStatus)}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+    <section className="min-h-screen space-y-6 bg-[#020817] p-6">
+      
+      {/* Header */}
+      <div className="rounded-[28px] border border-slate-800 bg-[#111827] p-6 shadow-sm">
+        
+        <Badge variant="blue">
+          Department Workspace
+        </Badge>
+
+        <h2 className="mt-4 text-2xl font-semibold text-white">
+          {title}
+        </h2>
+
+        <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-400">
+          {text}
+        </p>
+      </div>
+
+      {/* Cards */}
+      <div className="grid gap-5 md:grid-cols-2">
+        {[
+          'Daily Focus',
+          'Latest Updates'
+        ].map((item) => (
+          <article
+            className="rounded-[24px] border border-slate-800 bg-[#111827] p-5 shadow-sm transition-all duration-200 hover:bg-[#172036]"
+            key={item}
           >
-            <option value="PENDING">Pending</option>
-            <option value="IN_PROGRESS">In Progress</option>
-            <option value="COMPLETED">Completed</option>
-            <option value="DELAYED">Delayed</option>
-            <option value="ESCALATED">Escalated</option>
-          </select>
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Comment</label>
-          <textarea
-            value={comment}
-            onChange={(e) => setComment(e.target.value)}
-            rows={3}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            placeholder="Add a comment..."
-          />
-        </div>
+            <p className="text-base font-semibold text-white">
+              {item}
+            </p>
+
+            <p className="mt-3 text-sm leading-6 text-slate-400">
+              Department-head routes are now wrapped in the shared shell and ready for data wiring.
+            </p>
+          </article>
+        ))}
       </div>
-    </Modal>
+    </section>
   );
-};
+}
 
-const DeptOverview: React.FC = () => {
-  const user = useSelector((state: RootState) => state.auth.user);
-  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const { data, isLoading } = useQuery({
-    queryKey: ['dept-dashboard', user?.department_id],
-    queryFn: async () => {
-      const response = await api.get(`/dashboard/dept/${user?.department_id}`);
-      return response.data.data as DeptDashboardData;
-    },
-    enabled: !!user?.department_id,
-  });
-
-  const handleUpdateStatus = (taskId: number, status: TaskStatus, comment: string) => {
-    // Implement API call to update status
-    console.log('Update task', taskId, status, comment);
-  };
-
-  const getAnnouncementBorderColor = (sentTo: string) => {
-    return sentTo === 'ALL' ? 'border-blue-500' : 'border-amber-500';
-  };
-
-  if (isLoading || !data) {
-    return <div>Loading...</div>;
-  }
+function DeptDashboard() {
+  useSocket();
 
   return (
-    <div className="p-6 space-y-6">
-      <div className="mb-4">
-        <h1 className="text-2xl font-semibold">Department Dashboard</h1>
-        <p className="text-gray-600">Welcome, {user?.name} - {user?.departmentName}</p>
-      </div>
+    <div className="flex min-h-screen bg-[#020817] text-white">
+      
+      {/* Sidebar */}
+      <Sidebar />
 
-      {/* KPI Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-        <div className="bg-gray-50 rounded-lg p-4">
-          <h3 className="text-sm font-medium text-gray-500">My Tasks</h3>
-          <p className="text-2xl font-bold text-gray-900">{data.myTasks.total}</p>
-        </div>
-        <div className="bg-gray-50 rounded-lg p-4">
-          <h3 className="text-sm font-medium text-gray-500">Pending</h3>
-          <p className="text-2xl font-bold text-blue-600">{data.myTasks.pending}</p>
-        </div>
-        <div className="bg-gray-50 rounded-lg p-4">
-          <h3 className="text-sm font-medium text-gray-500">In Progress</h3>
-          <p className="text-2xl font-bold text-amber-600">{data.myTasks.inProgress}</p>
-        </div>
-        <div className="bg-gray-50 rounded-lg p-4">
-          <h3 className="text-sm font-medium text-gray-500">Completed</h3>
-          <p className="text-2xl font-bold text-green-600">{data.myTasks.completed}</p>
-        </div>
-        <div className="bg-gray-50 rounded-lg p-4">
-          <h3 className="text-sm font-medium text-gray-500">Delayed</h3>
-          <p className="text-2xl font-bold text-red-600">{data.myTasks.delayed}</p>
-        </div>
-      </div>
+      {/* Main */}
+      <main className="min-w-0 flex-1 bg-[#020817]">
+        
+        {/* Navbar */}
+        <Navbar />
 
-      {/* Middle row */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Task Status Pie Chart */}
-        <div className="bg-white rounded-lg border border-gray-200 p-4">
-          <h3 className="text-lg font-semibold mb-4">Task Status Distribution</h3>
-          <TaskStatusPieChart data={data.taskStatusData} />
-        </div>
+        {/* Routes */}
+        <Routes>
+          <Route
+            index
+            element={<DeptOverview />}
+          />
 
-        {/* Recent Announcements */}
-        <div className="bg-white rounded-lg border border-gray-200 p-4">
-          <h3 className="text-lg font-semibold mb-4">Recent Announcements</h3>
-          <div className="space-y-3">
-            {data.recentAnnouncements.map((announcement) => (
-              <div key={announcement.id} className={`border-l-4 pl-4 py-2 ${getAnnouncementBorderColor(announcement.sentTo)}`}>
-                <p className="text-sm font-medium">{announcement.title}</p>
-                <p className="text-xs text-gray-500">Sent to: {announcement.sentTo} • {announcement.date}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
+          <Route
+            element={<AssignedTasks />}
+            path="my-tasks"
+          />
 
-      {/* Task List */}
-      <div className="bg-white rounded-lg border border-gray-200 p-4">
-        <h3 className="text-lg font-semibold mb-4">My Tasks</h3>
-        <TaskTable
-          tasks={data.myTasksList}
-          onRowClick={(task) => {
-            setSelectedTask(task);
-            setIsModalOpen(true);
-          }}
-        />
-      </div>
+          <Route
+            element={
+              <DepartmentPage
+                text="Track the latest operational notifications and system-generated reminders."
+                title="Notifications"
+              />
+            }
+            path="notifications"
+          />
 
-      <UpdateStatusModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        task={selectedTask}
-        onUpdate={handleUpdateStatus}
-      />
+          <Route
+            element={<Announcements />}
+            path="announcements"
+          />
+        </Routes>
+      </main>
     </div>
   );
-};
+}
 
-export default DeptOverview;
+export default DeptDashboard;

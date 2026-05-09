@@ -54,37 +54,64 @@ function Modal({
   }
 
   return createPortal(
+  <div
+    className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 p-4 backdrop-blur-md animate-[fadeIn_180ms_ease-out]"
+    onClick={onClose}
+    role="presentation"
+  >
     <div
-      className="fixed inset-0 z-[100] flex items-center justify-center bg-[#1E293B]/30 p-4 animate-[fadeIn_180ms_ease-out]"
-      onClick={onClose}
-      role="presentation"
+      aria-modal="true"
+      className="w-full max-w-[560px] overflow-hidden rounded-[28px] border border-slate-800 bg-[#111827] shadow-[0_24px_60px_rgba(0,0,0,0.45)]"
+      onClick={(event) => event.stopPropagation()}
+      role="dialog"
     >
-      <div
-        aria-modal="true"
-        className="w-full max-w-[560px] rounded-[18px] bg-white shadow-[0_24px_60px_rgba(30,41,59,0.14)]"
-        onClick={(event) => event.stopPropagation()}
-        role="dialog"
-      >
-        <div className="flex items-center justify-between border-b border-[#EFF2F6] px-5 py-4">
-          <div className="flex items-center gap-3">
-            <h2 className="text-base font-semibold text-[#1E293B]">{title}</h2>
-            {headerAction}
+      {/* Header */}
+      <div className="flex items-center justify-between border-b border-slate-800 bg-[#111827] px-6 py-5">
+        <div className="flex items-center gap-3">
+          <div>
+            <p className="text-[10px] uppercase tracking-[0.28em] text-slate-500">
+              Dashboard Module
+            </p>
+
+            <h2 className="mt-2 text-2xl font-semibold text-white">
+              {title}
+            </h2>
           </div>
-          <button
-            aria-label="Close modal"
-            className="flex h-8 w-8 items-center justify-center rounded-full text-xl leading-none text-[#5B6E8C] transition hover:bg-[#F8F9FC]"
-            onClick={onClose}
-            type="button"
-          >
-            ×
-          </button>
+
+          {headerAction}
         </div>
-        <div className={['px-5 py-4', bodyClassName].join(' ')}>{children}</div>
-        {footer ? <div className="border-t border-[#EFF2F6] px-5 py-4">{footer}</div> : null}
+
+        {/* Close */}
+        <button
+          aria-label="Close modal"
+          className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-700 bg-[#0F172A] text-lg leading-none text-slate-400 transition hover:bg-[#172036] hover:text-white"
+          onClick={onClose}
+          type="button"
+        >
+          ×
+        </button>
       </div>
-    </div>,
-    portalTarget
-  );
+
+      {/* Body */}
+      <div
+        className={[
+          'max-h-[75vh] overflow-y-auto bg-[#111827] px-6 py-5 text-white',
+          bodyClassName
+        ].join(' ')}
+      >
+        {children}
+      </div>
+
+      {/* Footer */}
+      {footer ? (
+        <div className="border-t border-slate-800 bg-[#0F172A] px-6 py-5">
+          {footer}
+        </div>
+      ) : null}
+    </div>
+  </div>,
+  portalTarget
+);
 }
 
 export default Modal;

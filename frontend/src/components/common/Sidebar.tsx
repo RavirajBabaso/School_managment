@@ -29,6 +29,20 @@ const departmentItems: NavItem[] = [
   { color: '#0EA5A4', group: 'Inbox', label: 'Announcements', to: '/department/announcements' }
 ];
 
+const propertyItems: NavItem[] = [
+  { color: '#185FA5', group: 'Overview', label: 'Dashboard', to: '/property-maintenance' },
+  { color: '#2C7BE5', group: 'Actions', label: 'Tasks', to: '/property-maintenance/tasks' },
+  { color: '#D64545', group: 'Inbox', label: 'Notifications', to: '/property-maintenance/notifications' },
+  { color: '#0EA5A4', group: 'Inbox', label: 'Announcements', to: '/property-maintenance/announcements' }
+];
+
+const financeItems: NavItem[] = [
+  { color: '#185FA5', group: 'Overview', label: 'Dashboard', to: '/finance' },
+  { color: '#2C7BE5', group: 'Actions', label: 'Tasks', to: '/finance/tasks' },
+  { color: '#D64545', group: 'Inbox', label: 'Notifications', to: '/finance/notifications' },
+  { color: '#0EA5A4', group: 'Inbox', label: 'Announcements', to: '/finance/announcements' }
+];
+
 const directorItems: NavItem[] = [
   { color: '#185FA5', group: 'Overview', label: 'Dashboard', to: '/director' },
   { color: '#2563EB', group: 'Reports', label: 'MIS Reports', to: '/director/reports' },
@@ -74,6 +88,10 @@ function Sidebar() {
 
   if (user?.role === ROLES.DIRECTOR) {
     items = directorItems;
+  } else if (user?.role === ROLES.PROPERTY) {
+    items = propertyItems;
+  } else if (user?.role === ROLES.FINANCE) {
+    items = financeItems;
   } else if (isDepartmentHead) {
     items = departmentItems;
   }

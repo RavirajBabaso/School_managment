@@ -1,28 +1,51 @@
-import type { ButtonHTMLAttributes, ReactNode } from 'react';
+import type {
+  ButtonHTMLAttributes,
+  ReactNode
+} from 'react';
 
-type ButtonVariant = 'primary' | 'danger' | 'ghost';
-type ButtonSize = 'sm' | 'md' | 'lg';
+type ButtonVariant =
+  | 'primary'
+  | 'danger'
+  | 'ghost';
 
-interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+type ButtonSize =
+  | 'sm'
+  | 'md'
+  | 'lg';
+
+interface ButtonProps
+  extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode;
   loading?: boolean;
   size?: ButtonSize;
   variant?: ButtonVariant;
 }
 
-const variantClasses: Record<ButtonVariant, string> = {
+/* Variants */
+
+const variantClasses: Record<
+  ButtonVariant,
+  string
+> = {
   primary:
-    'border-[var(--border-color)] bg-[var(--card-bg)] text-[#185FA5] hover:bg-[var(--surface)] focus-visible:ring-[#185FA5]/20 dark:text-[#BFDBFE]',
+    'border border-[#185FA5] bg-[#185FA5] text-white hover:bg-[#226fc0] hover:border-[#226fc0] focus-visible:ring-[#185FA5]/20',
+
   danger:
-    'border-red-200 bg-red-50 text-red-700 hover:bg-red-100 focus-visible:ring-red-300/20 dark:border-red-500/30 dark:bg-red-950/50 dark:text-red-200 dark:hover:bg-red-900/70',
+    'border border-red-500 bg-red-500 text-white hover:bg-red-600 hover:border-red-600 focus-visible:ring-red-500/20',
+
   ghost:
-    'border-transparent bg-transparent text-[var(--text-secondary)] hover:bg-[var(--surface)] focus-visible:ring-[#185FA5]/10 dark:text-[var(--text-secondary)] dark:hover:bg-[var(--panel-bg)]'
+    'border border-slate-700 bg-[#0F172A] text-slate-300 hover:bg-[#172036] hover:text-white focus-visible:ring-[#185FA5]/10'
 };
 
-const sizeClasses: Record<ButtonSize, string> = {
-  sm: 'min-h-[32px] px-3 text-xs',
-  md: 'min-h-[36px] px-4 text-sm',
-  lg: 'min-h-[40px] px-5 text-sm'
+/* Sizes */
+
+const sizeClasses: Record<
+  ButtonSize,
+  string
+> = {
+  sm: 'min-h-[36px] px-3 text-xs',
+  md: 'min-h-[42px] px-5 text-sm',
+  lg: 'min-h-[48px] px-6 text-sm'
 };
 
 function Button({
@@ -38,7 +61,7 @@ function Button({
   return (
     <button
       className={[
-        'inline-flex items-center justify-center gap-2 rounded-[10px] border-[0.5px] border-solid font-semibold transition focus-visible:outline-none focus-visible:ring-4 disabled:cursor-not-allowed disabled:opacity-60',
+        'inline-flex items-center justify-center gap-2 rounded-[14px] font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-4 disabled:cursor-not-allowed disabled:opacity-60 shadow-sm',
         variantClasses[variant],
         sizeClasses[size],
         className
@@ -47,12 +70,15 @@ function Button({
       type={type}
       {...props}
     >
+      {/* Loader */}
       {loading ? (
         <span
           aria-hidden="true"
-          className="inline-block h-3.5 w-3.5 animate-spin rounded-full border-2 border-current border-r-transparent"
+          className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-current border-r-transparent"
         />
       ) : null}
+
+      {/* Text */}
       <span>{children}</span>
     </button>
   );

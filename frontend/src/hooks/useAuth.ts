@@ -15,6 +15,14 @@ const getDashboardPath = (role: string) => {
     return '/director';
   }
 
+  if (role === ROLES.PROPERTY) {
+    return '/property-maintenance';
+  }
+
+  if (role === ROLES.FINANCE) {
+    return '/finance';
+  }
+
   if (DEPARTMENT_HEAD_ROLES.includes(role as (typeof DEPARTMENT_HEAD_ROLES)[number])) {
     return '/department';
   }

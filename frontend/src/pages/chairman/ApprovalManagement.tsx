@@ -101,139 +101,209 @@ function ApprovalManagement() {
   const isProcessing = approveMutation.isPending || rejectMutation.isPending;
 
   return (
-    <div className="space-y-6 p-6">
-      <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+  <div className="space-y-6">
+    {/* Top Stats */}
+    <section className="rounded-[26px] border border-[var(--border-color)] bg-[var(--card-bg)] p-6 shadow-sm">
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-[10px] uppercase tracking-[0.24em] text-[var(--text-secondary)]">
+            Approval analytics
+          </p>
+
+          <h1 className="mt-2 text-2xl font-semibold text-[var(--text-primary)]">
+            Approval Management
+          </h1>
+        </div>
+      </div>
+
+      <div className="mt-6 grid grid-cols-2 gap-4 md:grid-cols-4">
         {[
-          { label: 'Budget', type: 'BUDGET' as const, count: getPendingTypeCount('BUDGET'), color: 'text-blue-600' },
-          { label: 'Purchase', type: 'PURCHASE' as const, count: getPendingTypeCount('PURCHASE'), color: 'text-green-600' },
-          { label: 'Policy', type: 'POLICY' as const, count: getPendingTypeCount('POLICY'), color: 'text-purple-600' },
-          { label: 'Event', type: 'EVENT' as const, count: getPendingTypeCount('EVENT'), color: 'text-orange-600' }
+          {
+            label: 'Budget',
+            type: 'BUDGET' as const,
+            count: getPendingTypeCount('BUDGET'),
+            color: 'bg-[#EFF6FF] text-[#2563EB]'
+          },
+          {
+            label: 'Purchase',
+            type: 'PURCHASE' as const,
+            count: getPendingTypeCount('PURCHASE'),
+            color: 'bg-[#F0FDF4] text-[#16A34A]'
+          },
+          {
+            label: 'Policy',
+            type: 'POLICY' as const,
+            count: getPendingTypeCount('POLICY'),
+            color: 'bg-[#F5F3FF] text-[#7C3AED]'
+          },
+          {
+            label: 'Event',
+            type: 'EVENT' as const,
+            count: getPendingTypeCount('EVENT'),
+            color: 'bg-[#FFF7ED] text-[#EA580C]'
+          }
         ].map((item) => {
           const isActiveType = activeType === item.type;
 
           return (
             <button
-              className={['rounded-[20px] border p-4 text-center transition',
-                isActiveType
-                  ? 'border-[#185FA5] bg-[#EFF6FF] shadow-sm'
-                  : 'border-[#EFF2F6] bg-white hover:bg-gray-50'
-              ].join(' ')}
               key={item.label}
               type="button"
               onClick={() => setActiveType(isActiveType ? 'ALL' : item.type)}
+              className={`rounded-[22px] border p-5 text-left transition-all ${
+                isActiveType
+                  ? 'border-[var(--border-color)] bg-[var(--surface)] shadow-sm'
+                  : 'border-[var(--border-color)] bg-[var(--surface)] hover:bg-[var(--bg-tertiary)]'
+              }`}
             >
-              <div className={`text-2xl font-bold ${item.color}`}>{item.count}</div>
-              <div className="text-sm text-[#5B6E8C]">{item.label}</div>
+              <div
+                className={`flex h-11 w-11 items-center justify-center rounded-2xl text-lg font-bold ${item.color}`}
+              >
+                {item.count}
+              </div>
+
+              <div className="mt-4">
+                <p className="text-base font-semibold text-[var(--text-primary)]">
+                  {item.label}
+                </p>
+
+                <p className="mt-1 text-sm text-[var(--text-secondary)]">
+                  Pending approvals
+                </p>
+              </div>
+            </button>
+          );
+        })}
+      </div>
+    </section>
+
+    {/* Main Section */}
+    <section className="rounded-[26px] border border-[var(--border-color)] bg-[var(--card-bg)] p-6 shadow-sm">
+      {/* Tabs */}
+      <div className="mb-6 flex flex-wrap gap-3">
+        {tabs.map((tab) => {
+          const count =
+            tab.key === 'ALL'
+              ? approvals.length
+              : tab.key === 'PENDING'
+              ? pendingCount
+              : tab.key === 'APPROVED'
+              ? approvedCount
+              : rejectedCount;
+
+          return (
+            <button
+              key={tab.key}
+              onClick={() => setActiveTab(tab.key)}
+              type="button"
+              className={`rounded-full px-4 py-2 text-sm font-medium transition-all ${
+                activeTab === tab.key
+                  ? 'bg-[#185FA5] text-white'
+                  : 'border border-[var(--border-color)] bg-[var(--surface)] text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)]'
+              }`}
+            >
+              {tab.label} ({count})
             </button>
           );
         })}
       </div>
 
-      <div className="rounded-[20px] border border-[#EFF2F6] bg-white p-6">
-        <div className="mb-6 flex flex-wrap gap-3">
-          {tabs.map((tab) => {
-            const count =
-              tab.key === 'ALL'
-                ? approvals.length
-                : tab.key === 'PENDING'
-                  ? pendingCount
-                  : tab.key === 'APPROVED'
-                    ? approvedCount
-                    : rejectedCount;
+      {/* Cards */}
+      <div className="space-y-4">
+        {isLoading ? (
+          <div className="py-10 text-center text-sm text-[var(--text-secondary)]">
+            Loading approvals...
+          </div>
+        ) : isError ? (
+          <div className="py-10 text-center text-sm text-[#DC2626]">
+            Unable to load approvals right now.
+          </div>
+        ) : filteredApprovals.length > 0 ? (
+          filteredApprovals.map((approval) => {
+            const requesterName =
+              approval.requestedBy?.name ?? 'Unknown';
 
             return (
-              <button
-                className={[
-                  'rounded-lg px-4 py-2 font-medium transition',
-                  activeTab === tab.key
-                    ? 'bg-[#185FA5] text-white'
-                    : 'bg-gray-100 text-[#5B6E8C] hover:bg-gray-200'
-                ].join(' ')}
-                key={tab.key}
-                onClick={() => setActiveTab(tab.key)}
-                type="button"
+              <div
+                key={approval.id}
+                className="flex flex-col gap-5 rounded-[22px] border border-[var(--border-color)] bg-[var(--surface)] p-5 transition-all hover:bg-[var(--bg-tertiary)] lg:flex-row lg:items-center lg:justify-between"
               >
-                {tab.label} ({count})
-              </button>
-            );
-          })}
-        </div>
-
-        <div className="space-y-4">
-          {isLoading ? (
-            <div className="py-8 text-center">Loading...</div>
-          ) : isError ? (
-            <div className="py-8 text-center text-[#C13F3A]">
-              Unable to load approvals right now.
-            </div>
-          ) : filteredApprovals.length > 0 ? (
-            filteredApprovals.map((approval) => {
-              const requesterName = approval.requestedBy?.name ?? 'Unknown';
-
-              return (
-                <div
-                  className="flex flex-wrap items-center justify-between gap-4 rounded-lg border border-[#EFF2F6] p-4"
-                  key={approval.id}
-                >
-                  <div className="flex min-w-0 items-center gap-4">
-                    <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full font-bold text-white ${getDepartmentColor(approval.type)}`}>
-                      {getInitials(requesterName)}
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <div className="font-medium text-[#1E293B]">{approval.title}</div>
-                      <div className="text-sm text-[#5B6E8C]">
-                        {requesterName} | {formatAmount(approval.amount)} | {approval.type.toLowerCase()}
-                      </div>
-                      <div className="text-xs text-[#8A99B0]">
-                        Submitted: {formatDate(approval.createdAt)}
-                      </div>
-                    </div>
+                {/* Left */}
+                <div className="flex min-w-0 items-center gap-4">
+                  <div
+                    className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-sm font-bold text-white ${getDepartmentColor(
+                      approval.type
+                    )}`}
+                  >
+                    {getInitials(requesterName)}
                   </div>
 
-                  {approval.status === 'PENDING' ? (
-                    <div className="flex gap-2">
-                      <Button
-                        className="bg-green-500 text-white hover:bg-green-600"
-                        disabled={isProcessing}
-                        onClick={() => approveMutation.mutate(approval.id)}
-                        size="sm"
-                        variant="primary"
-                      >
-                        {approveMutation.isPending ? 'Approving...' : 'Approve'}
-                      </Button>
-                      <Button
-                        disabled={isProcessing}
-                        onClick={() => rejectMutation.mutate(approval.id)}
-                        size="sm"
-                        variant="danger"
-                      >
-                        {rejectMutation.isPending ? 'Rejecting...' : 'Reject'}
-                      </Button>
+                  <div className="min-w-0 flex-1">
+                    <h3 className="truncate text-base font-semibold text-[var(--text-primary)]">
+                      {approval.title}
+                    </h3>
+
+                    <div className="mt-1 flex flex-wrap items-center gap-2 text-sm text-[var(--text-secondary)]">
+                      <span>{requesterName}</span>
+                      <span>•</span>
+                      <span>{formatAmount(approval.amount)}</span>
+                      <span>•</span>
+                      <span>{approval.type}</span>
                     </div>
-                  ) : (
-                    <div
-                      className={[
-                        'rounded-full px-3 py-1 text-sm font-medium',
-                        approval.status === 'APPROVED'
-                          ? 'bg-green-100 text-green-800'
-                          : 'bg-red-100 text-red-800'
-                      ].join(' ')}
-                    >
-                      {approval.status}
-                    </div>
-                  )}
+
+                    <p className="mt-2 text-xs text-[var(--text-secondary)]">
+                      Submitted: {formatDate(approval.createdAt)}
+                    </p>
+                  </div>
                 </div>
-              );
-            })
-          ) : (
-            <div className="py-8 text-center text-[#5B6E8C]">
-              No {activeTab.toLowerCase()} approvals found
-            </div>
-          )}
-        </div>
+
+                {/* Right */}
+                {approval.status === 'PENDING' ? (
+                  <div className="flex items-center gap-3">
+                    <Button
+                      className="bg-[#16A34A] text-white hover:bg-[#15803D]"
+                      disabled={isProcessing}
+                      onClick={() => approveMutation.mutate(approval.id)}
+                      variant="primary"
+                    >
+                      {approveMutation.isPending
+                        ? 'Approving...'
+                        : 'Approve'}
+                    </Button>
+
+                    <Button
+                      disabled={isProcessing}
+                      onClick={() => rejectMutation.mutate(approval.id)}
+                      variant="danger"
+                    >
+                      {rejectMutation.isPending
+                        ? 'Rejecting...'
+                        : 'Reject'}
+                    </Button>
+                  </div>
+                ) : (
+                  <div
+                    className={`rounded-full px-4 py-2 text-sm font-semibold ${
+                      approval.status === 'APPROVED'
+                        ? 'bg-[#EDF9F1] text-[#16A34A]'
+                        : 'bg-[#FEF2F2] text-[#DC2626]'
+                    }`}
+                  >
+                    {approval.status}
+                  </div>
+                )}
+              </div>
+            );
+          })
+        ) : (
+          <div className="py-10 text-center text-sm text-[var(--text-secondary)]">
+            No approvals found.
+          </div>
+        )}
       </div>
-    </div>
-  );
+    </section>
+  </div>
+);
 }
 
 export default ApprovalManagement;

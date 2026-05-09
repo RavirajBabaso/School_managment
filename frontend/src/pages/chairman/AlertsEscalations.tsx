@@ -43,93 +43,170 @@ function AlertsEscalations() {
   );
 
   return (
-    <section className="space-y-5 p-5">
-      <div className="grid gap-4 md:grid-cols-3">
-        <article className="rounded-[20px] border border-[#F2D1CF] bg-white p-5">
-          <p className="text-sm font-semibold text-[#C13F3A]">Critical</p>
-          <p className="mt-4 text-3xl font-semibold text-[#1E293B]">{metrics.critical}</p>
-          <p className="mt-2 text-sm text-[#8A99B0]">Escalated tasks needing chairman attention.</p>
-        </article>
-        <article className="rounded-[20px] border border-[#F6E0AF] bg-white p-5">
-          <p className="text-sm font-semibold text-[#A86A00]">Warnings</p>
-          <p className="mt-4 text-3xl font-semibold text-[#1E293B]">{metrics.warnings}</p>
-          <p className="mt-2 text-sm text-[#8A99B0]">Delayed tasks that may escalate next.</p>
-        </article>
-        <article className="rounded-[20px] border border-[#D7E7F7] bg-white p-5">
-          <p className="text-sm font-semibold text-[#185FA5]">Escalated to you</p>
-          <p className="mt-4 text-3xl font-semibold text-[#1E293B]">{metrics.escalatedToYou}</p>
-          <p className="mt-2 text-sm text-[#8A99B0]">Workflow items already routed to your desk.</p>
-        </article>
-      </div>
-
-      <article className="rounded-[22px] border border-[#EFF2F6] bg-white p-5">
-        <div className="flex items-center justify-between gap-3">
+  <section className="space-y-6">
+    {/* Top KPI Cards */}
+    <div className="grid gap-4 md:grid-cols-3">
+      <article className="rounded-[26px] border border-[var(--border-color)] bg-[var(--card-bg)] p-5 shadow-sm transition-all hover:shadow-md">
+        <div className="flex items-start justify-between">
           <div>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#185FA5]">
-              Alerts Module
+            <p className="text-[11px] uppercase tracking-[0.24em] text-[var(--text-secondary)]">
+              Critical
             </p>
-            <h2 className="mt-2 text-2xl font-semibold text-[#1E293B]">Alert & escalation feed</h2>
+
+            <h2 className="mt-3 text-3xl font-semibold text-[var(--text-primary)]">
+              {metrics.critical}
+            </h2>
+
+            <p className="mt-2 text-sm text-[var(--text-secondary)]">
+              Escalated tasks needing attention
+            </p>
           </div>
-          <Badge variant={alertsQuery.isFetching ? 'blue' : 'gray'}>
-            {alertsQuery.isFetching ? 'Refreshing' : `${alerts.length} live alerts`}
-          </Badge>
-        </div>
 
-        <div className="mt-5 space-y-3">
-          {alertsQuery.isLoading ? (
-            <div className="rounded-[16px] border border-dashed border-[#D7E1EC] bg-[#FAFCFE] px-4 py-10 text-center text-sm text-[#8A99B0]">
-              Loading live alerts...
-            </div>
-          ) : alertsQuery.isError ? (
-            <div className="rounded-[16px] border border-[#F3C7C5] bg-[#FFF4F4] px-4 py-6 text-center text-sm text-[#C13F3A]">
-              Unable to load live alerts right now.
-            </div>
-          ) : alerts.length > 0 ? (
-            alerts.map((task) => {
-              const critical = isCritical(task);
-
-              return (
-                <div
-                  className="flex flex-col gap-4 rounded-[18px] border border-[#EFF2F6] bg-[#FAFCFE] px-4 py-4 lg:flex-row lg:items-center lg:justify-between"
-                  key={task.id}
-                >
-                  <div className="flex min-w-0 items-start gap-3">
-                    <div className="mt-1">
-                      {critical ? (
-                        <span className="block h-3.5 w-3.5 rounded-full bg-[#D64545]" />
-                      ) : (
-                        <span className="block h-0 w-0 border-l-[8px] border-r-[8px] border-b-[14px] border-l-transparent border-r-transparent border-b-[#D89B17]" />
-                      )}
-                    </div>
-                    <div className="min-w-0">
-                      <p className="text-sm font-semibold text-[#1E293B]">{task.title}</p>
-                      <p className="mt-1 text-sm text-[#5B6E8C]">{formatPath(task)}</p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-3">
-                    <Badge variant={critical ? 'red' : 'amber'}>
-                      {critical ? 'Critical' : 'Warning'}
-                    </Badge>
-                    <Button
-                      loading={resolveMutation.isPending}
-                      onClick={() => void resolveMutation.mutateAsync(task.id)}
-                    >
-                      Resolve
-                    </Button>
-                  </div>
-                </div>
-              );
-            })
-          ) : (
-            <div className="rounded-[16px] border border-dashed border-[#D7E1EC] bg-[#FAFCFE] px-4 py-10 text-center text-sm text-[#8A99B0]">
-              No delayed or escalated tasks are active right now.
-            </div>
-          )}
+          <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#FEF2F2]">
+            <span className="h-3 w-3 rounded-full bg-[#DC2626]" />
+          </div>
         </div>
       </article>
-    </section>
-  );
+
+      <article className="rounded-[26px] border border-[var(--border-color)] bg-[var(--card-bg)] p-5 shadow-sm transition-all hover:shadow-md">
+        <div className="flex items-start justify-between">
+          <div>
+            <p className="text-[11px] uppercase tracking-[0.24em] text-[var(--text-secondary)]">
+              Warnings
+            </p>
+
+            <h2 className="mt-3 text-3xl font-semibold text-[var(--text-primary)]">
+              {metrics.warnings}
+            </h2>
+
+            <p className="mt-2 text-sm text-[var(--text-secondary)]">
+              Delayed tasks that may escalate
+            </p>
+          </div>
+
+          <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#FFFBEB]">
+            <span className="h-0 w-0 border-l-[8px] border-r-[8px] border-b-[14px] border-l-transparent border-r-transparent border-b-[#D97706]" />
+          </div>
+        </div>
+      </article>
+
+      <article className="rounded-[26px] border border-[var(--border-color)] bg-[var(--card-bg)] p-5 shadow-sm transition-all hover:shadow-md">
+        <div className="flex items-start justify-between">
+          <div>
+            <p className="text-[11px] uppercase tracking-[0.24em] text-[var(--text-secondary)]">
+              Escalated To You
+            </p>
+
+            <h2 className="mt-3 text-3xl font-semibold text-[var(--text-primary)]">
+              {metrics.escalatedToYou}
+            </h2>
+
+            <p className="mt-2 text-sm text-[var(--text-secondary)]">
+              Workflow items routed to your desk
+            </p>
+          </div>
+
+          <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#EFF6FF]">
+            <span className="text-lg font-bold text-[#2563EB]">!</span>
+          </div>
+        </div>
+      </article>
+    </div>
+
+    {/* Alerts Feed */}
+    <article className="rounded-[26px] border border-[var(--border-color)] bg-[var(--card-bg)] p-6 shadow-sm">
+      {/* Header */}
+      <div className="flex flex-col gap-4 border-b border-[var(--border-color)] pb-5 md:flex-row md:items-center md:justify-between">
+        <div>
+          <p className="text-[10px] uppercase tracking-[0.3em] text-[var(--text-secondary)]">
+            Alerts module
+          </p>
+
+          <h2 className="mt-2 text-2xl font-semibold text-[var(--text-primary)]">
+            Alert & escalation feed
+          </h2>
+
+          <p className="mt-2 text-sm text-[var(--text-secondary)]">
+            Monitor delayed and escalated tasks in real-time.
+          </p>
+        </div>
+
+        <Badge variant={alertsQuery.isFetching ? 'blue' : 'gray'}>
+          {alertsQuery.isFetching
+            ? 'Refreshing...'
+            : `${alerts.length} Live Alerts`}
+        </Badge>
+      </div>
+
+      {/* Feed */}
+      <div className="mt-6 space-y-4">
+        {alertsQuery.isLoading ? (
+          <div className="rounded-[20px] border border-dashed border-[var(--border-color)] bg-[var(--surface)] px-4 py-12 text-center text-sm text-[var(--text-secondary)]">
+            Loading live alerts...
+          </div>
+        ) : alertsQuery.isError ? (
+          <div className="rounded-[20px] border border-[#FECACA] bg-[#FEF2F2] px-4 py-8 text-center text-sm font-medium text-[#DC2626]">
+            Unable to load live alerts right now.
+          </div>
+        ) : alerts.length > 0 ? (
+          alerts.map((task) => {
+            const critical = isCritical(task);
+
+            return (
+              <div
+                key={task.id}
+                className="group flex flex-col gap-5 rounded-[22px] border border-[var(--border-color)] bg-[var(--surface)] p-5 transition-all hover:shadow-sm lg:flex-row lg:items-center lg:justify-between"
+              >
+                {/* Left */}
+                <div className="flex min-w-0 items-start gap-4">
+                  <div className="mt-1 flex-shrink-0">
+                    {critical ? (
+                      <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#FEF2F2]">
+                        <span className="h-3 w-3 rounded-full bg-[#DC2626]" />
+                      </div>
+                    ) : (
+                      <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#FFFBEB]">
+                        <span className="h-0 w-0 border-l-[8px] border-r-[8px] border-b-[14px] border-l-transparent border-r-transparent border-b-[#D97706]" />
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="min-w-0">
+                    <h3 className="truncate text-base font-semibold text-[var(--text-primary)]">
+                      {task.title}
+                    </h3>
+
+                    <p className="mt-1 text-sm leading-6 text-[var(--text-secondary)]">
+                      {formatPath(task)}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Right */}
+                <div className="flex items-center gap-4">
+                  <Badge variant={critical ? 'red' : 'amber'}>
+                    {critical ? 'Critical' : 'Warning'}
+                  </Badge>
+
+                  <Button
+                    loading={resolveMutation.isPending}
+                    onClick={() => void resolveMutation.mutateAsync(task.id)}
+                  >
+                    Resolve
+                  </Button>
+                </div>
+              </div>
+            );
+          })
+        ) : (
+          <div className="rounded-[20px] border border-dashed border-[var(--border-color)] bg-[var(--surface)] px-4 py-12 text-center text-sm text-[var(--text-secondary)]">
+            No delayed or escalated tasks are active right now.
+          </div>
+        )}
+      </div>
+    </article>
+  </section>
+);
 }
 
 export default AlertsEscalations;
