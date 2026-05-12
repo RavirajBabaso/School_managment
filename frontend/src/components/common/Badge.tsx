@@ -20,19 +20,19 @@ const badgeVariants: Record<
   string
 > = {
   blue:
-    'border border-blue-500/20 bg-blue-500/10 text-blue-400',
+    'border border-blue-200 bg-blue-50 text-blue-700',
 
   red:
-    'border border-red-500/20 bg-red-500/10 text-red-400',
+    'border border-red-200 bg-red-50 text-red-700',
 
   amber:
-    'border border-yellow-500/20 bg-yellow-500/10 text-yellow-400',
+    'border border-yellow-200 bg-yellow-50 text-yellow-700',
 
   green:
-    'border border-emerald-500/20 bg-emerald-500/10 text-emerald-400',
+    'border border-emerald-200 bg-emerald-50 text-emerald-700',
 
   gray:
-    'border border-slate-700 bg-[#0F172A] text-slate-300'
+    'border border-slate-300 bg-[#F8FAFC] text-slate-700'
 };
 
 function Badge({

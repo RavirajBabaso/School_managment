@@ -75,7 +75,7 @@ function NotificationBell() {
       {/* Bell */}
       <button
         aria-label="Open notifications"
-        className="relative flex h-10 w-10 items-center justify-center rounded-full border border-slate-700 bg-[#111827] text-slate-300 transition-all duration-200 hover:bg-[#172036] hover:text-white"
+        className="relative flex h-10 w-10 items-center justify-center rounded-full border border-slate-300 bg-white text-slate-700 transition-all duration-200 hover:bg-[#EEF4FF] hover:text-slate-950"
         onClick={() =>
           setIsOpen((current) => !current)
         }
@@ -107,12 +107,12 @@ function NotificationBell() {
 
       {/* Dropdown */}
       {isOpen ? (
-        <div className="absolute right-0 top-12 z-30 w-[340px] overflow-hidden rounded-[24px] border border-slate-800 bg-[#111827] shadow-[0_20px_60px_rgba(0,0,0,0.45)]">
+        <div className="absolute right-0 top-12 z-30 w-[340px] overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-[0_20px_50px_rgba(15,23,42,0.14)]">
           
           {/* Header */}
-          <div className="flex items-center justify-between border-b border-slate-800 px-5 py-4">
+          <div className="flex items-center justify-between border-b border-slate-200 px-5 py-4">
             <div>
-              <h3 className="text-sm font-semibold text-white">
+              <h3 className="text-sm font-semibold text-slate-950">
                 Notifications
               </h3>
 
@@ -139,11 +139,11 @@ function NotificationBell() {
               latestNotifications.map(
                 (notification) => (
                   <div
-                    className="rounded-[18px] border border-transparent p-3 transition hover:border-slate-700 hover:bg-[#172036]"
+                    className="rounded-[18px] border border-transparent p-3 transition hover:border-slate-300 hover:bg-[#EEF4FF]"
                     key={`${notification.type}-${notification.id}`}
                   >
                     <div className="flex items-start justify-between gap-3">
-                      <p className="text-[13px] font-medium leading-5 text-white">
+                      <p className="text-[13px] font-medium leading-5 text-slate-950">
                         {
                           notification.message
                         }
@@ -164,7 +164,7 @@ function NotificationBell() {
               )
             ) : (
               <div className="px-4 py-10 text-center">
-                <p className="text-sm text-slate-400">
+                <p className="text-sm text-slate-600">
                   No notifications yet
                 </p>
               </div>
@@ -172,7 +172,7 @@ function NotificationBell() {
           </div>
 
           {/* Footer */}
-          <div className="border-t border-slate-800 px-5 py-3">
+          <div className="border-t border-slate-200 px-5 py-3">
             <Link
               className="text-xs font-semibold text-[#60A5FA] transition hover:text-[#93C5FD]"
               onClick={() =>

@@ -64,6 +64,8 @@ const UserManagement: React.FC = () => {
     },
   });
 
+  const safeUsers = users ?? [];
+
   const addUserMutation = useMutation({
     mutationFn: async (userData: AddUserForm) => {
       const response = await api.post('/users', userData);
@@ -157,48 +159,48 @@ const UserManagement: React.FC = () => {
   }
 
   return (
-    <div className="overflow-x-auto rounded-[22px] border border-slate-800 bg-[#111827]">
-  <table className="min-w-full divide-y divide-slate-800 text-left">
+    <div className="overflow-x-auto rounded-[22px] border border-slate-200 bg-white">
+  <table className="min-w-full divide-y divide-slate-200 text-left">
     {/* Header */}
-    <thead className="bg-[#0F172A]">
+    <thead className="bg-[#F8FAFC]">
       <tr>
-        <th className="px-6 py-4 text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-400">
+        <th className="px-6 py-4 text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-600">
           Name
         </th>
 
-        <th className="px-6 py-4 text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-400">
+        <th className="px-6 py-4 text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-600">
           Role
         </th>
 
-        <th className="px-6 py-4 text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-400">
+        <th className="px-6 py-4 text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-600">
           Department
         </th>
 
-        <th className="px-6 py-4 text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-400">
+        <th className="px-6 py-4 text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-600">
           Email
         </th>
 
-        <th className="px-6 py-4 text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-400">
+        <th className="px-6 py-4 text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-600">
           Status
         </th>
 
-        <th className="px-6 py-4 text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-400">
+        <th className="px-6 py-4 text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-600">
           Actions
         </th>
       </tr>
     </thead>
 
     {/* Body */}
-    <tbody className="divide-y divide-slate-800 bg-[#111827]">
-      {users.map((user) => (
+    <tbody className="divide-y divide-slate-200 bg-white">
+      {safeUsers.map((user) => (
         <tr
           key={user.id}
-          className="transition hover:bg-[#172036]"
+          className="transition hover:bg-[#EEF4FF]"
         >
           {/* Name */}
           <td className="px-6 py-5">
             <div className="flex items-center gap-4">
-              <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#1E293B] text-sm font-semibold text-white">
+              <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#E2E8F0] text-sm font-semibold text-slate-950">
                 {user.name
                   .split(' ')
                   .map((word) => word[0])
@@ -207,7 +209,7 @@ const UserManagement: React.FC = () => {
               </div>
 
               <div>
-                <p className="font-medium text-white">
+                <p className="font-medium text-slate-950">
                   {user.name}
                 </p>
               </div>
@@ -215,17 +217,17 @@ const UserManagement: React.FC = () => {
           </td>
 
           {/* Role */}
-          <td className="px-6 py-5 text-sm font-medium text-slate-300">
+          <td className="px-6 py-5 text-sm font-medium text-slate-700">
             {user.role}
           </td>
 
           {/* Department */}
-          <td className="px-6 py-5 text-sm text-slate-400">
-            {user.department?.name || '--'}
+          <td className="px-6 py-5 text-sm text-slate-600">
+            {user.departmentName || '--'}
           </td>
 
           {/* Email */}
-          <td className="px-6 py-5 text-sm text-slate-300">
+          <td className="px-6 py-5 text-sm text-slate-700">
             {user.email}
           </td>
 
@@ -240,14 +242,14 @@ const UserManagement: React.FC = () => {
           <td className="px-6 py-5">
             <div className="flex items-center gap-3">
               <button
-                onClick={() => onEdit(user)}
-                className="rounded-xl bg-[#1E293B] px-4 py-2 text-sm font-medium text-white transition hover:bg-[#334155]"
+                onClick={() => openEditModal(user)}
+                className="rounded-xl bg-[#E2E8F0] px-4 py-2 text-sm font-medium text-slate-950 transition hover:bg-slate-300"
               >
                 Edit
               </button>
 
               <button
-                onClick={() => onDeactivate(user)}
+                onClick={() => openDeactivateModal(user)}
                 className="rounded-xl bg-red-500/10 px-4 py-2 text-sm font-medium text-red-400 transition hover:bg-red-500/20"
               >
                 Deactivate

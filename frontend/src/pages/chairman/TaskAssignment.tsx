@@ -140,18 +140,18 @@ function TaskAssignment() {
   <>
     <section className="space-y-6">
       {/* Header */}
-      <div className="rounded-[30px] border border-slate-800 bg-[#111827] p-6 shadow-sm">
+      <div className="rounded-[30px] border border-slate-200 bg-white p-6 shadow-sm">
         <div className="flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
           <div>
             <p className="text-[10px] uppercase tracking-[0.28em] text-slate-500">
               Dashboard Module
             </p>
 
-            <h1 className="mt-3 text-3xl font-semibold text-white">
+            <h1 className="mt-3 text-3xl font-semibold text-slate-950">
               Task Assignment
             </h1>
 
-            <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-400">
+            <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-600">
               Create work items for department heads and track active assignments from the workflow queue.
             </p>
           </div>
@@ -167,7 +167,7 @@ function TaskAssignment() {
       </div>
 
       {/* Queue */}
-      <div className="rounded-[30px] border border-slate-800 bg-[#111827] p-6 shadow-sm">
+      <div className="rounded-[30px] border border-slate-200 bg-white p-6 shadow-sm">
         {/* Top */}
         <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
           <div>
@@ -175,7 +175,7 @@ function TaskAssignment() {
               Assignment Queue
             </p>
 
-            <h2 className="mt-3 text-2xl font-semibold text-white">
+            <h2 className="mt-3 text-2xl font-semibold text-slate-950">
               Active Task Queue
             </h2>
           </div>
@@ -188,7 +188,7 @@ function TaskAssignment() {
                   'rounded-full px-4 py-2 text-sm font-medium transition-all',
                   activeStatus === tab.value
                     ? 'bg-[#185FA5] text-white shadow-sm'
-                    : 'border border-slate-700 bg-[#0F172A] text-slate-400 hover:bg-[#172036]'
+                    : 'border border-slate-300 bg-[#F8FAFC] text-slate-600 hover:bg-[#EEF4FF]'
                 ].join(' ')}
                 key={tab.value}
                 onClick={() => setActiveStatus(tab.value)}
@@ -201,7 +201,7 @@ function TaskAssignment() {
         </div>
 
         {/* Table */}
-        <div className="mt-6 overflow-hidden rounded-[24px] border border-slate-800 bg-[#111827]">
+        <div className="mt-6 overflow-hidden rounded-[24px] border border-slate-200 bg-white">
           <TaskTable
             emptyMessage="Newly assigned tasks will appear here."
             onRowClick={(task) => navigate(`/task/${task.id}`)}
@@ -223,12 +223,12 @@ function TaskAssignment() {
       <form className="space-y-5" onSubmit={handleSubmit}>
         {/* Assign To */}
         <label className="flex flex-col gap-2">
-          <span className="text-sm font-medium text-slate-300">
+          <span className="text-sm font-medium text-slate-700">
             Assign To
           </span>
 
           <select
-            className="min-h-[46px] rounded-[14px] border border-slate-700 bg-[#0F172A] px-4 text-sm text-white outline-none transition focus:border-[#185FA5]"
+            className="min-h-[46px] rounded-[14px] border border-slate-300 bg-[#F8FAFC] px-4 text-sm text-slate-950 outline-none transition focus:border-[#185FA5]"
             onChange={(event) => {
               const selectedUser = departmentHeads.find(
                 (user) =>
@@ -273,12 +273,12 @@ function TaskAssignment() {
 
         {/* Description */}
         <label className="flex flex-col gap-2">
-          <span className="text-sm font-medium text-slate-300">
+          <span className="text-sm font-medium text-slate-700">
             Description
           </span>
 
           <textarea
-            className="min-h-[140px] rounded-[16px] border border-slate-700 bg-[#0F172A] px-4 py-3 text-sm leading-6 text-white outline-none transition placeholder:text-slate-500 focus:border-[#185FA5]"
+            className="min-h-[140px] rounded-[16px] border border-slate-300 bg-[#F8FAFC] px-4 py-3 text-sm leading-6 text-slate-950 outline-none transition placeholder:text-slate-400 focus:border-[#185FA5]"
             onChange={(event) =>
               handleChange(
                 'description',
@@ -294,12 +294,12 @@ function TaskAssignment() {
         <div className="grid gap-4 sm:grid-cols-2">
           {/* Priority */}
           <label className="flex flex-col gap-2">
-            <span className="text-sm font-medium text-slate-300">
+            <span className="text-sm font-medium text-slate-700">
               Priority
             </span>
 
             <select
-              className="min-h-[46px] rounded-[14px] border border-slate-700 bg-[#0F172A] px-4 text-sm text-white outline-none transition focus:border-[#185FA5]"
+              className="min-h-[46px] rounded-[14px] border border-slate-300 bg-[#F8FAFC] px-4 text-sm text-slate-950 outline-none transition focus:border-[#185FA5]"
               onChange={(event) =>
                 handleChange(
                   'priority',
@@ -346,13 +346,13 @@ function TaskAssignment() {
 
         {/* Attachment */}
         <label className="flex flex-col gap-2">
-          <span className="text-sm font-medium text-slate-300">
+          <span className="text-sm font-medium text-slate-700">
             Attachment
           </span>
 
           <input
             accept=".pdf,.docx,.jpg,.jpeg,.png"
-            className="rounded-[14px] border border-dashed border-slate-700 bg-[#0F172A] px-4 py-3 text-sm text-slate-400 file:mr-4 file:rounded-full file:border-0 file:bg-[#185FA5] file:px-4 file:py-2 file:text-xs file:font-semibold file:text-white"
+            className="rounded-[14px] border border-dashed border-slate-300 bg-[#F8FAFC] px-4 py-3 text-sm text-slate-600 file:mr-4 file:rounded-full file:border-0 file:bg-[#185FA5] file:px-4 file:py-2 file:text-xs file:font-semibold file:text-white"
             onChange={(event) =>
               setFile(event.target.files?.[0])
             }

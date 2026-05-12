@@ -91,7 +91,8 @@ const buildReportData = async (
   type: ReportType,
   dateFrom: Date,
   dateTo: Date,
-  deptId?: number
+  deptId?: number,
+  assignedTo?: number
 ) => {
   const [tasks, department] = await Promise.all([
     Task.findAll({
@@ -100,7 +101,8 @@ const buildReportData = async (
           [Op.gte]: dateFrom,
           [Op.lte]: dateTo
         },
-        ...(deptId ? { department_id: deptId } : {})
+        ...(deptId ? { department_id: deptId } : {}),
+        ...(assignedTo ? { assigned_to: assignedTo } : {})
       },
       include: REPORT_TASK_INCLUDE,
       order: [['due_date', 'ASC'], ['title', 'ASC']]
@@ -181,9 +183,10 @@ const generateAndPersistReport = async (
   dateFrom: Date,
   dateTo: Date,
   deptId?: number,
-  generatedBy = 1
+  generatedBy = 1,
+  assignedTo?: number
 ) => {
-  const reportData = await buildReportData(type, dateFrom, dateTo, deptId);
+  const reportData = await buildReportData(type, dateFrom, dateTo, deptId, assignedTo);
   const [pdfPath, excelPath] = await Promise.all([
     generateTaskReport(reportData, type),
     generateTaskExcel(reportData, type)
@@ -201,30 +204,32 @@ const generateAndPersistReport = async (
   };
 };
 
-export const generateDailyReport = async (date: string | Date, deptId?: number, generatedBy = 1) => {
+export const generateDailyReport = async (date: string | Date, deptId?: number, generatedBy = 1, assignedTo?: number) => {
   const reportDate = new Date(date);
-  return generateAndPersistReport('DAILY', startOfDay(reportDate), endOfDay(reportDate), deptId, generatedBy);
+  return generateAndPersistReport('DAILY', startOfDay(reportDate), endOfDay(reportDate), deptId, generatedBy, assignedTo);
 };
 
 export const generateWeeklyReport = async (
   weekStart: string | Date,
   deptId?: number,
-  generatedBy = 1
+  generatedBy = 1,
+  assignedTo?: number
 ) => {
   const startDate = startOfDay(new Date(weekStart));
   const endDate = endOfDay(new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate() + 6));
-  return generateAndPersistReport('WEEKLY', startDate, endDate, deptId, generatedBy);
+  return generateAndPersistReport('WEEKLY', startDate, endDate, deptId, generatedBy, assignedTo);
 };
 
 export const generateMonthlyReport = async (
   year: number,
   month: number,
   deptId?: number,
-  generatedBy = 1
+  generatedBy = 1,
+  assignedTo?: number
 ) => {
   const startDate = startOfDay(new Date(year, month - 1, 1));
   const endDate = endOfDay(new Date(year, month, 0));
-  return generateAndPersistReport('MONTHLY', startDate, endDate, deptId, generatedBy);
+  return generateAndPersistReport('MONTHLY', startDate, endDate, deptId, generatedBy, assignedTo);
 };
 
 export const getReportHistory = async () => {

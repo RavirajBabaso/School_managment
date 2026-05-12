@@ -95,13 +95,13 @@ function TaskTable({
 
   if (safeTasks.length === 0) {
     return (
-      <div className="flex min-h-[240px] items-center justify-center rounded-[24px] border border-slate-800 bg-[#111827] p-8 text-center">
+      <div className="flex min-h-[240px] items-center justify-center rounded-[24px] border border-slate-200 bg-white p-8 text-center">
         <div>
-          <p className="text-base font-semibold text-white">
+          <p className="text-base font-semibold text-slate-950">
             No tasks found
           </p>
 
-          <p className="mt-2 text-sm text-slate-400">
+          <p className="mt-2 text-sm text-slate-600">
             {emptyMessage}
           </p>
         </div>
@@ -110,12 +110,12 @@ function TaskTable({
   }
 
   return (
-    <div className="overflow-hidden rounded-[24px] border border-slate-800 bg-[#111827]">
+    <div className="overflow-hidden rounded-[24px] border border-slate-200 bg-white">
       <div className="overflow-x-auto">
         <table className="min-w-full border-collapse">
           
           {/* Header */}
-          <thead className="bg-[#0F172A]">
+          <thead className="bg-[#F8FAFC]">
             <tr>
               {[
                 'Task Title',
@@ -127,7 +127,7 @@ function TaskTable({
                 'Status'
               ].map((heading) => (
                 <th
-                  className="px-5 py-4 text-left text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400"
+                  className="px-5 py-4 text-left text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-600"
                   key={heading}
                 >
                   {heading}
@@ -137,11 +137,11 @@ function TaskTable({
           </thead>
 
           {/* Body */}
-          <tbody className="divide-y divide-slate-800">
+          <tbody className="divide-y divide-slate-200">
             {safeTasks.map((task) => (
               <tr
                 className={[
-                  'transition hover:bg-[#172036]',
+                  'transition hover:bg-[#EEF4FF]',
                   onRowClick
                     ? 'cursor-pointer'
                     : ''
@@ -154,11 +154,11 @@ function TaskTable({
                 {/* Title */}
                 <td className="px-5 py-4">
                   <div>
-                    <p className="text-sm font-semibold text-white">
+                    <p className="text-sm font-semibold text-slate-950">
                       {task.title}
                     </p>
 
-                    <p className="mt-1 text-xs text-slate-400">
+                    <p className="mt-1 text-xs text-slate-600">
                       {task.department?.name ??
                         task.departmentName ??
                         'General'}
@@ -167,7 +167,7 @@ function TaskTable({
                 </td>
 
                 {/* Assigned */}
-                <td className="px-5 py-4 text-sm text-slate-300">
+                <td className="px-5 py-4 text-sm text-slate-700">
                   {task.assignedTo?.name ??
                     task.assignedToName ??
                     'Unassigned'}
@@ -177,7 +177,7 @@ function TaskTable({
                 <td className="px-5 py-4">
                   <div
                     className={[
-                      'relative inline-flex min-w-[92px] items-center rounded-[12px] bg-[#0F172A] px-3 py-2 pl-4 text-xs font-semibold text-slate-300 before:absolute before:bottom-1.5 before:left-1.5 before:top-1.5 before:w-[3px] before:rounded-full',
+                      'relative inline-flex min-w-[92px] items-center rounded-[12px] bg-[#F8FAFC] px-3 py-2 pl-4 text-xs font-semibold text-slate-700 before:absolute before:bottom-1.5 before:left-1.5 before:top-1.5 before:w-[3px] before:rounded-full',
                       priorityStripe[
                         task.priority
                       ] ??
@@ -189,19 +189,19 @@ function TaskTable({
                 </td>
 
                 {/* Type */}
-                <td className="px-5 py-4 text-sm text-slate-300">
+                <td className="px-5 py-4 text-sm text-slate-700">
                   {formatLabel(
                     getCadence(task)
                   )}
                 </td>
 
                 {/* Start */}
-                <td className="px-5 py-4 text-sm text-slate-300">
+                <td className="px-5 py-4 text-sm text-slate-700">
                   {formatDate(task.start_date)}
                 </td>
 
                 {/* Due */}
-                <td className="px-5 py-4 text-sm text-slate-300">
+                <td className="px-5 py-4 text-sm text-slate-700">
                   {formatDate(task.due_date)}
                 </td>
 

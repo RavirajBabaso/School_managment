@@ -17,7 +17,7 @@ const StatGrid: React.FC<StatGridProps> = ({
       {items.map((item, index) => (
         <div
           key={index}
-          className="group relative overflow-hidden rounded-[24px] border border-slate-800 bg-[#111827] p-5 transition-all duration-200 hover:bg-[#172036]"
+          className="group relative overflow-hidden rounded-[24px] border border-slate-200 bg-white p-5 transition-all duration-200 hover:bg-[#EEF4FF]"
         >
           {/* Top Glow */}
           <div
@@ -44,7 +44,7 @@ const StatGrid: React.FC<StatGridProps> = ({
 
           {/* Sub Text */}
           {item.sub ? (
-            <p className="mt-2 text-sm text-slate-400">
+            <p className="mt-2 text-sm text-slate-600">
               {item.sub}
             </p>
           ) : null}

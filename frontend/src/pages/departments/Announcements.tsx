@@ -59,26 +59,26 @@ function Announcements() {
   };
 
   return (
-    <section className="min-h-screen space-y-6 bg-[#020817] p-6">
+    <section className="min-h-screen space-y-6 bg-[#F5F7FB] p-6">
       
       {/* Header */}
-      <div className="rounded-[28px] border border-slate-800 bg-[#111827] p-6 shadow-sm">
+      <div className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm">
         
         <p className="text-[10px] uppercase tracking-[0.28em] text-slate-500">
           Department Comms
         </p>
 
-        <h2 className="mt-3 text-2xl font-semibold text-white">
+        <h2 className="mt-3 text-2xl font-semibold text-slate-950">
           Announcements
         </h2>
 
-        <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-400">
+        <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-600">
           Review institution-wide broadcasts and department-specific directions from the chairman.
         </p>
       </div>
 
       {/* List */}
-      <div className="rounded-[28px] border border-slate-800 bg-[#111827] p-5 shadow-sm">
+      <div className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm">
         {announcementsQuery.data &&
         announcementsQuery.data.length >
           0 ? (
@@ -93,7 +93,7 @@ function Announcements() {
                 return (
                   <button
                     className={[
-                      'w-full rounded-[22px] border p-5 text-left transition-all duration-200 hover:bg-[#172036] focus:outline-none active:outline-none',
+                      'w-full rounded-[22px] border p-5 text-left transition-all duration-200 hover:bg-[#EEF4FF] focus:outline-none active:outline-none',
                       announcement.target ===
                       'ALL'
                         ? 'border-blue-500/20 bg-blue-500/10'
@@ -113,11 +113,11 @@ function Announcements() {
                       
                       {/* Left */}
                       <div>
-                        <p className="text-sm font-semibold text-white">
+                        <p className="text-sm font-semibold text-slate-950">
                           Chairman
                         </p>
 
-                        <p className="mt-3 text-sm leading-6 text-slate-300">
+                        <p className="mt-3 text-sm leading-6 text-slate-700">
                           {
                             announcement.message
                           }
@@ -133,7 +133,7 @@ function Announcements() {
                     </div>
 
                     {/* Footer */}
-                    <p className="mt-4 text-xs font-medium text-slate-400">
+                    <p className="mt-4 text-xs font-medium text-slate-600">
                       {announcement.target ===
                       'ALL'
                         ? 'Sent to all staff'
@@ -154,7 +154,7 @@ function Announcements() {
             )}
           </div>
         ) : (
-          <div className="rounded-[22px] border border-dashed border-slate-700 bg-[#0F172A] px-4 py-12 text-center text-sm text-slate-400">
+          <div className="rounded-[22px] border border-dashed border-slate-300 bg-[#F8FAFC] px-4 py-12 text-center text-sm text-slate-600">
             No announcements are available right now.
           </div>
         )}

@@ -27,16 +27,16 @@ function App() {
 
             style: {
               background:
-                '#111827',
-              color: '#FFFFFF',
+                '#FFFFFF',
+              color: '#0F172A',
               border:
-                '1px solid rgb(30 41 59)',
+                '1px solid rgb(226 232 240)',
               borderRadius:
                 '16px',
               padding:
                 '14px 16px',
               boxShadow:
-                '0 10px 30px rgba(0,0,0,0.35)'
+                '0 16px 40px rgba(15,23,42,0.14)'
             },
 
             success: {
@@ -59,7 +59,7 @@ function App() {
           }}
         />
 
-        <div className="min-h-screen bg-[#020817] text-white">
+        <div className="min-h-screen bg-[#F5F7FB] text-slate-950">
           <AppRouter />
         </div>
       </QueryClientProvider>

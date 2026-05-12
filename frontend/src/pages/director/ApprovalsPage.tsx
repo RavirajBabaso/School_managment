@@ -58,21 +58,21 @@ const ApprovalsPage: React.FC = () => {
 
   const getTypeBadge = (type: ApprovalType) => {
     const colors = {
-      BUDGET: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100',
-      PURCHASE: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-100',
-      POLICY: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-100',
-      EVENT: 'bg-pink-100 text-pink-800 dark:bg-pink-900 dark:text-pink-100',
+      BUDGET: 'bg-green-100 text-green-800',
+      PURCHASE: 'bg-blue-100 text-blue-800',
+      POLICY: 'bg-purple-100 text-purple-800',
+      EVENT: 'bg-pink-100 text-pink-800',
     };
-    return colors[type] || 'bg-gray-100 text-gray-800 dark:bg-slate-800 dark:text-slate-100';
+    return colors[type] || 'bg-gray-100 text-gray-800';
   };
 
   const getStatusBadge = (status: string) => {
     const colors = {
-      APPROVED: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100',
-      PENDING: 'bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-100',
-      REJECTED: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-100',
+      APPROVED: 'bg-green-100 text-green-800',
+      PENDING: 'bg-amber-100 text-amber-800',
+      REJECTED: 'bg-red-100 text-red-800',
     };
-    return colors[status as keyof typeof colors] || 'bg-gray-100 text-gray-800 dark:bg-slate-800 dark:text-slate-100';
+    return colors[status as keyof typeof colors] || 'bg-gray-100 text-gray-800';
   };
 
   const stats = [

@@ -44,6 +44,12 @@ import FinanceTasks from '../pages/finance/FinanceTasks';
 import FinanceNotifications from '../pages/finance/FinanceNotifications';
 import FinanceAnnouncements from '../pages/finance/FinanceAnnouncements';
 
+import AdminDashboard from '../pages/admin/AdminDashboard';
+import AdmissionDashboard from '../pages/admission/AdmissionDashboard';
+import AdmissionLogin from '../pages/admission/AdmissionLogin';
+import PrincipalDashboard from '../pages/principal/PrincipalDashboard';
+import PrincipalLogin from '../pages/principal/PrincipalLogin';
+
 import ProtectedRoute from './ProtectedRoute';
 
 function NotificationsLayout() {
@@ -51,7 +57,7 @@ function NotificationsLayout() {
   useSocket();
 
   return (
-    <div className="flex min-h-screen bg-[#020817] text-white">
+    <div className="flex min-h-screen bg-[#F5F7FB] text-slate-950">
 
       <Sidebar />
 
@@ -100,6 +106,16 @@ function AppRouter() {
         <Route
           path="/login"
           element={<Login />}
+        />
+
+        <Route
+          path="/principal/login"
+          element={<PrincipalLogin />}
+        />
+
+        <Route
+          path="/admission/login"
+          element={<AdmissionLogin />}
         />
 
         {/* Shared Protected */}
@@ -236,6 +252,57 @@ function AppRouter() {
           />
         </Route>
 
+        {/* Admin Module */}
+        <Route
+          element={
+            <ProtectedRoute
+              allowedRoles={[
+                ROLES.ADMIN
+              ]}
+            />
+          }
+        >
+
+          <Route
+            path="/admin/*"
+            element={<AdminDashboard />}
+          />
+        </Route>
+
+        {/* Principal Module */}
+        <Route
+          element={
+            <ProtectedRoute
+              allowedRoles={[
+                ROLES.PRINCIPAL
+              ]}
+            />
+          }
+        >
+
+          <Route
+            path="/principal/*"
+            element={<PrincipalDashboard />}
+          />
+        </Route>
+
+        {/* Admission & Marketing Module */}
+        <Route
+          element={
+            <ProtectedRoute
+              allowedRoles={[
+                ROLES.ADMISSION
+              ]}
+            />
+          }
+        >
+
+          <Route
+            path="/admission/*"
+            element={<AdmissionDashboard />}
+          />
+        </Route>
+
         {/* Chairman */}
         <Route
           element={
@@ -265,7 +332,11 @@ function AppRouter() {
           element={
             <ProtectedRoute
               allowedRoles={
-                DEPARTMENT_HEAD_ROLES
+                DEPARTMENT_HEAD_ROLES.filter(
+                  (role) =>
+                    role !== ROLES.PRINCIPAL
+                    && role !== ROLES.ADMISSION
+                )
               }
             />
           }

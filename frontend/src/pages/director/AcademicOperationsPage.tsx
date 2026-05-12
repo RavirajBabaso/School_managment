@@ -259,8 +259,8 @@ function AcademicOperationsPage() {
                       onClick={() => handleSelectModule(module)}
                       className={`mb-2 w-full rounded-lg border p-3 text-left transition ${
                        selectedModule?.key === module.key
-                            ? 'border-[#185FA5] bg-[#172554]'
-                            : 'border-slate-800 bg-[#111827] hover:border-slate-700 hover:bg-[#172036]'
+                            ? 'border-[#185FA5] bg-[#DBEAFE]'
+                            : 'border-slate-200 bg-white hover:border-slate-300 hover:bg-[#EEF4FF]'
                       }`}
                     >
                       <div className="flex items-start justify-between gap-3">

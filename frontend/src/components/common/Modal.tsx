@@ -55,25 +55,25 @@ function Modal({
 
   return createPortal(
   <div
-    className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 p-4 backdrop-blur-md animate-[fadeIn_180ms_ease-out]"
+    className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/35 p-4 backdrop-blur-md animate-[fadeIn_180ms_ease-out]"
     onClick={onClose}
     role="presentation"
   >
     <div
       aria-modal="true"
-      className="w-full max-w-[560px] overflow-hidden rounded-[28px] border border-slate-800 bg-[#111827] shadow-[0_24px_60px_rgba(0,0,0,0.45)]"
+      className="w-full max-w-[560px] overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-[0_24px_60px_rgba(15,23,42,0.14)]"
       onClick={(event) => event.stopPropagation()}
       role="dialog"
     >
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-slate-800 bg-[#111827] px-6 py-5">
+      <div className="flex items-center justify-between border-b border-slate-200 bg-white px-6 py-5">
         <div className="flex items-center gap-3">
           <div>
             <p className="text-[10px] uppercase tracking-[0.28em] text-slate-500">
               Dashboard Module
             </p>
 
-            <h2 className="mt-2 text-2xl font-semibold text-white">
+            <h2 className="mt-2 text-2xl font-semibold text-slate-950">
               {title}
             </h2>
           </div>
@@ -84,7 +84,7 @@ function Modal({
         {/* Close */}
         <button
           aria-label="Close modal"
-          className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-700 bg-[#0F172A] text-lg leading-none text-slate-400 transition hover:bg-[#172036] hover:text-white"
+          className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-300 bg-[#F8FAFC] text-lg leading-none text-slate-600 transition hover:bg-[#EEF4FF] hover:text-slate-950"
           onClick={onClose}
           type="button"
         >
@@ -95,7 +95,7 @@ function Modal({
       {/* Body */}
       <div
         className={[
-          'max-h-[75vh] overflow-y-auto bg-[#111827] px-6 py-5 text-white',
+          'max-h-[75vh] overflow-y-auto bg-white px-6 py-5 text-slate-950',
           bodyClassName
         ].join(' ')}
       >
@@ -104,7 +104,7 @@ function Modal({
 
       {/* Footer */}
       {footer ? (
-        <div className="border-t border-slate-800 bg-[#0F172A] px-6 py-5">
+        <div className="border-t border-slate-200 bg-[#F8FAFC] px-6 py-5">
           {footer}
         </div>
       ) : null}

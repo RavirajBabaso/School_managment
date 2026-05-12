@@ -33,26 +33,26 @@ function AssignedTasks() {
   }, [dispatch, tasksQuery.data]);
 
   return (
-    <section className="min-h-screen space-y-6 bg-[#020817] p-6">
+    <section className="min-h-screen space-y-6 bg-[#F5F7FB] p-6">
       
       {/* Header */}
-      <div className="rounded-[28px] border border-slate-800 bg-[#111827] p-6 shadow-sm">
+      <div className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm">
         
         <p className="text-[10px] uppercase tracking-[0.28em] text-slate-500">
           Department Tasks
         </p>
 
-        <h2 className="mt-3 text-2xl font-semibold text-white">
+        <h2 className="mt-3 text-2xl font-semibold text-slate-950">
           Assigned Tasks
         </h2>
 
-        <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-400">
+        <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-600">
           Review your queue and open any task to inspect the full history timeline.
         </p>
       </div>
 
       {/* Table */}
-      <div className="rounded-[28px] border border-slate-800 bg-[#111827] p-6 shadow-sm">
+      <div className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm">
         <TaskTable
           emptyMessage="Tasks assigned to your department will appear here."
           onRowClick={(task) =>

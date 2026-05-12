@@ -29,6 +29,26 @@ const departmentItems: NavItem[] = [
   { color: '#0EA5A4', group: 'Inbox', label: 'Announcements', to: '/department/announcements' }
 ];
 
+const principalItems: NavItem[] = [
+  { color: '#185FA5', group: 'Overview', label: 'Dashboard', to: '/principal/dashboard' },
+  { color: '#2C7BE5', group: 'Actions', label: 'My Tasks', to: '/principal/tasks' },
+  { color: '#D64545', group: 'Inbox', label: 'Notifications', to: '/principal/notifications' },
+  { color: '#0EA5A4', group: 'Inbox', label: 'Announcements', to: '/principal/announcements' },
+  { color: '#2563EB', group: 'Reports', label: 'Reports', to: '/principal/reports' },
+  { color: '#639922', group: 'Reports', label: 'Analytics', to: '/principal/analytics' },
+  { color: '#BA7517', group: 'Actions', label: 'Change Password', to: '/principal/change-password' }
+];
+
+const admissionItems: NavItem[] = [
+  { color: '#185FA5', group: 'Overview', label: 'Dashboard', to: '/admission/dashboard' },
+  { color: '#2C7BE5', group: 'Actions', label: 'My Tasks', to: '/admission/tasks' },
+  { color: '#D64545', group: 'Inbox', label: 'Notifications', to: '/admission/notifications' },
+  { color: '#0EA5A4', group: 'Inbox', label: 'Announcements', to: '/admission/announcements' },
+  { color: '#2563EB', group: 'Reports', label: 'Reports', to: '/admission/reports' },
+  { color: '#639922', group: 'Reports', label: 'Analytics', to: '/admission/analytics' },
+  { color: '#BA7517', group: 'Actions', label: 'Change Password', to: '/admission/change-password' }
+];
+
 const propertyItems: NavItem[] = [
   { color: '#185FA5', group: 'Overview', label: 'Dashboard', to: '/property-maintenance' },
   { color: '#2C7BE5', group: 'Actions', label: 'Tasks', to: '/property-maintenance/tasks' },
@@ -41,6 +61,19 @@ const financeItems: NavItem[] = [
   { color: '#2C7BE5', group: 'Actions', label: 'Tasks', to: '/finance/tasks' },
   { color: '#D64545', group: 'Inbox', label: 'Notifications', to: '/finance/notifications' },
   { color: '#0EA5A4', group: 'Inbox', label: 'Announcements', to: '/finance/announcements' }
+];
+
+const adminItems: NavItem[] = [
+  { color: '#185FA5', group: 'Overview', label: 'Dashboard', to: '/admin' },
+  { color: '#F97316', group: 'Actions', label: 'Staff', to: '/admin/staff' },
+  { color: '#10B981', group: 'Actions', label: 'Students', to: '/admin/students' },
+  { color: '#2C7BE5', group: 'Actions', label: 'Tasks', to: '/admin/tasks' },
+  { color: '#0EA5A4', group: 'Reports', label: 'Attendance', to: '/admin/attendance' },
+  { color: '#D89B17', group: 'Approvals', label: 'Leave', to: '/admin/leave' },
+  { color: '#7C3AED', group: 'Overview', label: 'Departments', to: '/admin/departments' },
+  { color: '#D64545', group: 'Inbox', label: 'Circulars', to: '/admin/circulars' },
+  { color: '#2563EB', group: 'Reports', label: 'Reports', to: '/admin/reports' },
+  { color: '#64748B', group: 'Reports', label: 'Documents', to: '/admin/documents' }
 ];
 
 const directorItems: NavItem[] = [
@@ -88,10 +121,16 @@ function Sidebar() {
 
   if (user?.role === ROLES.DIRECTOR) {
     items = directorItems;
+  } else if (user?.role === ROLES.PRINCIPAL) {
+    items = principalItems;
+  } else if (user?.role === ROLES.ADMISSION) {
+    items = admissionItems;
   } else if (user?.role === ROLES.PROPERTY) {
     items = propertyItems;
   } else if (user?.role === ROLES.FINANCE) {
     items = financeItems;
+  } else if (user?.role === ROLES.ADMIN) {
+    items = adminItems;
   } else if (isDepartmentHead) {
     items = departmentItems;
   }
@@ -153,7 +192,7 @@ function Sidebar() {
                           : 'border-transparent text-[var(--text-secondary)] hover:border-[var(--border-color)] hover:bg-[var(--surface)] hover:text-[var(--text-primary)]'
                       ].join(' ')
                     }
-                    end={item.to === '/chairman' || item.to === '/department' || item.to === '/director'}
+                    end={item.to === '/chairman' || item.to === '/department' || item.to === '/director' || item.to === '/principal/dashboard' || item.to === '/admission/dashboard'}
                     key={item.to}
                     to={item.to}
                   >

@@ -66,7 +66,7 @@ function FinanceAnnouncements() {
   }, []);
 
   return (
-    <div className="flex min-h-screen bg-[#020817] text-white">
+    <div className="flex min-h-screen bg-[#F5F7FB] text-slate-950">
 
       <Sidebar />
 
@@ -76,7 +76,7 @@ function FinanceAnnouncements() {
 
         <section className="space-y-6 p-6">
 
-          <div className="overflow-hidden rounded-[32px] border border-slate-800 bg-gradient-to-br from-[#111827] via-[#0F172A] to-[#172554] p-7 shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
+          <div className="overflow-hidden rounded-[32px] border border-slate-200 bg-white p-7 shadow-sm">
 
             <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
 
@@ -86,39 +86,39 @@ function FinanceAnnouncements() {
                   Finance Department
                 </Badge>
 
-                <h1 className="mt-4 text-3xl font-bold tracking-tight text-white">
+                <h1 className="mt-4 text-3xl font-bold tracking-tight text-slate-950">
                   Finance Announcements
                 </h1>
 
-                <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-300">
+                <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-700">
                   Official communications, policy updates, budget notifications, and important financial announcements.
                 </p>
               </div>
 
               <div className="rounded-[22px] border border-emerald-500/20 bg-emerald-500/10 px-5 py-4">
 
-                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-300">
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-700">
                   Total
                 </p>
 
-                <h2 className="mt-2 text-3xl font-bold text-emerald-400">
+                <h2 className="mt-2 text-3xl font-bold text-emerald-800">
                   {announcements.length}
                 </h2>
               </div>
             </div>
           </div>
 
-          <div className="rounded-[28px] border border-slate-800 bg-[#111827] p-6 shadow-sm">
+          <div className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm">
 
             <div className="mb-5 flex items-center justify-between">
 
               <div>
 
-                <h2 className="text-lg font-semibold text-white">
+                <h2 className="text-lg font-semibold text-slate-950">
                   All Announcements
                 </h2>
 
-                <p className="mt-1 text-sm text-slate-400">
+                <p className="mt-1 text-sm text-slate-600">
                   School-wide and department-specific updates
                 </p>
               </div>
@@ -138,7 +138,7 @@ function FinanceAnnouncements() {
                   {groupedAnnouncements.allTarget.map((announcement) => (
                     <div
                       key={announcement.id}
-                      className="rounded-[20px] border border-slate-800 bg-[#0F172A] p-5 transition-all duration-200 hover:border-[#185FA5]/30 hover:bg-[#172036]"
+                      className="rounded-[20px] border border-slate-200 bg-[#F8FAFC] p-5 transition-all duration-200 hover:border-[#185FA5]/30 hover:bg-[#EEF4FF]"
                     >
 
                       <div className="flex items-start justify-between">
@@ -147,7 +147,7 @@ function FinanceAnnouncements() {
 
                           <div className="flex items-center gap-3">
 
-                            <h4 className="text-base font-semibold text-white">
+                            <h4 className="text-base font-semibold text-slate-950">
                               {announcement.title}
                             </h4>
 
@@ -156,7 +156,7 @@ function FinanceAnnouncements() {
                             </Badge>
                           </div>
 
-                          <p className="mt-3 text-sm leading-relaxed text-slate-300">
+                          <p className="mt-3 text-sm leading-relaxed text-slate-700">
                             {announcement.message}
                           </p>
 
@@ -189,7 +189,7 @@ function FinanceAnnouncements() {
                   {groupedAnnouncements.deptTarget.map((announcement) => (
                     <div
                       key={announcement.id}
-                      className="rounded-[20px] border border-amber-500/20 bg-[#0F172A] p-5 transition-all duration-200 hover:border-amber-500/40 hover:bg-[#172036]"
+                      className="rounded-[20px] border border-amber-500/20 bg-[#F8FAFC] p-5 transition-all duration-200 hover:border-amber-500/40 hover:bg-[#EEF4FF]"
                     >
 
                       <div className="flex items-start justify-between">
@@ -198,7 +198,7 @@ function FinanceAnnouncements() {
 
                           <div className="flex items-center gap-3">
 
-                            <h4 className="text-base font-semibold text-white">
+                            <h4 className="text-base font-semibold text-slate-950">
                               {announcement.title}
                             </h4>
 
@@ -207,7 +207,7 @@ function FinanceAnnouncements() {
                             </Badge>
                           </div>
 
-                          <p className="mt-3 text-sm leading-relaxed text-slate-300">
+                          <p className="mt-3 text-sm leading-relaxed text-slate-700">
                             {announcement.message}
                           </p>
 

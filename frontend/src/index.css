@@ -20,24 +20,6 @@
   --shadow-color: rgba(15, 23, 42, 0.06);
 }
 
-:root.dark,
-html.dark {
-  color-scheme: dark;
-  color: #F8FAFC;
-  background: #111827;
-  --bg-primary: #111827;
-  --bg-secondary: #0F172A;
-  --bg-tertiary: #1E293B;
-  --text-primary: #F8FAFC;
-  --text-secondary: #94A3B8;
-  --text-muted: #CBD5E1;
-  --border-color: rgba(255, 255, 255, 0.08);
-  --surface: #111827;
-  --card-bg: #1F2937;
-  --panel-bg: #111827;
-  --shadow-color: rgba(15, 23, 42, 0.18);
-}
-
 body {
   margin: 0;
   min-width: 320px;
@@ -108,32 +90,32 @@ button::-moz-focus-inner {
   color: white;
 }
 
-/* Remove white autofill background */
+/* Keep browser autofill aligned with the light input style */
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
 textarea:-webkit-autofill,
 select:-webkit-autofill {
-  -webkit-box-shadow: 0 0 0px 1000px #0F172A inset !important;
-  -webkit-text-fill-color: white !important;
+  -webkit-box-shadow: 0 0 0px 1000px #F8FAFC inset !important;
+  -webkit-text-fill-color: #0F172A !important;
   transition: background-color 5000s ease-in-out 0s;
 }
 
-/* Smooth dark scrollbar */
+/* Smooth light scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #0F172A;
+  background: #EEF2F7;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #334155;
+  background: #CBD5E1;
   border-radius: 999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #475569;
+  background: #94A3B8;
 }

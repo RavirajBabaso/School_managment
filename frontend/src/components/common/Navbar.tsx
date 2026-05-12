@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import type { ReactNode } from 'react';
 
 import {
@@ -41,6 +41,27 @@ const pageTitles: Record<string, string> = {
 
   '/director': 'Dashboard',
 
+  '/principal/dashboard':
+    'Principal Dashboard',
+
+  '/principal/tasks':
+    'Principal Tasks',
+
+  '/principal/notifications':
+    'Principal Notifications',
+
+  '/principal/announcements':
+    'Principal Announcements',
+
+  '/principal/reports':
+    'Academic Reports',
+
+  '/principal/analytics':
+    'Academic Analytics',
+
+  '/principal/change-password':
+    'Change Password',
+
   '/notifications': 'Notifications',
   '/task': 'Task Detail',
 
@@ -68,7 +89,41 @@ const pageTitles: Record<string, string> = {
     'Finance Notifications',
 
   '/finance/announcements':
-    'Finance Announcements'
+    'Finance Announcements',
+
+  /* Admin */
+  '/admin':
+    'Admin Dashboard',
+
+  '/admin/tasks':
+    'Admin Tasks',
+
+  '/admin/notifications':
+    'Admin Notifications',
+
+  '/admin/staff':
+    'Staff Management',
+
+  '/admin/students':
+    'Student Records',
+
+  '/admin/attendance':
+    'Attendance Monitoring',
+
+  '/admin/leave':
+    'Leave Approvals',
+
+  '/admin/departments':
+    'Department Management',
+
+  '/admin/circulars':
+    'Circulars & Notices',
+
+  '/admin/reports':
+    'Reports & Analytics',
+
+  '/admin/documents':
+    'Document Management'
 };
 
 function getInitials(name?: string) {
@@ -132,9 +187,6 @@ function Navbar({
         ).length
     );
 
-  const [darkMode, setDarkMode] =
-    useState(false);
-
   const isDirectorRoute =
     location.pathname.startsWith(
       '/director'
@@ -143,6 +195,11 @@ function Navbar({
   const isChairmanRoute =
     location.pathname.startsWith(
       '/chairman'
+    );
+
+  const isPrincipalRoute =
+    location.pathname.startsWith(
+      '/principal'
     );
 
   const isPropertyRoute =
@@ -155,61 +212,10 @@ function Navbar({
       '/finance'
     );
 
-  useEffect(() => {
-
-    const savedTheme =
-      localStorage.getItem(
-        'theme'
-      );
-
-    const preferDark =
-      window.matchMedia?.(
-        '(prefers-color-scheme: dark)'
-      ).matches;
-
-    setDarkMode(
-      savedTheme === 'dark' ||
-        (!savedTheme &&
-          preferDark)
+  const isAdminRoute =
+    location.pathname.startsWith(
+      '/admin'
     );
-
-  }, []);
-
-  useEffect(() => {
-
-    const shouldBeDark =
-      isDirectorRoute ||
-      isChairmanRoute ||
-      isPropertyRoute ||
-      isFinanceRoute ||
-      darkMode;
-
-    document.documentElement.classList.toggle(
-      'dark',
-      shouldBeDark
-    );
-
-    if (
-      !isDirectorRoute &&
-      !isChairmanRoute &&
-      !isPropertyRoute &&
-      !isFinanceRoute
-    ) {
-      localStorage.setItem(
-        'theme',
-        darkMode
-          ? 'dark'
-          : 'light'
-      );
-    }
-
-  }, [
-    darkMode,
-    isDirectorRoute,
-    isChairmanRoute,
-    isPropertyRoute,
-    isFinanceRoute
-  ]);
 
   const resolvedTitle =
     title ??
@@ -322,6 +328,97 @@ function Navbar({
       [unreadCount]
     );
 
+  /* Principal Tabs */
+  const principalTabs =
+    useMemo(
+      () => [
+        {
+          label: 'Dashboard',
+          to: '/principal/dashboard'
+        },
+        {
+          label: 'My Tasks',
+          to: '/principal/tasks'
+        },
+        {
+          label: 'Notifications',
+          to: '/principal/notifications',
+          badge: unreadCount
+        },
+        {
+          label: 'Announcements',
+          to: '/principal/announcements'
+        },
+        {
+          label: 'Reports',
+          to: '/principal/reports'
+        },
+        {
+          label: 'Analytics',
+          to: '/principal/analytics'
+        },
+        {
+          label: 'Change Password',
+          to: '/principal/change-password'
+        }
+      ],
+      [unreadCount]
+    );
+
+  /* Admin Tabs */
+  const adminTabs =
+    useMemo(
+      () => [
+        {
+          label: 'Dashboard',
+          to: '/admin'
+        },
+        {
+          label: 'Staff',
+          to: '/admin/staff'
+        },
+        {
+          label: 'Students',
+          to: '/admin/students'
+        },
+        {
+          label: 'Tasks',
+          to: '/admin/tasks'
+        },
+        {
+          label: 'Attendance',
+          to: '/admin/attendance'
+        },
+        {
+          label: 'Leave',
+          to: '/admin/leave'
+        },
+        {
+          label: 'Departments',
+          to: '/admin/departments'
+        },
+        {
+          label: 'Circulars',
+          to: '/admin/circulars'
+        },
+        {
+          label: 'Reports',
+          to: '/admin/reports'
+        },
+        {
+          label: 'Documents',
+          to: '/admin/documents'
+        },
+        {
+          label:
+            'Notifications',
+          to: '/admin/notifications',
+          badge: unreadCount
+        }
+      ],
+      [unreadCount]
+    );
+
   const showDirectorTabs =
     user?.role ===
       ROLES.DIRECTOR &&
@@ -334,9 +431,19 @@ function Navbar({
       '/property-maintenance'
     );
 
+  const showPrincipalTabs =
+    location.pathname.startsWith(
+      '/principal'
+    );
+
   const showFinanceTabs =
     location.pathname.startsWith(
       '/finance'
+    );
+
+  const showAdminTabs =
+    location.pathname.startsWith(
+      '/admin'
     );
 
   return (
@@ -364,28 +471,10 @@ function Navbar({
 
       {!isDirectorRoute &&
           !isChairmanRoute &&
-          !isPropertyRoute &&
-          !isFinanceRoute ? (
-            <button
-              type="button"
-              onClick={() =>
-                setDarkMode(
-                  (prev) =>
-                    !prev
-                )
-              }
-              className="rounded-full border border-[var(--border-color)] bg-[var(--surface)] px-3 py-2 text-[11px] font-medium text-[var(--text-primary)] transition hover:bg-[var(--bg-tertiary)]"
-            >
-              {darkMode
-                ? 'Light mode'
-                : 'Dark mode'}
-            </button>
-          ) : null}
-
-          {!isDirectorRoute &&
-          !isChairmanRoute &&
+          !isPrincipalRoute &&
           !isPropertyRoute &&
           !isFinanceRoute &&
+          !isAdminRoute &&
           unreadCount > 0 ? (
             <Badge variant="red">
               {unreadCount} alerts
@@ -394,8 +483,10 @@ function Navbar({
 
           {!isDirectorRoute &&
           !isChairmanRoute &&
+          !isPrincipalRoute &&
           !isPropertyRoute &&
           !isFinanceRoute &&
+          !isAdminRoute &&
           pendingApprovals >
             0 ? (
             <Badge variant="amber">
@@ -425,9 +516,15 @@ function Navbar({
             user?.role ===
             ROLES.CHAIRMAN ||
             user?.role ===
+            ROLES.PRINCIPAL ||
+            user?.role ===
             ROLES.PROPERTY ||
             user?.role ===
-            ROLES.FINANCE) ? (
+            ROLES.FINANCE ||
+            user?.role ===
+            ROLES.ADMIN ||
+            user?.role ===
+            ROLES.ADMISSION) ? (
             <button
               type="button"
               onClick={logout}
@@ -441,12 +538,18 @@ function Navbar({
 
       {/* Tabs */}
       {showDirectorTabs ||
+      showPrincipalTabs ||
       showPropertyTabs ||
-      showFinanceTabs ? (
+      showFinanceTabs ||
+      showAdminTabs ? (
         <nav className="flex flex-wrap gap-2 overflow-x-auto pt-2">
 
           {(showDirectorTabs
             ? directorTabs
+            : showPrincipalTabs
+            ? principalTabs
+            : showAdminTabs
+            ? adminTabs
             : showFinanceTabs
             ? financeTabs
             : propertyTabs
@@ -458,9 +561,13 @@ function Navbar({
                 tab.to ===
                   '/director' ||
                 tab.to ===
+                  '/principal/dashboard' ||
+                tab.to ===
                   '/property-maintenance' ||
                 tab.to ===
-                  '/finance'
+                  '/finance' ||
+                tab.to ===
+                  '/admin'
               }
               className={({
                 isActive
@@ -470,14 +577,14 @@ function Navbar({
 
                   isActive
                     ? 'bg-[#185FA5] text-white shadow-sm'
-                    : 'border border-slate-700 bg-[#0F172A] text-slate-400 hover:bg-[#172036] hover:text-white'
+                    : 'border border-slate-300 bg-[#F8FAFC] text-slate-600 hover:bg-[#EEF4FF] hover:text-slate-950'
                 ].join(' ')
               }
             >
               {tab.label}
 
               {tab.badge ? (
-                <span className="inline-flex h-5 min-w-[20px] items-center justify-center rounded-full bg-white/10 px-2 text-[10px] font-semibold text-white">
+                <span className="inline-flex h-5 min-w-[20px] items-center justify-center rounded-full bg-white/10 px-2 text-[10px] font-semibold text-slate-950">
                   {tab.badge}
                 </span>
               ) : null}

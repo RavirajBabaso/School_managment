@@ -18,20 +18,20 @@ function DepartmentPage({
   title: string;
 }) {
   return (
-    <section className="min-h-screen space-y-6 bg-[#020817] p-6">
+    <section className="min-h-screen space-y-6 bg-[#F5F7FB] p-6">
       
       {/* Header */}
-      <div className="rounded-[28px] border border-slate-800 bg-[#111827] p-6 shadow-sm">
+      <div className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm">
         
         <Badge variant="blue">
           Department Workspace
         </Badge>
 
-        <h2 className="mt-4 text-2xl font-semibold text-white">
+        <h2 className="mt-4 text-2xl font-semibold text-slate-950">
           {title}
         </h2>
 
-        <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-400">
+        <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-600">
           {text}
         </p>
       </div>
@@ -43,14 +43,14 @@ function DepartmentPage({
           'Latest Updates'
         ].map((item) => (
           <article
-            className="rounded-[24px] border border-slate-800 bg-[#111827] p-5 shadow-sm transition-all duration-200 hover:bg-[#172036]"
+            className="rounded-[24px] border border-slate-200 bg-white p-5 shadow-sm transition-all duration-200 hover:bg-[#EEF4FF]"
             key={item}
           >
-            <p className="text-base font-semibold text-white">
+            <p className="text-base font-semibold text-slate-950">
               {item}
             </p>
 
-            <p className="mt-3 text-sm leading-6 text-slate-400">
+            <p className="mt-3 text-sm leading-6 text-slate-600">
               Department-head routes are now wrapped in the shared shell and ready for data wiring.
             </p>
           </article>
@@ -64,13 +64,13 @@ function DeptDashboard() {
   useSocket();
 
   return (
-    <div className="flex min-h-screen bg-[#020817] text-white">
+    <div className="flex min-h-screen bg-[#F5F7FB] text-slate-950">
       
       {/* Sidebar */}
       <Sidebar />
 
       {/* Main */}
-      <main className="min-w-0 flex-1 bg-[#020817]">
+      <main className="min-w-0 flex-1 bg-[#F5F7FB]">
         
         {/* Navbar */}
         <Navbar />

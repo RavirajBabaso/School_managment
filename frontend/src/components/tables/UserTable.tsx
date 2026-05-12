@@ -27,8 +27,8 @@ function UserTable({
 }: UserTableProps) {
   if (users.length === 0) {
     return (
-      <div className="flex min-h-[240px] items-center justify-center rounded-[24px] border border-slate-800 bg-[#111827] p-8">
-        <p className="text-sm text-slate-400">
+      <div className="flex min-h-[240px] items-center justify-center rounded-[24px] border border-slate-200 bg-white p-8">
+        <p className="text-sm text-slate-600">
           No users found.
         </p>
       </div>
@@ -36,12 +36,12 @@ function UserTable({
   }
 
   return (
-    <div className="overflow-hidden rounded-[24px] border border-slate-800 bg-[#111827]">
+    <div className="overflow-hidden rounded-[24px] border border-slate-200 bg-white">
       <div className="overflow-x-auto">
         <table className="min-w-full border-collapse">
           
           {/* Header */}
-          <thead className="bg-[#0F172A]">
+          <thead className="bg-[#F8FAFC]">
             <tr>
               {[
                 'Name',
@@ -52,7 +52,7 @@ function UserTable({
                 'Actions'
               ].map((heading) => (
                 <th
-                  className="px-5 py-4 text-left text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400"
+                  className="px-5 py-4 text-left text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-600"
                   key={heading}
                 >
                   {heading}
@@ -62,10 +62,10 @@ function UserTable({
           </thead>
 
           {/* Body */}
-          <tbody className="divide-y divide-slate-800">
+          <tbody className="divide-y divide-slate-200">
             {users.map((user) => (
               <tr
-                className="transition hover:bg-[#172036]"
+                className="transition hover:bg-[#EEF4FF]"
                 key={user.id}
               >
                 {/* Name */}
@@ -73,30 +73,30 @@ function UserTable({
                   <div className="flex items-center gap-3">
                     
                     {/* Avatar */}
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-700 bg-[#0F172A] text-sm font-semibold text-white">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-300 bg-[#F8FAFC] text-sm font-semibold text-slate-950">
                       {getInitials(user.name)}
                     </div>
 
                     {/* Name */}
-                    <span className="text-sm font-semibold text-white">
+                    <span className="text-sm font-semibold text-slate-950">
                       {user.name}
                     </span>
                   </div>
                 </td>
 
                 {/* Role */}
-                <td className="px-5 py-4 text-sm text-slate-300">
+                <td className="px-5 py-4 text-sm text-slate-700">
                   {user.role}
                 </td>
 
                 {/* Department */}
-                <td className="px-5 py-4 text-sm text-slate-300">
+                <td className="px-5 py-4 text-sm text-slate-700">
                   {user.departmentName ??
                     '--'}
                 </td>
 
                 {/* Email */}
-                <td className="px-5 py-4 text-sm text-slate-300">
+                <td className="px-5 py-4 text-sm text-slate-700">
                   {user.email}
                 </td>
 

@@ -107,7 +107,7 @@ function Login() {
   };
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-[#020817] px-4 py-10 text-white">
+    <main className="flex min-h-screen items-center justify-center bg-[#F5F7FB] px-4 py-10 text-slate-950">
 
       {/* Background Glow */}
       <div className="absolute inset-0 overflow-hidden">
@@ -118,7 +118,7 @@ function Login() {
       </div>
 
       {/* Login Card */}
-      <section className="relative z-10 w-full max-w-[430px] rounded-[32px] border border-slate-800 bg-[#111827]/95 p-8 shadow-[0_20px_80px_rgba(0,0,0,0.45)] backdrop-blur-xl">
+      <section className="relative z-10 w-full max-w-[430px] rounded-[32px] border border-slate-200 bg-white/95 p-8 shadow-[0_24px_70px_rgba(15,23,42,0.14)] backdrop-blur-xl">
 
         {/* Logo */}
         <div className="flex flex-col items-center text-center">
@@ -127,11 +127,11 @@ function Login() {
             EP
           </div>
 
-          <h1 className="mt-6 text-3xl font-bold tracking-tight text-white">
+          <h1 className="mt-6 text-3xl font-bold tracking-tight text-slate-950">
             EduTask Pro
           </h1>
 
-          <p className="mt-2 text-sm text-slate-400">
+          <p className="mt-2 text-sm text-slate-600">
             School Staff Task Management
           </p>
         </div>
@@ -144,7 +144,7 @@ function Login() {
 
           {/* Email */}
           <label
-            className="block text-sm font-medium text-slate-300"
+            className="block text-sm font-medium text-slate-700"
             htmlFor="email"
           >
             Email Address
@@ -162,12 +162,12 @@ function Login() {
             autoComplete="email"
             placeholder="chairman@adhira.edu"
             required
-            className="mt-2 h-12 w-full rounded-[16px] border border-slate-700 bg-[#0F172A] px-4 text-sm text-white outline-none transition-all duration-200 placeholder:text-slate-500 focus:border-[#185FA5] focus:bg-[#111827]"
+            className="mt-2 h-12 w-full rounded-[16px] border border-slate-300 bg-[#F8FAFC] px-4 text-sm text-slate-950 outline-none transition-all duration-200 placeholder:text-slate-400 focus:border-[#185FA5] focus:bg-white"
           />
 
           {/* Password */}
           <label
-            className="mt-6 block text-sm font-medium text-slate-300"
+            className="mt-6 block text-sm font-medium text-slate-700"
             htmlFor="password"
           >
             Password
@@ -191,7 +191,7 @@ function Login() {
               autoComplete="current-password"
               placeholder="Enter password"
               required
-              className="h-12 w-full rounded-[16px] border border-slate-700 bg-[#0F172A] px-4 pr-20 text-sm text-white outline-none transition-all duration-200 placeholder:text-slate-500 focus:border-[#185FA5] focus:bg-[#111827]"
+              className="h-12 w-full rounded-[16px] border border-slate-300 bg-[#F8FAFC] px-4 pr-20 text-sm text-slate-950 outline-none transition-all duration-200 placeholder:text-slate-400 focus:border-[#185FA5] focus:bg-white"
             />
 
             <button
@@ -203,7 +203,7 @@ function Login() {
                   ) => !current
                 )
               }
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-semibold text-[#60A5FA] transition hover:text-white focus:outline-none active:outline-none"
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-semibold text-[#60A5FA] transition hover:text-slate-950 focus:outline-none active:outline-none"
             >
               {showPassword
                 ? 'Hide'
@@ -212,7 +212,7 @@ function Login() {
           </div>
 
           {/* Remember */}
-          <label className="mt-5 flex items-center gap-3 text-sm text-slate-400">
+          <label className="mt-5 flex items-center gap-3 text-sm text-slate-600">
 
             <input
               type="checkbox"
@@ -224,7 +224,7 @@ function Login() {
                   event.target.checked
                 )
               }
-              className="h-4 w-4 rounded border-slate-600 bg-[#0F172A] accent-[#185FA5]"
+              className="h-4 w-4 rounded border-slate-300 bg-[#F8FAFC] accent-[#185FA5]"
             />
 
             Remember me

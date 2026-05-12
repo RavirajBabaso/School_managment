@@ -108,7 +108,7 @@ function PropertyDashboard() {
   ];
 
   return (
-    <div className="flex min-h-screen bg-[#020817] text-white">
+    <div className="flex min-h-screen bg-[#F5F7FB] text-slate-950">
 
       {/* Sidebar */}
       <Sidebar />
@@ -123,7 +123,7 @@ function PropertyDashboard() {
         <section className="space-y-6 p-6">
 
           {/* Hero */}
-          <div className="overflow-hidden rounded-[32px] border border-slate-800 bg-gradient-to-br from-[#111827] via-[#0F172A] to-[#172554] p-7 shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
+          <div className="overflow-hidden rounded-[32px] border border-slate-200 bg-white p-7 shadow-sm">
 
             <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
 
@@ -133,11 +133,11 @@ function PropertyDashboard() {
                   Property & Maintenance
                 </Badge>
 
-                <h1 className="mt-4 text-3xl font-bold tracking-tight text-white">
+                <h1 className="mt-4 text-3xl font-bold tracking-tight text-slate-950">
                   Property Dashboard
                 </h1>
 
-                <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-300">
+                <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-700">
                   Monitor infrastructure operations, maintenance requests, task completion, delayed activities, and institutional property management updates.
                 </p>
               </div>
@@ -147,22 +147,22 @@ function PropertyDashboard() {
 
                 <div className="rounded-[22px] border border-blue-500/20 bg-blue-500/10 px-5 py-4">
 
-                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-blue-300">
+                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-blue-700">
                     Pending
                   </p>
 
-                  <h2 className="mt-2 text-3xl font-bold text-blue-400">
+                  <h2 className="mt-2 text-3xl font-bold text-blue-800">
                     10
                   </h2>
                 </div>
 
                 <div className="rounded-[22px] border border-emerald-500/20 bg-emerald-500/10 px-5 py-4">
 
-                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-300">
+                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-700">
                     Completed
                   </p>
 
-                  <h2 className="mt-2 text-3xl font-bold text-emerald-400">
+                  <h2 className="mt-2 text-3xl font-bold text-emerald-800">
                     18
                   </h2>
                 </div>
@@ -177,17 +177,17 @@ function PropertyDashboard() {
           <div className="grid gap-6 xl:grid-cols-[1.3fr_0.7fr]">
 
             {/* Tasks */}
-            <div className="rounded-[28px] border border-slate-800 bg-[#111827] p-6 shadow-sm">
+            <div className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm">
 
               <div className="mb-5 flex items-center justify-between">
 
                 <div>
 
-                  <h2 className="text-lg font-semibold text-white">
+                  <h2 className="text-lg font-semibold text-slate-950">
                     Assigned Tasks
                   </h2>
 
-                  <p className="mt-1 text-sm text-slate-400">
+                  <p className="mt-1 text-sm text-slate-600">
                     View and manage ongoing maintenance activities.
                   </p>
                 </div>
@@ -206,11 +206,11 @@ function PropertyDashboard() {
             <div className="space-y-6">
 
               {/* Notifications */}
-              <div className="rounded-[28px] border border-slate-800 bg-[#111827] p-6 shadow-sm">
+              <div className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm">
 
                 <div className="flex items-center justify-between">
 
-                  <h2 className="text-lg font-semibold text-white">
+                  <h2 className="text-lg font-semibold text-slate-950">
                     Notifications
                   </h2>
 
@@ -258,7 +258,7 @@ function PropertyDashboard() {
                         }`}
                       >
 
-                        <p className="text-sm text-white">
+                        <p className="text-sm text-slate-950">
                           {
                             item.text
                           }
@@ -270,11 +270,11 @@ function PropertyDashboard() {
               </div>
 
               {/* Announcements */}
-              <div className="rounded-[28px] border border-slate-800 bg-[#111827] p-6 shadow-sm">
+              <div className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm">
 
                 <div className="flex items-center justify-between">
 
-                  <h2 className="text-lg font-semibold text-white">
+                  <h2 className="text-lg font-semibold text-slate-950">
                     Announcements
                   </h2>
 
@@ -296,10 +296,10 @@ function PropertyDashboard() {
                     ) => (
                       <div
                         key={index}
-                        className="rounded-[18px] border border-slate-800 bg-[#0F172A] p-4 transition-all duration-200 hover:bg-[#172036]"
+                        className="rounded-[18px] border border-slate-200 bg-[#F8FAFC] p-4 transition-all duration-200 hover:bg-[#EEF4FF]"
                       >
 
-                        <p className="text-sm leading-6 text-slate-300">
+                        <p className="text-sm leading-6 text-slate-700">
                           {item}
                         </p>
                       </div>

@@ -15,12 +15,24 @@ const getDashboardPath = (role: string) => {
     return '/director';
   }
 
+  if (role === ROLES.PRINCIPAL) {
+    return '/principal/dashboard';
+  }
+
   if (role === ROLES.PROPERTY) {
     return '/property-maintenance';
   }
 
   if (role === ROLES.FINANCE) {
     return '/finance';
+  }
+
+  if (role === ROLES.ADMIN) {
+    return '/admin';
+  }
+
+  if (role === ROLES.ADMISSION) {
+    return '/admission/dashboard';
   }
 
   if (DEPARTMENT_HEAD_ROLES.includes(role as (typeof DEPARTMENT_HEAD_ROLES)[number])) {

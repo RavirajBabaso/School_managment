@@ -3,6 +3,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { io } from 'socket.io-client';
 import toast from 'react-hot-toast';
 import { addNotification } from '../store/notificationSlice';
+import { upsertTask } from '../store/taskSlice';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import type { Announcement, Notification } from '../types/notification.types';
 import type { Task } from '../types/task.types';
@@ -61,7 +62,12 @@ export const useSocket = () => {
     socket.on('task:updated', (payload: SocketTaskPayload | Task) => {
       const task = resolveTaskPayload(payload);
       if (task) {
+        dispatch(upsertTask(task));
         void queryClient.invalidateQueries({ queryKey: ['chairman-dashboard'] });
+        void queryClient.invalidateQueries({ queryKey: ['principal-dashboard'] });
+        void queryClient.invalidateQueries({ queryKey: ['principal-tasks'] });
+        void queryClient.invalidateQueries({ queryKey: ['principal-analytics'] });
+        void queryClient.invalidateQueries({ queryKey: ['principal-delay-alerts'] });
         void queryClient.invalidateQueries({ queryKey: ['tasks'] });
         void queryClient.invalidateQueries({ queryKey: ['task', task.id] });
         void queryClient.invalidateQueries({ queryKey: ['staffPerformance'] });
@@ -82,6 +88,7 @@ export const useSocket = () => {
     socket.on('announcement:new', (announcement: Announcement) => {
       dispatch(addNotification(normalizeAnnouncementNotification(announcement, user?.id)));
       void queryClient.invalidateQueries({ queryKey: ['announcements'] });
+      void queryClient.invalidateQueries({ queryKey: ['principal-announcements'] });
       void queryClient.invalidateQueries({ queryKey: ['chairman-dashboard'] });
     });
 

@@ -63,7 +63,7 @@ function AdminNotifications() {
   const unreadCount = useMemo(() => notifications.filter(n => !n.read).length, []);
 
   return (
-    <div className="flex min-h-screen bg-[#020817] text-white">
+    <div className="flex min-h-screen bg-[#F5F7FB] text-slate-950">
 
       <Sidebar />
 
@@ -73,7 +73,7 @@ function AdminNotifications() {
 
         <section className="space-y-6 p-6">
 
-          <div className="overflow-hidden rounded-[32px] border border-slate-800 bg-gradient-to-br from-[#111827] via-[#0F172A] to-[#172554] p-7 shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
+          <div className="overflow-hidden rounded-[32px] border border-slate-200 bg-white p-7 shadow-sm">
 
             <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
 
@@ -83,39 +83,39 @@ function AdminNotifications() {
                   Admin Office Department
                 </Badge>
 
-                <h1 className="mt-4 text-3xl font-bold tracking-tight text-white">
+                <h1 className="mt-4 text-3xl font-bold tracking-tight text-slate-950">
                   Admin Notifications
                 </h1>
 
-                <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-300">
+                <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-700">
                   Stay updated with staff onboarding, office supplies, visitor management, and administrative task notifications.
                 </p>
               </div>
 
               <div className="rounded-[22px] border border-blue-500/20 bg-blue-500/10 px-5 py-4">
 
-                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-blue-300">
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-blue-700">
                   Unread
                 </p>
 
-                <h2 className="mt-2 text-3xl font-bold text-blue-400">
+                <h2 className="mt-2 text-3xl font-bold text-blue-800">
                   {unreadCount}
                 </h2>
               </div>
             </div>
           </div>
 
-          <div className="rounded-[28px] border border-slate-800 bg-[#111827] p-6 shadow-sm">
+          <div className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm">
 
             <div className="mb-5 flex items-center justify-between">
 
               <div>
 
-                <h2 className="text-lg font-semibold text-white">
+                <h2 className="text-lg font-semibold text-slate-950">
                   Recent Notifications
                 </h2>
 
-                <p className="mt-1 text-sm text-slate-400">
+                <p className="mt-1 text-sm text-slate-600">
                   {notifications.length} total notifications
                 </p>
               </div>
@@ -130,8 +130,8 @@ function AdminNotifications() {
               {notifications.map((notification) => (
                 <div
                   key={notification.id}
-                  className={`rounded-[20px] border p-5 transition-all duration-200 hover:bg-[#172036] ${
-                    !notification.read ? 'border-[#185FA5]/30 bg-[#185FA5]/5' : 'border-slate-800'
+                  className={`rounded-[20px] border p-5 transition-all duration-200 hover:bg-[#EEF4FF] ${
+                    !notification.read ? 'border-[#185FA5]/30 bg-[#185FA5]/5' : 'border-slate-200'
                   }`}
                 >
 
@@ -148,7 +148,7 @@ function AdminNotifications() {
 
                       <div>
 
-                        <p className={`text-sm ${!notification.read ? 'font-semibold text-white' : 'text-slate-300'}`}>
+                        <p className={`text-sm ${!notification.read ? 'font-semibold text-slate-950' : 'text-slate-700'}`}>
                           {notification.text}
                         </p>
 

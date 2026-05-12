@@ -34,7 +34,7 @@ const variantClasses: Record<
     'border border-red-500 bg-red-500 text-white hover:bg-red-600 hover:border-red-600 focus-visible:ring-red-500/20',
 
   ghost:
-    'border border-slate-700 bg-[#0F172A] text-slate-300 hover:bg-[#172036] hover:text-white focus-visible:ring-[#185FA5]/10'
+    'border border-slate-300 bg-[#F8FAFC] text-slate-700 hover:bg-[#EEF4FF] hover:text-slate-950 focus-visible:ring-[#185FA5]/10'
 };
 
 /* Sizes */

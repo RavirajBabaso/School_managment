@@ -95,13 +95,13 @@ function PropertyTasks() {
     switch (priority) {
 
       case 'HIGH':
-        return 'bg-red-500/10 text-red-400 border-red-500/20';
+        return 'border-red-200 bg-red-50 text-red-700';
 
       case 'MEDIUM':
-        return 'bg-amber-500/10 text-amber-300 border-amber-500/20';
+        return 'border-amber-200 bg-amber-50 text-amber-700';
 
       default:
-        return 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20';
+        return 'border-emerald-200 bg-emerald-50 text-emerald-700';
     }
   };
 
@@ -126,7 +126,7 @@ function PropertyTasks() {
   };
 
   return (
-    <div className="flex min-h-screen bg-[#020817] text-white">
+    <div className="flex min-h-screen bg-[#F5F7FB] text-slate-950">
 
       {/* Sidebar */}
       <Sidebar />
@@ -141,7 +141,7 @@ function PropertyTasks() {
         <section className="space-y-6 p-6">
 
           {/* Header */}
-          <div className="overflow-hidden rounded-[32px] border border-slate-800 bg-gradient-to-br from-[#111827] via-[#0F172A] to-[#172554] p-7 shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
+          <div className="overflow-hidden rounded-[32px] border border-slate-200 bg-white p-7 shadow-sm">
 
             <div className="flex items-center justify-between gap-5">
 
@@ -151,22 +151,22 @@ function PropertyTasks() {
                   Property & Maintenance
                 </p>
 
-                <h1 className="mt-3 text-3xl font-bold tracking-tight text-white">
+                <h1 className="mt-3 text-3xl font-bold tracking-tight text-slate-950">
                   Assigned Tasks
                 </h1>
 
-                <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-300">
+                <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-700">
                   Track maintenance requests, infrastructure tasks, delayed repairs, and operational activities.
                 </p>
               </div>
 
               <div className="hidden rounded-[22px] border border-blue-500/20 bg-blue-500/10 px-5 py-4 lg:block">
 
-                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-blue-300">
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-blue-700">
                   Total Tasks
                 </p>
 
-                <h2 className="mt-2 text-3xl font-bold text-blue-400">
+                <h2 className="mt-2 text-3xl font-bold text-blue-800">
                   24
                 </h2>
               </div>
@@ -174,7 +174,7 @@ function PropertyTasks() {
           </div>
 
           {/* Task Table */}
-          <div className="overflow-hidden rounded-[28px] border border-slate-800 bg-[#111827] shadow-sm">
+          <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-sm">
 
             <div className="overflow-x-auto">
 
@@ -182,7 +182,7 @@ function PropertyTasks() {
 
                 <thead>
 
-                  <tr className="border-b border-slate-800 bg-[#0F172A]">
+                  <tr className="border-b border-slate-200 bg-[#F8FAFC]">
 
                     {[
                       'Task',
@@ -209,7 +209,7 @@ function PropertyTasks() {
                     (task) => (
                       <tr
                         key={task.id}
-                        className="border-b border-slate-800 transition-all duration-200 hover:bg-[#172036]"
+                        className="border-b border-slate-200 transition-all duration-200 hover:bg-[#EEF4FF]"
                       >
 
                         {/* Task */}
@@ -217,18 +217,18 @@ function PropertyTasks() {
 
                           <div>
 
-                            <h3 className="text-sm font-semibold text-white">
+                            <h3 className="text-sm font-semibold text-slate-950">
                               {task.title}
                             </h3>
 
-                            <p className="mt-1 text-xs text-slate-400">
+                            <p className="mt-1 text-xs text-slate-600">
                               Property Department
                             </p>
                           </div>
                         </td>
 
                         {/* Assigned */}
-                        <td className="px-5 py-5 text-sm text-slate-300">
+                        <td className="px-5 py-5 text-sm text-slate-700">
                           {task.assignedTo}
                         </td>
 
@@ -262,12 +262,12 @@ function PropertyTasks() {
                         </td>
 
                         {/* Start */}
-                        <td className="px-5 py-5 text-sm text-slate-300">
+                        <td className="px-5 py-5 text-sm text-slate-700">
                           {task.startDate}
                         </td>
 
                         {/* Due */}
-                        <td className="px-5 py-5 text-sm text-slate-300">
+                        <td className="px-5 py-5 text-sm text-slate-700">
                           {task.dueDate}
                         </td>
 
@@ -276,7 +276,7 @@ function PropertyTasks() {
 
                           <button
                             type="button"
-                            className="rounded-[12px] border border-slate-700 bg-[#0F172A] px-4 py-2 text-xs font-semibold text-slate-300 transition-all duration-200 hover:bg-[#172036] hover:text-white"
+                            className="rounded-[12px] border border-slate-300 bg-[#F8FAFC] px-4 py-2 text-xs font-semibold text-slate-700 transition-all duration-200 hover:bg-[#EEF4FF] hover:text-slate-950"
                           >
                             View Details
                           </button>

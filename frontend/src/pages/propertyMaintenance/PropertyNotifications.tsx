@@ -58,7 +58,7 @@ function PropertyNotifications() {
   ];
 
   return (
-    <div className="flex min-h-screen bg-[#020817] text-white">
+    <div className="flex min-h-screen bg-[#F5F7FB] text-slate-950">
 
       {/* Sidebar */}
       <Sidebar />
@@ -73,7 +73,7 @@ function PropertyNotifications() {
         <section className="space-y-6 p-6">
 
           {/* Header */}
-          <div className="overflow-hidden rounded-[32px] border border-slate-800 bg-gradient-to-br from-[#111827] via-[#0F172A] to-[#172554] p-7 shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
+          <div className="overflow-hidden rounded-[32px] border border-slate-200 bg-white p-7 shadow-sm">
 
             <div className="flex items-center justify-between gap-5">
 
@@ -83,22 +83,22 @@ function PropertyNotifications() {
                   Property & Maintenance
                 </p>
 
-                <h1 className="mt-3 text-3xl font-bold tracking-tight text-white">
+                <h1 className="mt-3 text-3xl font-bold tracking-tight text-slate-950">
                   Notifications
                 </h1>
 
-                <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-300">
+                <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-700">
                   Monitor task alerts, delayed maintenance updates, infrastructure activities, and system notifications in real time.
                 </p>
               </div>
 
               <div className="hidden rounded-[22px] border border-red-500/20 bg-red-500/10 px-5 py-4 lg:block">
 
-                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-red-300">
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-red-700">
                   Unread
                 </p>
 
-                <h2 className="mt-2 text-3xl font-bold text-red-400">
+                <h2 className="mt-2 text-3xl font-bold text-red-800">
                   4
                 </h2>
               </div>
@@ -131,20 +131,20 @@ function PropertyNotifications() {
 
                     <div>
 
-                      <h2 className="text-lg font-semibold text-white">
+                      <h2 className="text-lg font-semibold text-slate-950">
                         {
                           notification.title
                         }
                       </h2>
 
-                      <p className="mt-3 text-sm leading-7 text-slate-200">
+                      <p className="mt-3 text-sm leading-7 text-slate-800">
                         {
                           notification.message
                         }
                       </p>
                     </div>
 
-                    <span className="shrink-0 rounded-full border border-slate-700 bg-[#0F172A] px-3 py-1 text-xs font-medium text-slate-400">
+                    <span className="shrink-0 rounded-full border border-slate-300 bg-[#F8FAFC] px-3 py-1 text-xs font-medium text-slate-600">
                       {
                         notification.time
                       }
@@ -152,7 +152,7 @@ function PropertyNotifications() {
                   </div>
 
                   {/* Footer */}
-                  <div className="mt-5 flex items-center justify-between border-t border-white/5 pt-4">
+                  <div className="mt-5 flex items-center justify-between border-t border-slate-200 pt-4">
 
                     <div className="flex items-center gap-2">
 
@@ -168,14 +168,14 @@ function PropertyNotifications() {
                         }`}
                       />
 
-                      <span className="text-xs font-medium text-slate-400">
+                      <span className="text-xs font-medium text-slate-600">
                         Property Department
                       </span>
                     </div>
 
                     <button
                       type="button"
-                      className="rounded-[12px] border border-slate-700 bg-[#0F172A] px-4 py-2 text-xs font-semibold text-slate-300 transition-all duration-200 hover:bg-[#172036] hover:text-white"
+                      className="rounded-[12px] border border-slate-300 bg-[#F8FAFC] px-4 py-2 text-xs font-semibold text-slate-700 transition-all duration-200 hover:bg-[#EEF4FF] hover:text-slate-950"
                     >
                       Mark as Read
                     </button>

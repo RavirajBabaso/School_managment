@@ -39,7 +39,7 @@ function Input({
     >
       {/* Label */}
       {label ? (
-        <span className="text-sm font-medium text-slate-300">
+        <span className="text-sm font-medium text-slate-700">
           {label}
         </span>
       ) : null}
@@ -48,7 +48,7 @@ function Input({
       <input
         id={inputId}
         className={[
-          'min-h-[46px] rounded-[14px] border border-slate-700 bg-[#0F172A] px-4 text-sm text-white outline-none transition placeholder:text-slate-500 focus:border-[#185FA5] focus:ring-4 focus:ring-[#185FA5]/10',
+          'min-h-[46px] rounded-[14px] border border-slate-300 bg-[#F8FAFC] px-4 text-sm text-slate-950 outline-none transition placeholder:text-slate-400 focus:border-[#185FA5] focus:ring-4 focus:ring-[#185FA5]/10',
           error
             ? 'border-red-500 focus:border-red-500 focus:ring-red-500/10'
             : '',
