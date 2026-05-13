@@ -69,6 +69,16 @@ const purchaseItems: NavItem[] = [
   { color: '#BA7517', group: 'Actions', label: 'Change Password', to: '/purchase/change-password' }
 ];
 
+const itItems: NavItem[] = [
+  { color: '#185FA5', group: 'Overview', label: 'Dashboard', to: '/it/dashboard' },
+  { color: '#2C7BE5', group: 'Actions', label: 'My Tasks', to: '/it/tasks' },
+  { color: '#D64545', group: 'Inbox', label: 'Notifications', to: '/it/notifications' },
+  { color: '#0EA5A4', group: 'Inbox', label: 'Announcements', to: '/it/announcements' },
+  { color: '#2563EB', group: 'Reports', label: 'Reports', to: '/it/reports' },
+  { color: '#639922', group: 'Reports', label: 'Analytics', to: '/it/analytics' },
+  { color: '#BA7517', group: 'Actions', label: 'Change Password', to: '/it/change-password' }
+];
+
 const propertyItems: NavItem[] = [
   { color: '#185FA5', group: 'Overview', label: 'Dashboard', to: '/property-maintenance' },
   { color: '#2C7BE5', group: 'Actions', label: 'Tasks', to: '/property-maintenance/tasks' },
@@ -155,6 +165,8 @@ let items = chairmanItems;
     items = financeItems;
   } else if (user?.role === ROLES.ADMIN) {
     items = adminItems;
+  } else if (user?.role === ROLES.IT) {
+    items = itItems;
   } else if (isDepartmentHead) {
     items = departmentItems;
   }

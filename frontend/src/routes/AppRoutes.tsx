@@ -17,6 +17,7 @@ import ProtectedRoute from './ProtectedRoute';
 import { ROLES } from '../constants/roles';
 
 import HRDashboard from '../pages/hr/HRDashboard';
+import ITDashboard from '../pages/it/ITDashboard';
 
 function AppRoutes() {
 
@@ -73,10 +74,33 @@ function AppRoutes() {
             />
           }
         >
-
+          <Route
+            path="/hr"
+            element={<HRDashboard />}
+          />
           <Route
             path="/hr/*"
             element={<HRDashboard />}
+          />
+        </Route>
+
+        {/* IT Module */}
+        <Route
+          element={
+            <ProtectedRoute
+              allowedRoles={[
+                ROLES.IT
+              ]}
+            />
+          }
+        >
+          <Route
+            path="/it"
+            element={<ITDashboard />}
+          />
+          <Route
+            path="/it/*"
+            element={<ITDashboard />}
           />
         </Route>
 

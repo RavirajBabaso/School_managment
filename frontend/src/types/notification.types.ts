@@ -15,12 +15,13 @@ export interface Notification {
   created_at: string;
 }
 
-export type AnnouncementTarget = 'ALL' | 'DEPARTMENT' | 'PURCHASE' | 'URGENT';
+export type AnnouncementTarget = 'ALL' | 'DEPARTMENT' | 'PURCHASE' | 'IT' | 'URGENT';
 
 export interface Announcement {
   id: number;
   created_by: number;
   target: AnnouncementTarget;
+  title?: string;
   message: string;
   department_id: number | null;
   created_at: string;

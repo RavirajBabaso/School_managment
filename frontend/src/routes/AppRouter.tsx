@@ -51,6 +51,7 @@ import PrincipalDashboard from '../pages/principal/PrincipalDashboard';
 import PrincipalLogin from '../pages/principal/PrincipalLogin';
 import PurchaseLogin from '../pages/purchase/PurchaseLogin';
 import HRDashboard from '../pages/hr/HRDashboard';
+import ITDashboard from '../pages/it/ITDashboard';
 import PurchaseDashboard from '../pages/purchase/PurchaseDashboard';
 
 import ProtectedRoute from './ProtectedRoute';
@@ -126,7 +127,7 @@ function AppRouter() {
           element={<PurchaseLogin />}
         />
 
-        {/* Shared Protected */}
+        {/* Shared Protected Routes */}
         <Route element={<ProtectedRoute />}>
 
           {/* Change Password */}
@@ -137,7 +138,7 @@ function AppRouter() {
 
           {/* Director */}
           <Route
-            path="/director"
+            path="/director/*"
             element={<DirectorDashboard />}
           />
 
@@ -294,33 +295,33 @@ function AppRouter() {
           />
         </Route>
 
-         {/* Admission & Marketing Module */}
-         <Route
-           element={
-             <ProtectedRoute
-               allowedRoles={[
-                 ROLES.ADMISSION
-               ]}
-             />
-           }
-         >
+        {/* Admission & Marketing Module */}
+        <Route
+          element={
+            <ProtectedRoute
+              allowedRoles={[
+                ROLES.ADMISSION
+              ]}
+            />
+          }
+        >
 
            <Route
              path="/admission/*"
              element={<AdmissionDashboard />}
            />
-         </Route>
+          </Route>
 
-          {/* HR Module */}
-          <Route
-            element={
-              <ProtectedRoute
-                allowedRoles={[
-                  ROLES.HR
-                ]}
-              />
-            }
-          >
+        {/* HR Module */}
+        <Route
+          element={
+            <ProtectedRoute
+              allowedRoles={[
+                ROLES.HR
+              ]}
+            />
+          }
+        >
 
             <Route
               path="/hr/*"
@@ -343,9 +344,26 @@ function AppRouter() {
               path="/purchase/*"
               element={<PurchaseDashboard />}
             />
+</Route>
+
+        {/* IT Module */}
+        <Route
+          element={
+            <ProtectedRoute
+              allowedRoles={[
+                ROLES.IT
+              ]}
+            />
+          }
+        >
+
+            <Route
+              path="/it/*"
+              element={<ITDashboard />}
+            />
           </Route>
 
-         {/* Chairman */}
+          {/* Chairman */}
         <Route
           element={
             <ProtectedRoute
