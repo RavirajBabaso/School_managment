@@ -52,14 +52,23 @@ export const useSocket = () => {
       transports: ['websocket']
     });
 
-    socket.on('notification:new', (notification: Notification) => {
+socket.on('notification:new', (notification: Notification) => {
       dispatch(addNotification(notification));
       void queryClient.invalidateQueries({ queryKey: ['chairman-dashboard'] });
       void queryClient.invalidateQueries({ queryKey: ['tasks'] });
       toast.success(notification.message);
     });
 
-    socket.on('task:updated', (payload: SocketTaskPayload | Task) => {
+    socket.on('task:assigned', (payload: SocketTaskPayload | Task) => {
+      const task = resolveTaskPayload(payload);
+      if (task) {
+        dispatch(upsertTask(task));
+        void queryClient.invalidateQueries({ queryKey: ['purchase-tasks'] });
+        void queryClient.invalidateQueries({ queryKey: ['purchase-dashboard'] });
+      }
+    });
+
+socket.on('task:updated', (payload: SocketTaskPayload | Task) => {
       const task = resolveTaskPayload(payload);
       if (task) {
         dispatch(upsertTask(task));
@@ -68,6 +77,17 @@ export const useSocket = () => {
         void queryClient.invalidateQueries({ queryKey: ['principal-tasks'] });
         void queryClient.invalidateQueries({ queryKey: ['principal-analytics'] });
         void queryClient.invalidateQueries({ queryKey: ['principal-delay-alerts'] });
+        void queryClient.invalidateQueries({ queryKey: ['admission-dashboard'] });
+        void queryClient.invalidateQueries({ queryKey: ['admission-tasks'] });
+        void queryClient.invalidateQueries({ queryKey: ['admission-analytics'] });
+        void queryClient.invalidateQueries({ queryKey: ['hr-dashboard'] });
+        void queryClient.invalidateQueries({ queryKey: ['hr-tasks'] });
+        void queryClient.invalidateQueries({ queryKey: ['hr-analytics'] });
+        void queryClient.invalidateQueries({ queryKey: ['hr-delay-alerts'] });
+        void queryClient.invalidateQueries({ queryKey: ['purchase-dashboard'] });
+        void queryClient.invalidateQueries({ queryKey: ['purchase-tasks'] });
+        void queryClient.invalidateQueries({ queryKey: ['purchase-analytics'] });
+        void queryClient.invalidateQueries({ queryKey: ['purchase-delay-alerts'] });
         void queryClient.invalidateQueries({ queryKey: ['tasks'] });
         void queryClient.invalidateQueries({ queryKey: ['task', task.id] });
         void queryClient.invalidateQueries({ queryKey: ['staffPerformance'] });
@@ -85,11 +105,35 @@ export const useSocket = () => {
       void queryClient.invalidateQueries({ queryKey: ['chairman-dashboard'] });
     });
 
-    socket.on('announcement:new', (announcement: Announcement) => {
+socket.on('announcement:new', (announcement: Announcement) => {
       dispatch(addNotification(normalizeAnnouncementNotification(announcement, user?.id)));
       void queryClient.invalidateQueries({ queryKey: ['announcements'] });
       void queryClient.invalidateQueries({ queryKey: ['principal-announcements'] });
+      void queryClient.invalidateQueries({ queryKey: ['admission-announcements'] });
       void queryClient.invalidateQueries({ queryKey: ['chairman-dashboard'] });
+      void queryClient.invalidateQueries({ queryKey: ['purchase-announcements'] });
+    });
+
+    socket.on('task:delayed', (payload: SocketTaskPayload | Task) => {
+      const task = resolveTaskPayload(payload);
+      if (task) {
+        dispatch(upsertTask(task));
+        void queryClient.invalidateQueries({ queryKey: ['hr-delay-alerts'] });
+        void queryClient.invalidateQueries({ queryKey: ['hr-dashboard'] });
+        void queryClient.invalidateQueries({ queryKey: ['purchase-delay-alerts'] });
+        void queryClient.invalidateQueries({ queryKey: ['purchase-dashboard'] });
+      }
+    });
+
+    socket.on('escalation:new', (payload: SocketTaskPayload | Task) => {
+      const task = resolveTaskPayload(payload);
+      if (task) {
+        dispatch(upsertTask(task));
+        void queryClient.invalidateQueries({ queryKey: ['hr-delay-alerts'] });
+        void queryClient.invalidateQueries({ queryKey: ['hr-dashboard'] });
+        void queryClient.invalidateQueries({ queryKey: ['purchase-delay-alerts'] });
+        void queryClient.invalidateQueries({ queryKey: ['purchase-dashboard'] });
+      }
     });
 
     return () => {

@@ -35,6 +35,22 @@ const getDashboardPath = (role: string) => {
     return '/admission/dashboard';
   }
 
+  if (role === ROLES.HR) {
+    return '/hr/dashboard';
+  }
+
+  if (role === ROLES.PURCHASE) {
+    return '/purchase/dashboard';
+  }
+
+  if (role === ROLES.IT) {
+    return '/department';
+  }
+
+  if (role === ROLES.TRANSPORT) {
+    return '/department';
+  }
+
   if (DEPARTMENT_HEAD_ROLES.includes(role as (typeof DEPARTMENT_HEAD_ROLES)[number])) {
     return '/department';
   }

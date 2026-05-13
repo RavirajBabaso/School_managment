@@ -49,6 +49,9 @@ import AdmissionDashboard from '../pages/admission/AdmissionDashboard';
 import AdmissionLogin from '../pages/admission/AdmissionLogin';
 import PrincipalDashboard from '../pages/principal/PrincipalDashboard';
 import PrincipalLogin from '../pages/principal/PrincipalLogin';
+import PurchaseLogin from '../pages/purchase/PurchaseLogin';
+import HRDashboard from '../pages/hr/HRDashboard';
+import PurchaseDashboard from '../pages/purchase/PurchaseDashboard';
 
 import ProtectedRoute from './ProtectedRoute';
 
@@ -116,6 +119,11 @@ function AppRouter() {
         <Route
           path="/admission/login"
           element={<AdmissionLogin />}
+        />
+
+        <Route
+          path="/purchase/login"
+          element={<PurchaseLogin />}
         />
 
         {/* Shared Protected */}
@@ -286,24 +294,58 @@ function AppRouter() {
           />
         </Route>
 
-        {/* Admission & Marketing Module */}
-        <Route
-          element={
-            <ProtectedRoute
-              allowedRoles={[
-                ROLES.ADMISSION
-              ]}
-            />
-          }
-        >
+         {/* Admission & Marketing Module */}
+         <Route
+           element={
+             <ProtectedRoute
+               allowedRoles={[
+                 ROLES.ADMISSION
+               ]}
+             />
+           }
+         >
 
+           <Route
+             path="/admission/*"
+             element={<AdmissionDashboard />}
+           />
+         </Route>
+
+          {/* HR Module */}
           <Route
-            path="/admission/*"
-            element={<AdmissionDashboard />}
-          />
-        </Route>
+            element={
+              <ProtectedRoute
+                allowedRoles={[
+                  ROLES.HR
+                ]}
+              />
+            }
+          >
 
-        {/* Chairman */}
+            <Route
+              path="/hr/*"
+              element={<HRDashboard />}
+            />
+          </Route>
+
+          {/* Purchase Module */}
+          <Route
+            element={
+              <ProtectedRoute
+                allowedRoles={[
+                  ROLES.PURCHASE
+                ]}
+              />
+            }
+          >
+
+            <Route
+              path="/purchase/*"
+              element={<PurchaseDashboard />}
+            />
+          </Route>
+
+         {/* Chairman */}
         <Route
           element={
             <ProtectedRoute

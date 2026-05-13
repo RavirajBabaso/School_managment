@@ -16,6 +16,7 @@ import { useAuth } from '../../hooks/useAuth';
 
 import Badge from './Badge';
 import NotificationBell from './NotificationBell';
+import PurchaseNotificationBell from '../purchase/NotificationBell';
 
 interface NavbarProps {
   actions?: ReactNode;
@@ -61,6 +62,24 @@ const pageTitles: Record<string, string> = {
 
   '/principal/change-password':
     'Change Password',
+
+  /* HR */
+  '/hr/dashboard': 'HR Dashboard',
+  '/hr/tasks': 'HR Tasks',
+  '/hr/notifications': 'HR Notifications',
+  '/hr/announcements': 'HR Announcements',
+  '/hr/reports': 'HR Reports',
+  '/hr/analytics': 'HR Analytics',
+  '/hr/change-password': 'Change Password',
+
+  /* Purchase */
+  '/purchase/dashboard': 'Purchase Dashboard',
+  '/purchase/tasks': 'Purchase Tasks',
+  '/purchase/notifications': 'Purchase Notifications',
+  '/purchase/announcements': 'Purchase Announcements',
+  '/purchase/reports': 'Purchase Reports',
+  '/purchase/analytics': 'Purchase Analytics',
+  '/purchase/change-password': 'Change Password',
 
   '/notifications': 'Notifications',
   '/task': 'Task Detail',
@@ -365,7 +384,7 @@ function Navbar({
       [unreadCount]
     );
 
-  /* Admin Tabs */
+/* Admin Tabs */
   const adminTabs =
     useMemo(
       () => [
@@ -419,29 +438,118 @@ function Navbar({
       [unreadCount]
     );
 
+  /* HR Tabs */
+  const hrTabs =
+    useMemo(
+      () => [
+        {
+          label: 'Dashboard',
+          to: '/hr/dashboard'
+        },
+        {
+          label: 'My Tasks',
+          to: '/hr/tasks'
+        },
+        {
+          label: 'Notifications',
+          to: '/hr/notifications',
+          badge: unreadCount
+        },
+        {
+          label: 'Announcements',
+          to: '/hr/announcements'
+        },
+        {
+          label: 'Reports',
+          to: '/hr/reports'
+        },
+        {
+          label: 'Analytics',
+          to: '/hr/analytics'
+        },
+        {
+          label: 'Change Password',
+          to: '/hr/change-password'
+        }
+        ],
+        [unreadCount]
+      );
+
+  /* Purchase Tabs */
+   const purchaseTabs =
+     useMemo(
+       () => [
+         {
+           label: 'Dashboard',
+           to: '/purchase/dashboard'
+         },
+         {
+           label: 'My Tasks',
+           to: '/purchase/tasks'
+         },
+         {
+           label: 'Notifications',
+           to: '/purchase/notifications',
+           badge: unreadCount
+         },
+         {
+           label: 'Announcements',
+           to: '/purchase/announcements'
+         },
+         {
+           label: 'Reports',
+           to: '/purchase/reports'
+         },
+         {
+           label: 'Analytics',
+           to: '/purchase/analytics'
+         },
+         {
+           label: 'Change Password',
+           to: '/purchase/change-password'
+         }
+       ],
+       [unreadCount]
+      );
+
+  const showHRTabs =
+    user?.role === ROLES.HR &&
+    location.pathname.startsWith(
+      '/hr'
+    );
+
+  const showPurchaseTabs =
+    user?.role === ROLES.PURCHASE &&
+    location.pathname.startsWith(
+      '/purchase'
+    );
+
   const showDirectorTabs =
-    user?.role ===
-      ROLES.DIRECTOR &&
+    user?.role === ROLES.DIRECTOR &&
     location.pathname.startsWith(
       '/director'
     );
 
-  const showPropertyTabs =
-    location.pathname.startsWith(
-      '/property-maintenance'
-    );
-
   const showPrincipalTabs =
+    user?.role === ROLES.PRINCIPAL &&
     location.pathname.startsWith(
       '/principal'
     );
 
+  const showPropertyTabs =
+    user?.role === ROLES.PROPERTY &&
+    location.pathname.startsWith(
+      '/property-maintenance'
+    );
+
   const showFinanceTabs =
+    user?.role === ROLES.FINANCE &&
     location.pathname.startsWith(
       '/finance'
     );
 
   const showAdminTabs =
+    user?.role === ROLES.ADMIN &&
     location.pathname.startsWith(
       '/admin'
     );
@@ -497,9 +605,22 @@ function Navbar({
             </Badge>
           ) : null}
 
-          {actions}
+           {actions}
 
-          <NotificationBell />
+           {showPurchaseTabs && (
+             <PurchaseNotificationBell />
+           )}
+
+           {!isDirectorRoute &&
+           !isChairmanRoute &&
+           !isPrincipalRoute &&
+           !isPropertyRoute &&
+           !isFinanceRoute &&
+           !isAdminRoute &&
+           !showPurchaseTabs &&
+           unreadCount > 0 ? (
+             <NotificationBell />
+           ) : null}
 
           {/* Avatar */}
           <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#E6F1FB] text-[12px] font-semibold text-[#0C447C]">
@@ -510,38 +631,44 @@ function Navbar({
 
           {rightActions}
 
-          {/* Logout */}
-          {(user?.role ===
-            ROLES.DIRECTOR ||
-            user?.role ===
-            ROLES.CHAIRMAN ||
-            user?.role ===
-            ROLES.PRINCIPAL ||
-            user?.role ===
-            ROLES.PROPERTY ||
-            user?.role ===
-            ROLES.FINANCE ||
-            user?.role ===
-            ROLES.ADMIN ||
-            user?.role ===
-            ROLES.ADMISSION) ? (
-            <button
-              type="button"
-              onClick={logout}
-              className="rounded-full bg-[#1D9E75] px-3 py-2 text-sm font-semibold text-white transition hover:bg-[#178b68]"
-            >
-              Logout
-            </button>
-          ) : null}
+           {/* Logout */}
+{(user?.role ===
+               ROLES.DIRECTOR ||
+               user?.role ===
+               ROLES.CHAIRMAN ||
+               user?.role ===
+               ROLES.PRINCIPAL ||
+               user?.role ===
+               ROLES.PROPERTY ||
+               user?.role ===
+               ROLES.FINANCE ||
+               user?.role ===
+               ROLES.ADMIN ||
+               user?.role ===
+               ROLES.ADMISSION ||
+               user?.role ===
+               ROLES.HR ||
+               user?.role ===
+               ROLES.PURCHASE) ? (
+             <button
+               type="button"
+               onClick={logout}
+               className="rounded-full bg-[#1D9E75] px-3 py-2 text-sm font-semibold text-white transition hover:bg-[#178b68]"
+             >
+               Logout
+             </button>
+           ) : null}
         </div>
       </div>
 
-      {/* Tabs */}
+{/* Tabs */}
       {showDirectorTabs ||
-      showPrincipalTabs ||
-      showPropertyTabs ||
-      showFinanceTabs ||
-      showAdminTabs ? (
+       showPrincipalTabs ||
+       showPropertyTabs ||
+       showFinanceTabs ||
+       showAdminTabs ||
+       showHRTabs ||
+       showPurchaseTabs ? (
         <nav className="flex flex-wrap gap-2 overflow-x-auto pt-2">
 
           {(showDirectorTabs
@@ -552,6 +679,10 @@ function Navbar({
             ? adminTabs
             : showFinanceTabs
             ? financeTabs
+            : showHRTabs
+            ? hrTabs
+            : showPurchaseTabs
+            ? purchaseTabs
             : propertyTabs
           ).map((tab) => (
             <NavLink
@@ -567,7 +698,11 @@ function Navbar({
                 tab.to ===
                   '/finance' ||
                 tab.to ===
-                  '/admin'
+                  '/admin' ||
+                tab.to ===
+                  '/hr/dashboard' ||
+                tab.to ===
+                  '/purchase/dashboard'
               }
               className={({
                 isActive

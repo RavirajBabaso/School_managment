@@ -23,7 +23,7 @@ export const NOTIFICATION_TYPES = [
 ] as const;
 export const APPROVAL_TYPES = ['BUDGET', 'PURCHASE', 'POLICY', 'EVENT'] as const;
 export const APPROVAL_STATUSES = ['PENDING', 'APPROVED', 'REJECTED'] as const;
-export const ANNOUNCEMENT_TARGETS = ['ALL', 'DEPARTMENT'] as const;
+export const ANNOUNCEMENT_TARGETS = ['ALL', 'DEPARTMENT', 'PURCHASE', 'URGENT'] as const;
 export const REPORT_TYPES = ['DAILY', 'WEEKLY', 'MONTHLY'] as const;
 
 export type UserRole = (typeof USER_ROLES)[number];

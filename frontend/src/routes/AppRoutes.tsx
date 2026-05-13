@@ -16,6 +16,8 @@ import ProtectedRoute from './ProtectedRoute';
 
 import { ROLES } from '../constants/roles';
 
+import HRDashboard from '../pages/hr/HRDashboard';
+
 function AppRoutes() {
 
   return (
@@ -58,6 +60,23 @@ function AppRoutes() {
           <Route
             path="/property-maintenance/announcements"
             element={<PropertyAnnouncements />}
+          />
+        </Route>
+
+        {/* HR Module */}
+        <Route
+          element={
+            <ProtectedRoute
+              allowedRoles={[
+                ROLES.HR
+              ]}
+            />
+          }
+        >
+
+          <Route
+            path="/hr/*"
+            element={<HRDashboard />}
           />
         </Route>
 

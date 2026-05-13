@@ -49,6 +49,26 @@ const admissionItems: NavItem[] = [
   { color: '#BA7517', group: 'Actions', label: 'Change Password', to: '/admission/change-password' }
 ];
 
+const hrItems: NavItem[] = [
+  { color: '#185FA5', group: 'Overview', label: 'Dashboard', to: '/hr/dashboard' },
+  { color: '#2C7BE5', group: 'Actions', label: 'My Tasks', to: '/hr/tasks' },
+  { color: '#D64545', group: 'Inbox', label: 'Notifications', to: '/hr/notifications' },
+  { color: '#0EA5A4', group: 'Inbox', label: 'Announcements', to: '/hr/announcements' },
+  { color: '#2563EB', group: 'Reports', label: 'Reports', to: '/hr/reports' },
+  { color: '#639922', group: 'Reports', label: 'Analytics', to: '/hr/analytics' },
+  { color: '#BA7517', group: 'Actions', label: 'Change Password', to: '/hr/change-password' }
+];
+
+const purchaseItems: NavItem[] = [
+  { color: '#185FA5', group: 'Overview', label: 'Dashboard', to: '/purchase/dashboard' },
+  { color: '#2C7BE5', group: 'Actions', label: 'My Tasks', to: '/purchase/tasks' },
+  { color: '#D64545', group: 'Inbox', label: 'Notifications', to: '/purchase/notifications' },
+  { color: '#0EA5A4', group: 'Inbox', label: 'Announcements', to: '/purchase/announcements' },
+  { color: '#2563EB', group: 'Reports', label: 'Reports', to: '/purchase/reports' },
+  { color: '#639922', group: 'Reports', label: 'Analytics', to: '/purchase/analytics' },
+  { color: '#BA7517', group: 'Actions', label: 'Change Password', to: '/purchase/change-password' }
+];
+
 const propertyItems: NavItem[] = [
   { color: '#185FA5', group: 'Overview', label: 'Dashboard', to: '/property-maintenance' },
   { color: '#2C7BE5', group: 'Actions', label: 'Tasks', to: '/property-maintenance/tasks' },
@@ -117,7 +137,7 @@ function Sidebar() {
   );
   const isDepartmentHead = user ? DEPARTMENT_HEAD_ROLES.includes(user.role) : false;
 
-  let items = chairmanItems;
+let items = chairmanItems;
 
   if (user?.role === ROLES.DIRECTOR) {
     items = directorItems;
@@ -125,6 +145,10 @@ function Sidebar() {
     items = principalItems;
   } else if (user?.role === ROLES.ADMISSION) {
     items = admissionItems;
+  } else if (user?.role === ROLES.HR) {
+    items = hrItems;
+  } else if (user?.role === ROLES.PURCHASE) {
+    items = purchaseItems;
   } else if (user?.role === ROLES.PROPERTY) {
     items = propertyItems;
   } else if (user?.role === ROLES.FINANCE) {

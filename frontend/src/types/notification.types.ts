@@ -15,7 +15,7 @@ export interface Notification {
   created_at: string;
 }
 
-export type AnnouncementTarget = 'ALL' | 'DEPARTMENT';
+export type AnnouncementTarget = 'ALL' | 'DEPARTMENT' | 'PURCHASE' | 'URGENT';
 
 export interface Announcement {
   id: number;
