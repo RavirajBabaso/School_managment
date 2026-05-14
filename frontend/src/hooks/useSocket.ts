@@ -65,6 +65,8 @@ socket.on('notification:new', (notification: Notification) => {
         dispatch(upsertTask(task));
         void queryClient.invalidateQueries({ queryKey: ['purchase-tasks'] });
         void queryClient.invalidateQueries({ queryKey: ['purchase-dashboard'] });
+        void queryClient.invalidateQueries({ queryKey: ['transport-tasks'] });
+        void queryClient.invalidateQueries({ queryKey: ['transport-dashboard'] });
       }
     });
 
@@ -92,6 +94,10 @@ socket.on('task:updated', (payload: SocketTaskPayload | Task) => {
         void queryClient.invalidateQueries({ queryKey: ['it-tasks'] });
         void queryClient.invalidateQueries({ queryKey: ['it-analytics'] });
         void queryClient.invalidateQueries({ queryKey: ['it-delay-alerts'] });
+        void queryClient.invalidateQueries({ queryKey: ['transport-dashboard'] });
+        void queryClient.invalidateQueries({ queryKey: ['transport-tasks'] });
+        void queryClient.invalidateQueries({ queryKey: ['transport-analytics'] });
+        void queryClient.invalidateQueries({ queryKey: ['transport-delay-alerts'] });
         void queryClient.invalidateQueries({ queryKey: ['tasks'] });
         void queryClient.invalidateQueries({ queryKey: ['task', task.id] });
         void queryClient.invalidateQueries({ queryKey: ['staffPerformance'] });
@@ -117,6 +123,7 @@ socket.on('announcement:new', (announcement: Announcement) => {
       void queryClient.invalidateQueries({ queryKey: ['chairman-dashboard'] });
       void queryClient.invalidateQueries({ queryKey: ['purchase-announcements'] });
       void queryClient.invalidateQueries({ queryKey: ['it-announcements'] });
+      void queryClient.invalidateQueries({ queryKey: ['transport-announcements'] });
     });
 
     socket.on('task:delayed', (payload: SocketTaskPayload | Task) => {
@@ -129,6 +136,8 @@ socket.on('announcement:new', (announcement: Announcement) => {
         void queryClient.invalidateQueries({ queryKey: ['purchase-dashboard'] });
         void queryClient.invalidateQueries({ queryKey: ['it-delay-alerts'] });
         void queryClient.invalidateQueries({ queryKey: ['it-dashboard'] });
+        void queryClient.invalidateQueries({ queryKey: ['transport-delay-alerts'] });
+        void queryClient.invalidateQueries({ queryKey: ['transport-dashboard'] });
       }
     });
 
@@ -142,6 +151,8 @@ socket.on('announcement:new', (announcement: Announcement) => {
         void queryClient.invalidateQueries({ queryKey: ['purchase-dashboard'] });
         void queryClient.invalidateQueries({ queryKey: ['it-delay-alerts'] });
         void queryClient.invalidateQueries({ queryKey: ['it-dashboard'] });
+        void queryClient.invalidateQueries({ queryKey: ['transport-delay-alerts'] });
+        void queryClient.invalidateQueries({ queryKey: ['transport-dashboard'] });
       }
     });
 

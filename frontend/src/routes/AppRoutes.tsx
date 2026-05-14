@@ -18,6 +18,7 @@ import { ROLES } from '../constants/roles';
 
 import HRDashboard from '../pages/hr/HRDashboard';
 import ITDashboard from '../pages/it/ITDashboard';
+import TransportDashboard from '../pages/transport/TransportDashboard';
 
 function AppRoutes() {
 
@@ -101,6 +102,26 @@ function AppRoutes() {
           <Route
             path="/it/*"
             element={<ITDashboard />}
+          />
+        </Route>
+
+        {/* Transport Module */}
+        <Route
+          element={
+            <ProtectedRoute
+              allowedRoles={[
+                ROLES.TRANSPORT
+              ]}
+            />
+          }
+        >
+          <Route
+            path="/transport"
+            element={<TransportDashboard />}
+          />
+          <Route
+            path="/transport/*"
+            element={<TransportDashboard />}
           />
         </Route>
 

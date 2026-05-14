@@ -9,7 +9,10 @@ const api = axios.create({
   withCredentials: true
 });
 
+console.log('API instance created with baseURL:', baseURL);
+
 api.interceptors.request.use((config) => {
+  console.log('API Request:', config.method?.toUpperCase(), config.url);
   const token = store.getState().auth.token;
 
   if (token) {
@@ -20,8 +23,12 @@ api.interceptors.request.use((config) => {
 });
 
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    console.log('API Response:', response.config?.method?.toUpperCase(), response.config?.url, response.status);
+    return response;
+  },
   async (error) => {
+    console.log('API Error:', error.config?.method?.toUpperCase(), error.config?.url, error.response?.status || 'No Response');
     const requestUrl = error.config?.url ?? '';
     const isAuthRequest =
       requestUrl.includes('/auth/login') || requestUrl.includes('/auth/refresh-token');
@@ -33,6 +40,7 @@ api.interceptors.response.use(
       if (storedRefreshToken) {
         try {
           originalRequest._retry = true;
+          console.log('Attempting token refresh...');
           const refreshResponse = await axios.post(
             `${baseURL}/auth/refresh-token`,
             { refreshToken: storedRefreshToken },
@@ -49,13 +57,15 @@ api.interceptors.response.use(
             };
           }
           return api(originalRequest);
-        } catch {
+        } catch (refreshError) {
+          console.log('Token refresh failed:', refreshError);
           // Fall through to normal logout handling.
         }
       }
     }
 
     if (error.response?.status === 401 && !isAuthRequest) {
+      console.log('Unauthorized - logging out');
       store.dispatch(logout());
       localStorage.removeItem('accessToken');
       localStorage.removeItem('refreshToken');

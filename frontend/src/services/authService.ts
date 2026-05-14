@@ -15,7 +15,9 @@ export interface LoginResponse {
 }
 
 export const login = async (payload: LoginPayload) => {
+  console.log('Attempting login with payload:', payload);
   const response = await api.post<ApiResponse<LoginResponse>>(API_ENDPOINTS.auth.login, payload);
+  console.log('Login successful:', response.data.data);
   return response.data.data;
 };
 

@@ -38,6 +38,7 @@ import PropertyDashboard from '../pages/propertyMaintenance/PropertyDashboard';
 import PropertyTasks from '../pages/propertyMaintenance/PropertyTasks';
 import PropertyNotifications from '../pages/propertyMaintenance/PropertyNotifications';
 import PropertyAnnouncements from '../pages/propertyMaintenance/PropertyAnnouncements';
+import TransportDashboard from '../pages/transport/TransportDashboard';
 
 import FinanceDashboard from '../pages/finance/FinanceDashboard';
 import FinanceTasks from '../pages/finance/FinanceTasks';
@@ -356,12 +357,27 @@ function AppRouter() {
             />
           }
         >
+          <Route
+            path="/it/*"
+            element={<ITDashboard />}
+          />
+        </Route>
 
-            <Route
-              path="/it/*"
-              element={<ITDashboard />}
+        {/* Transport Module */}
+        <Route
+          element={
+            <ProtectedRoute
+              allowedRoles={[
+                ROLES.TRANSPORT
+              ]}
             />
-          </Route>
+          }
+        >
+          <Route
+            path="/transport/*"
+            element={<TransportDashboard />}
+          />
+        </Route>
 
           {/* Chairman */}
         <Route

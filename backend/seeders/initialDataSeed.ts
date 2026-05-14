@@ -70,6 +70,22 @@ const sampleTasks = [
     status: 'ESCALATED' as const,
     start_date: new Date('2026-04-01'),
     due_date: new Date('2026-04-20')
+  },
+  {
+    title: 'Vehicle maintenance check',
+    description: 'Conduct routine maintenance check for school transport vehicles',
+    priority: 'HIGH' as const,
+    status: 'IN_PROGRESS' as const,
+    start_date: new Date('2026-04-20'),
+    due_date: new Date('2026-04-25')
+  },
+  {
+    title: 'Route optimization for school buses',
+    description: 'Optimize bus routes for better fuel efficiency and student pickup times',
+    priority: 'MEDIUM' as const,
+    status: 'PENDING' as const,
+    start_date: new Date('2026-04-22'),
+    due_date: new Date('2026-04-30')
   }
 ];
 
@@ -82,6 +98,15 @@ const sampleAnnouncements = [
     target: 'DEPARTMENT' as const,
     message: 'IT Department: Please update all software licenses before the end of April.',
     departmentName: 'IT & ERP'
+  },
+  {
+    target: 'DEPARTMENT' as const,
+    message: 'Transport Department: New bus routes have been finalized. Please review the updated route maps.',
+    departmentName: 'Transport'
+  },
+  {
+    target: 'URGENT' as const,
+    message: 'Emergency maintenance required on bus #3. Alternative transport arranged for affected routes.'
   }
 ];
 

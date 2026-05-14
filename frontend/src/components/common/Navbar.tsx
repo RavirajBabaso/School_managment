@@ -72,16 +72,34 @@ const pageTitles: Record<string, string> = {
   '/hr/analytics': 'HR Analytics',
   '/hr/change-password': 'Change Password',
 
-  /* Purchase */
-  '/purchase/dashboard': 'Purchase Dashboard',
-  '/purchase/tasks': 'Purchase Tasks',
-  '/purchase/notifications': 'Purchase Notifications',
-  '/purchase/announcements': 'Purchase Announcements',
-  '/purchase/reports': 'Purchase Reports',
-  '/purchase/analytics': 'Purchase Analytics',
-  '/purchase/change-password': 'Change Password',
+/* Purchase */
+   '/purchase/dashboard': 'Purchase Dashboard',
+   '/purchase/tasks': 'Purchase Tasks',
+   '/purchase/notifications': 'Purchase Notifications',
+   '/purchase/announcements': 'Purchase Announcements',
+   '/purchase/reports': 'Purchase Reports',
+   '/purchase/analytics': 'Purchase Analytics',
+   '/purchase/change-password': 'Change Password',
 
-  '/notifications': 'Notifications',
+   /* IT */
+   '/it/dashboard': 'IT Dashboard',
+   '/it/tasks': 'IT Tasks',
+   '/it/notifications': 'IT Notifications',
+   '/it/announcements': 'IT Announcements',
+   '/it/reports': 'IT Reports',
+   '/it/analytics': 'IT Analytics',
+   '/it/change-password': 'Change Password',
+
+   /* Transport */
+   '/transport/dashboard': 'Transport Dashboard',
+   '/transport/tasks': 'Transport Tasks',
+   '/transport/notifications': 'Transport Notifications',
+   '/transport/announcements': 'Transport Announcements',
+   '/transport/reports': 'Transport Reports',
+   '/transport/analytics': 'Transport Analytics',
+   '/transport/change-password': 'Change Password',
+
+   '/notifications': 'Notifications',
   '/task': 'Task Detail',
 
   /* Property */
@@ -236,30 +254,63 @@ function Navbar({
       '/admin'
     );
 
-  const resolvedTitle =
-    title ??
-    pageTitles[
-      location.pathname
-    ] ??
-    Object.entries(
-      pageTitles
-    ).find(([path]) =>
-      location.pathname.startsWith(
-        path
-      )
-    )?.[1] ??
-    'Dashboard';
+   const resolvedTitle =
+     title ??
+     pageTitles[
+       location.pathname
+     ] ??
+     Object.entries(
+       pageTitles
+     ).find(([path]) =>
+       location.pathname.startsWith(
+         path
+       )
+     )?.[1] ??
+     'Dashboard';
 
-  const subtitleParts = [
-    formatNavbarDate(),
+   // Get module name from current path for more accurate display
+   let moduleNameFromPath = '';
+   if (location.pathname.startsWith('/chairman')) {
+     moduleNameFromPath = 'Chairman';
+   } else if (location.pathname.startsWith('/director')) {
+     moduleNameFromPath = 'Director';
+   } else if (location.pathname.startsWith('/principal')) {
+     moduleNameFromPath = 'Principal';
+   } else if (location.pathname.startsWith('/property-maintenance')) {
+     moduleNameFromPath = 'Property';
+   } else if (location.pathname.startsWith('/finance')) {
+     moduleNameFromPath = 'Finance';
+   } else if (location.pathname.startsWith('/admin')) {
+     moduleNameFromPath = 'Admin';
+   } else if (location.pathname.startsWith('/hr')) {
+     moduleNameFromPath = 'Human Resources';
+   } else if (location.pathname.startsWith('/purchase')) {
+     moduleNameFromPath = 'Purchase';
+   } else if (location.pathname.startsWith('/it')) {
+     moduleNameFromPath = 'Information Technology';
+   } else if (location.pathname.startsWith('/transport')) {
+     moduleNameFromPath = 'Transport';
+   } else if (location.pathname.startsWith('/department')) {
+     moduleNameFromPath = 'Department';
+   } else if (location.pathname.startsWith('/admission')) {
+     moduleNameFromPath = 'Admission';
+   } else if (location.pathname === '/notifications') {
+     moduleNameFromPath = 'Notifications';
+   } else if (location.pathname.startsWith('/task')) {
+     moduleNameFromPath = 'Task Detail';
+   }
 
-    user?.departmentName ??
-      (user
-        ? ROLE_LABELS[
-            user.role
-          ]
-        : 'All Departments')
-  ];
+   const subtitleParts = [
+     formatNavbarDate(),
+
+     user?.departmentName ??
+       (moduleNameFromPath ||
+        (user
+          ? ROLE_LABELS[
+              user.role
+            ]
+          : 'All Departments'))
+   ];
 
   /* Director Tabs */
   const directorTabs =
@@ -508,11 +559,85 @@ function Navbar({
            label: 'Change Password',
            to: '/purchase/change-password'
          }
+],
+        [unreadCount]
+       );
+
+   /* IT Tabs */
+   const itTabs =
+     useMemo(
+       () => [
+         {
+           label: 'Dashboard',
+           to: '/it/dashboard'
+         },
+         {
+           label: 'My Tasks',
+           to: '/it/tasks'
+         },
+         {
+           label: 'Notifications',
+           to: '/it/notifications',
+           badge: unreadCount
+         },
+         {
+           label: 'Announcements',
+           to: '/it/announcements'
+         },
+         {
+           label: 'Reports',
+           to: '/it/reports'
+         },
+         {
+           label: 'Analytics',
+           to: '/it/analytics'
+         },
+         {
+           label: 'Change Password',
+           to: '/it/change-password'
+         }
        ],
        [unreadCount]
-      );
+     );
 
-  const showHRTabs =
+   /* Transport Tabs */
+   const transportTabs =
+     useMemo(
+       () => [
+         {
+           label: 'Dashboard',
+           to: '/transport/dashboard'
+         },
+         {
+           label: 'My Tasks',
+           to: '/transport/tasks'
+         },
+         {
+           label: 'Notifications',
+           to: '/transport/notifications',
+           badge: unreadCount
+         },
+         {
+           label: 'Announcements',
+           to: '/transport/announcements'
+         },
+         {
+           label: 'Reports',
+           to: '/transport/reports'
+         },
+         {
+           label: 'Analytics',
+           to: '/transport/analytics'
+         },
+         {
+           label: 'Change Password',
+           to: '/transport/change-password'
+         }
+       ],
+       [unreadCount]
+     );
+
+   const showHRTabs =
     user?.role === ROLES.HR &&
     location.pathname.startsWith(
       '/hr'
@@ -548,13 +673,25 @@ function Navbar({
       '/finance'
     );
 
-  const showAdminTabs =
-    user?.role === ROLES.ADMIN &&
-    location.pathname.startsWith(
-      '/admin'
-    );
+const showAdminTabs =
+     user?.role === ROLES.ADMIN &&
+     location.pathname.startsWith(
+       '/admin'
+     );
 
-  return (
+   const showITTabs =
+     user?.role === ROLES.IT &&
+     location.pathname.startsWith(
+       '/it'
+     );
+
+   const showTransportTabs =
+     user?.role === ROLES.TRANSPORT &&
+     location.pathname.startsWith(
+       '/transport'
+     );
+
+   return (
     <header className="flex flex-col gap-4 border-b border-[var(--border-color)] bg-[var(--card-bg)] px-[22px] py-[18px]">
 
       {/* Top */}
@@ -631,79 +768,95 @@ function Navbar({
 
           {rightActions}
 
-           {/* Logout */}
+{/* Logout */}
 {(user?.role ===
-               ROLES.DIRECTOR ||
-               user?.role ===
-               ROLES.CHAIRMAN ||
-               user?.role ===
-               ROLES.PRINCIPAL ||
-               user?.role ===
-               ROLES.PROPERTY ||
-               user?.role ===
-               ROLES.FINANCE ||
-               user?.role ===
-               ROLES.ADMIN ||
-               user?.role ===
-               ROLES.ADMISSION ||
-               user?.role ===
-               ROLES.HR ||
-               user?.role ===
-               ROLES.PURCHASE) ? (
-             <button
-               type="button"
-               onClick={logout}
-               className="rounded-full bg-[#1D9E75] px-3 py-2 text-sm font-semibold text-white transition hover:bg-[#178b68]"
-             >
-               Logout
-             </button>
-           ) : null}
+                ROLES.DIRECTOR ||
+                user?.role ===
+                ROLES.CHAIRMAN ||
+                user?.role ===
+                ROLES.PRINCIPAL ||
+                user?.role ===
+                ROLES.PROPERTY ||
+                user?.role ===
+                ROLES.FINANCE ||
+                user?.role ===
+                ROLES.ADMIN ||
+                user?.role ===
+                ROLES.ADMISSION ||
+                user?.role ===
+                ROLES.HR ||
+                user?.role ===
+                ROLES.PURCHASE ||
+                user?.role ===
+                ROLES.IT ||
+                user?.role ===
+                ROLES.TRANSPORT) ? (
+              <button
+                type="button"
+                onClick={logout}
+                className="rounded-full bg-[#1D9E75] px-3 py-2 text-sm font-semibold text-white transition hover:bg-[#178b68]"
+              >
+                Logout
+              </button>
+            ) : null}
         </div>
       </div>
 
 {/* Tabs */}
-      {showDirectorTabs ||
-       showPrincipalTabs ||
-       showPropertyTabs ||
-       showFinanceTabs ||
-       showAdminTabs ||
-       showHRTabs ||
-       showPurchaseTabs ? (
-        <nav className="flex flex-wrap gap-2 overflow-x-auto pt-2">
+       {showDirectorTabs ||
+        showPrincipalTabs ||
+        showPropertyTabs ||
+        showFinanceTabs ||
+        showAdminTabs ||
+        showHRTabs ||
+        showPurchaseTabs ||
+        showITTabs ||
+        showTransportTabs ? (
+         <nav className="flex flex-wrap gap-2 overflow-x-auto pt-2">
 
-          {(showDirectorTabs
-            ? directorTabs
-            : showPrincipalTabs
-            ? principalTabs
-            : showAdminTabs
-            ? adminTabs
-            : showFinanceTabs
-            ? financeTabs
-            : showHRTabs
-            ? hrTabs
-            : showPurchaseTabs
-            ? purchaseTabs
-            : propertyTabs
-          ).map((tab) => (
-            <NavLink
-              key={tab.to}
-              to={tab.to}
-              end={
-                tab.to ===
-                  '/director' ||
-                tab.to ===
-                  '/principal/dashboard' ||
-                tab.to ===
-                  '/property-maintenance' ||
-                tab.to ===
-                  '/finance' ||
-                tab.to ===
-                  '/admin' ||
-                tab.to ===
-                  '/hr/dashboard' ||
-                tab.to ===
-                  '/purchase/dashboard'
-              }
+           {(showDirectorTabs
+             ? directorTabs
+             : showPrincipalTabs
+             ? principalTabs
+             : showAdminTabs
+             ? adminTabs
+             : showFinanceTabs
+             ? financeTabs
+             : showHRTabs
+             ? hrTabs
+             : showPurchaseTabs
+             ? purchaseTabs
+             : showITTabs
+             ? itTabs
+             : showTransportTabs
+             ? transportTabs
+             : propertyTabs
+           ).map((tab) => (
+             <NavLink
+               key={tab.to}
+               to={tab.to}
+               end={
+                 tab.to ===
+                   '/director' ||
+                 tab.to ===
+                   '/principal/dashboard' ||
+                 tab.to ===
+                   '/property-maintenance' ||
+                 tab.to ===
+                   '/finance' ||
+                 tab.to ===
+                   '/admin' ||
+                 tab.to ===
+                   '/hr' ||
+                 tab.to ===
+                   '/hr/dashboard' ||
+                 tab.to ===
+                   '/purchase/dashboard' ||
+                 tab.to ===
+                   '/it/dashboard' ||
+                 tab.to ===
+                   '/transport/dashboard'
+               }
               className={({
                 isActive
               }) =>

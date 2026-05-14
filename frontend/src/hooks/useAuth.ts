@@ -36,7 +36,7 @@ const getDashboardPath = (role: string) => {
   }
 
   if (role === ROLES.HR) {
-    return '/hr/dashboard';
+    return '/hr';
   }
 
   if (role === ROLES.PURCHASE) {
@@ -44,11 +44,11 @@ const getDashboardPath = (role: string) => {
   }
 
   if (role === ROLES.IT) {
-    return '/department';
+    return '/it/dashboard';
   }
 
   if (role === ROLES.TRANSPORT) {
-    return '/department';
+    return '/transport/dashboard';
   }
 
   if (DEPARTMENT_HEAD_ROLES.includes(role as (typeof DEPARTMENT_HEAD_ROLES)[number])) {

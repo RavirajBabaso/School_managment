@@ -101,9 +101,19 @@ const adminItems: NavItem[] = [
   { color: '#0EA5A4', group: 'Reports', label: 'Attendance', to: '/admin/attendance' },
   { color: '#D89B17', group: 'Approvals', label: 'Leave', to: '/admin/leave' },
   { color: '#7C3AED', group: 'Overview', label: 'Departments', to: '/admin/departments' },
-  { color: '#D64545', group: 'Inbox', label: 'Circulars', to: '/admin/circulars' },
+  { color: '#2563EB', group: 'Inbox', label: 'Circulars', to: '/admin/circulars' },
   { color: '#2563EB', group: 'Reports', label: 'Reports', to: '/admin/reports' },
   { color: '#64748B', group: 'Reports', label: 'Documents', to: '/admin/documents' }
+];
+
+const transportItems: NavItem[] = [
+  { color: '#185FA5', group: 'Overview', label: 'Dashboard', to: '/transport/dashboard' },
+  { color: '#2C7BE5', group: 'Actions', label: 'My Tasks', to: '/transport/tasks' },
+  { color: '#D64545', group: 'Inbox', label: 'Notifications', to: '/transport/notifications' },
+  { color: '#0EA5A4', group: 'Inbox', label: 'Announcements', to: '/transport/announcements' },
+  { color: '#2563EB', group: 'Reports', label: 'Reports', to: '/transport/reports' },
+  { color: '#639922', group: 'Reports', label: 'Analytics', to: '/transport/analytics' },
+  { color: '#BA7517', group: 'Actions', label: 'Change Password', to: '/transport/change-password' }
 ];
 
 const directorItems: NavItem[] = [
@@ -167,6 +177,8 @@ let items = chairmanItems;
     items = adminItems;
   } else if (user?.role === ROLES.IT) {
     items = itItems;
+  } else if (user?.role === ROLES.TRANSPORT) {
+    items = transportItems;
   } else if (isDepartmentHead) {
     items = departmentItems;
   }
@@ -198,13 +210,17 @@ let items = chairmanItems;
     <aside className="flex h-screen w-[240px] shrink-0 flex-col border-r border-[var(--border-color)] bg-[var(--panel-bg)] text-[var(--text-primary)]">
       <div className="border-b border-[var(--border-color)] px-5 py-5">
         <div className="flex flex-col gap-1">
-          <span className="text-[10px] uppercase tracking-[0.28em] text-[var(--text-secondary)]">School Director</span>
+          <span className="text-[10px] uppercase tracking-[0.28em] text-[var(--text-secondary)]">
+            {user?.role === ROLES.CHAIRMAN ? 'Chairman' : user?.role === ROLES.DIRECTOR ? 'Director' : user?.role === ROLES.PRINCIPAL ? 'Principal' : user?.role === ROLES.ADMISSION ? 'Admission' : user?.role === ROLES.HR ? 'Human Resources' : user?.role === ROLES.PURCHASE ? 'Purchase' : user?.role === ROLES.PROPERTY ? 'Property' : user?.role === ROLES.FINANCE ? 'Finance' : user?.role === ROLES.ADMIN ? 'Admin' : user?.role === ROLES.IT ? 'Information Technology' : user?.role === ROLES.TRANSPORT ? 'Transport' : 'Department Head'} Module
+          </span>
           <h2 className="text-[15px] font-semibold text-[var(--text-primary)]">Executive Dashboard</h2>
-          <p className="text-[11px] text-[var(--text-secondary)]">Strong oversight for school operations and approvals.</p>
+          <p className="text-[11px] text-[var(--text-secondary)]">
+            Strong oversight for school operations and approvals.
+          </p>
         </div>
-      </div>
+       </div>
 
-      <nav className="flex-1 overflow-y-auto px-5 py-5">
+       <nav className="flex-1 overflow-y-auto px-5 py-5">
         {groups.map((group) => {
           const groupItems = decoratedItems.filter((item) => item.group === group);
 
@@ -228,7 +244,7 @@ let items = chairmanItems;
                           : 'border-transparent text-[var(--text-secondary)] hover:border-[var(--border-color)] hover:bg-[var(--surface)] hover:text-[var(--text-primary)]'
                       ].join(' ')
                     }
-                    end={item.to === '/chairman' || item.to === '/department' || item.to === '/director' || item.to === '/principal/dashboard' || item.to === '/admission/dashboard'}
+                    end={item.to === '/chairman' || item.to === '/department' || item.to === '/director' || item.to === '/principal/dashboard' || item.to === '/admission/dashboard' || item.to === '/transport/dashboard'}
                     key={item.to}
                     to={item.to}
                   >
